@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+env/
+db.sqlite3
+*.sqlite3
+.env
+# Node / Next.js
+node_modules/
+.next/
+out/
+.env.local
+.turbo/
+# OS / Editor
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+# Media / Build
+/media/
+/staticfiles/
+/dist/
+/build/

@@ -1,30 +1,61 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import {
-  Bell,
-  Play,
-  ArrowRight,
-  Trophy,
-  Zap,
-  Calendar,
-  Lock,
-  TrendingUp,
-} from "lucide-react";
+import { ArrowRight, Gamepad2, Play, Trophy, TrendingUp, Zap } from "lucide-react";
+
 import { useAuth } from "@/context/AuthContext";
 import { dashboardApi } from "@/lib/api/dashboard";
-import { DashboardSummary } from "@/lib/api/types";
+import type { DashboardSummary } from "@/lib/api/types";
 import { HeroScene3D } from "@/components/illustrations/HeroScene3D";
 import {
-  GraduationBooks3D,
   GamepadTrophy3D,
+  GraduationBooks3D,
   StreakFlameCalendar3D,
   XPStarGift3D,
-  TreasureChest3D,
 } from "@/components/illustrations/StatCardIcons";
 import { QuickQuizSection } from "@/components/dashboard/QuickQuizSection";
+import { findMiniGameByTitle } from "@/components/games/gameCatalog";
+
+type StatValue = (progress: number, attempts: number, streak: number, xp: number) => string;
+
+const statCards: Array<{
+  id: string;
+  label: string;
+  icon: typeof GraduationBooks3D;
+  value: StatValue;
+  tone: string;
+}> = [
+  {
+    id: "progress",
+    label: "DSA progress",
+    icon: GraduationBooks3D,
+    value: (progress) => `${progress}%`,
+    tone: "text-cyan-200",
+  },
+  {
+    id: "games",
+    label: "Recent attempts",
+    icon: GamepadTrophy3D,
+    value: (_progress, attempts) => `${attempts}`,
+    tone: "text-emerald-200",
+  },
+  {
+    id: "streak",
+    label: "Current streak",
+    icon: StreakFlameCalendar3D,
+    value: (_progress, _attempts, streak) => `${streak} ${streak === 1 ? "day" : "days"}`,
+    tone: "text-amber-200",
+  },
+  {
+    id: "xp",
+    label: "Total XP",
+    icon: XPStarGift3D,
+    value: (_progress, _attempts, _streak, xp) => `${xp.toLocaleString()} XP`,
+    tone: "text-violet-200",
+  },
+];
 
 export default function StudentDashboardPage() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
@@ -32,331 +63,203 @@ export default function StudentDashboardPage() {
 
   useEffect(() => {
     let isMounted = true;
+
     async function fetchDashboard() {
-      if (!isAuthenticated) {
-        return;
-      }
+      if (!isAuthenticated) return;
+
       try {
         const data = await dashboardApi.getSummary();
-        if (isMounted) {
-          setSummary(data);
-        }
-      } catch (err) {
-        console.error("Failed to load dashboard summary:", err);
+        if (isMounted) setSummary(data);
+      } catch (error) {
+        console.error("Failed to load dashboard summary:", error);
       }
     }
 
-    if (!authLoading) {
-      fetchDashboard();
-    }
-
+    if (!authLoading) void fetchDashboard();
     return () => {
       isMounted = false;
     };
   }, [isAuthenticated, authLoading]);
 
-  // Derived real backend student data
   const displayName =
     summary?.student?.display_name ||
     user?.student_profile?.display_name ||
     user?.first_name ||
     user?.email?.split("@")[0] ||
-    "Shubham";
-
-  const userInitial = displayName.charAt(0).toUpperCase();
-
-  // Progress metrics from backend
+    "Learner";
   const currentXp = summary?.current_xp ?? user?.student_profile?.total_xp ?? 0;
   const currentStreak = summary?.current_streak ?? user?.student_profile?.current_streak ?? 0;
-  const gamesPlayed = summary?.recent_game_scores?.length ?? 0;
-
-  // Calculate real DSA progress percentage
   const completedLessons = summary?.completed_lessons ?? 0;
   const totalLessons = summary?.total_published_lessons ?? 0;
-  const dsaProgressPercent =
-    totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+  const progress = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+  const recentGames = summary?.recent_game_scores ?? [];
+  const recentGame = recentGames[0];
+  const recentGameDefinition = findMiniGameByTitle(recentGame?.game_name);
+  const RecentGameIcon = recentGameDefinition?.Icon ?? Gamepad2;
+  const achievements = summary?.achievements?.slice(0, 4) ?? [];
+  const level = summary?.level ?? user?.student_profile?.level ?? 1;
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-8">
-      {/* ═══════════════════════════════════════════════════════════════
-          TOP HEADER: GREETING & CURRENCY PILLS (STARS, GEMS, BELL, AVATAR)
-      ═══════════════════════════════════════════════════════════════ */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        {/* Welcome Text */}
+    <motion.main
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className="mx-auto max-w-7xl space-y-6 pb-8"
+    >
+      <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white flex items-center gap-2">
-            Welcome back,{" "}
-            <span className="text-[#FACC15] drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]">
-              {displayName}!
-            </span>{" "}
-            <span className="text-3xl sm:text-4xl">👋</span>
+          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-cyan-200">Your learning hub</p>
+          <h1 className="mt-2 text-2xl font-black tracking-tight text-white sm:text-3xl">
+            Welcome back, <span className="text-amber-200">{displayName}</span>
           </h1>
-          <p className="text-sm sm:text-base text-slate-300 font-medium mt-1">
-            Keep learning, keep coding, and reach new heights! 🚀
-          </p>
+          <p className="mt-1 text-sm text-slate-400">Choose a quest and keep building your skills.</p>
         </div>
-
-        {/* Top Right Controls & Gaming Currency Pills */}
-        <div className="flex items-center gap-3">
-          {/* Star Currency Pill */}
-          <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl bg-amber-500/20 border border-amber-400/40 shadow-[0_0_15px_rgba(245,158,11,0.25)] backdrop-blur-xl">
-            <span className="text-base">⭐</span>
-            <span className="text-xs sm:text-sm font-black text-amber-300">
-              {300 + currentXp}
-            </span>
-          </div>
-
-          {/* Diamond / Gem Currency Pill */}
-          <div className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl bg-purple-500/20 border border-purple-400/40 shadow-[0_0_15px_rgba(168,85,247,0.25)] backdrop-blur-xl">
-            <span className="text-base">💎</span>
-            <span className="text-xs sm:text-sm font-black text-purple-300">
-              90
-            </span>
-          </div>
-
-          {/* Notification Bell */}
-          <button
-            aria-label="Notifications"
-            className="relative p-2.5 rounded-2xl bg-white/[0.08] hover:bg-white/[0.14] border border-white/15 text-slate-200 transition-colors shadow-glass-sm"
-          >
-            <Bell className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[10px] font-extrabold flex items-center justify-center shadow-neon-pink">
-              2
-            </span>
-          </button>
-
-          {/* Glowing Circular Avatar */}
-          <div className="relative w-10 h-10 rounded-full p-0.5 bg-gradient-to-tr from-cyan-400 via-purple-500 to-pink-500 shadow-neon-purple">
-            <div className="w-full h-full rounded-full bg-[#0c0e24] flex items-center justify-center overflow-hidden border border-white/20">
-              <span className="font-black text-sm text-amber-300">
-                {userInitial}
-              </span>
-            </div>
-            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-[#0c0e24] shadow-[0_0_8px_#10B981]" />
+        <div className="flex items-center gap-3 self-start rounded-2xl border border-white/10 bg-white/[0.035] px-3 py-2 sm:self-auto">
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-violet-300/10 text-violet-200">
+            <Trophy className="h-4 w-4" aria-hidden="true" />
+          </span>
+          <div>
+            <p className="text-xs font-bold text-slate-400">Level {level}</p>
+            <p className="text-sm font-black text-amber-200">{currentXp.toLocaleString()} XP</p>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          CONTINUE LEARNING HERO BANNER (BOY, ROBOT, FLOATING ISLAND, CASTLE)
-      ═══════════════════════════════════════════════════════════════ */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative rounded-[32px] overflow-hidden border-2 border-purple-500/30 shadow-[0_0_40px_rgba(139,92,246,0.3)] bg-gradient-to-r from-[#17144e]/95 via-[#231560]/90 to-[#120d3d]/95 p-6 sm:p-8 lg:p-9"
-      >
-        {/* Ambient Nebula Blobs */}
-        <div className="absolute -top-10 -left-10 w-80 h-80 rounded-full bg-purple-600/30 blur-[100px] pointer-events-none" />
-        <div className="absolute top-1/2 right-1/4 w-72 h-72 rounded-full bg-cyan-500/20 blur-[110px] pointer-events-none" />
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          {/* Left Text & CTA Column */}
-          <div className="lg:col-span-6 z-10 space-y-4">
-            {/* Tag Pill */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1e1b4b]/80 border border-purple-400/40 text-purple-200 text-xs font-black uppercase tracking-wider shadow-neon-purple backdrop-blur-md">
-              <Play className="w-3.5 h-3.5 text-[#FACC15] fill-[#FACC15]" />
-              Continue Learning
-            </div>
-
-            {/* Course Title */}
+      <section className="relative overflow-hidden rounded-[28px] border border-violet-200/15 bg-gradient-to-r from-[#15143b]/95 via-[#1b1742]/90 to-[#10152e]/95 p-5 shadow-[0_18px_55px_rgba(0,0,0,0.22)] sm:p-7">
+        <div className="pointer-events-none absolute -left-12 -top-24 h-64 w-64 rounded-full bg-violet-500/10 blur-3xl" />
+        <div className="relative grid items-center gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(250px,0.9fr)]">
+          <div className="relative z-10 space-y-4">
+            <p className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.16em] text-violet-200">
+              <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" /> Continue learning
+            </p>
             <div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
-                Arrays and{" "}
-                <span className="text-[#FACC15] drop-shadow-[0_0_15px_rgba(250,204,21,0.4)]">
-                  Searching
-                </span>
+              <h2 className="text-2xl font-black leading-tight tracking-tight text-white sm:text-3xl">
+                Arrays and <span className="text-amber-200">Searching</span>
               </h2>
-              <p className="text-base sm:text-lg font-bold text-slate-300 mt-1">
-                Learn • Practice • Play
-              </p>
+              <p className="mt-1 text-sm font-semibold text-slate-300">Learn · practice · play</p>
             </div>
-
-            {/* Course Progress Bar */}
-            <div className="space-y-2 max-w-sm pt-1">
-              <div className="flex items-center justify-between text-xs sm:text-sm font-bold">
-                <span className="text-slate-300">Course Progress</span>
-                <span className="text-[#38BDF8] font-black">{dsaProgressPercent}%</span>
+            <div className="max-w-md space-y-2">
+              <div className="flex items-center justify-between text-xs font-bold text-slate-300">
+                <span>Course progress</span>
+                <span className="text-cyan-200">{progress}%</span>
               </div>
-              <div className="w-full h-3 rounded-full bg-white/15 overflow-hidden border border-white/10 p-0.5">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-cyan-400 via-sky-400 to-purple-500 shadow-[0_0_15px_rgba(56,189,248,0.8)] transition-all duration-700"
-                  style={{ width: `${Math.max(dsaProgressPercent, 3)}%` }}
-                />
+              <div
+                className="h-2 overflow-hidden rounded-full bg-white/10"
+                role="progressbar"
+                aria-label="Course progress"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={progress}
+              >
+                <div className="h-full rounded-full bg-gradient-to-r from-cyan-300 to-violet-300 transition-[width] duration-700" style={{ width: `${progress}%` }} />
               </div>
-            </div>
-
-            {/* Bright Yellow / Gold CTA Button */}
-            <div className="pt-2">
-              <Link href="/topics/arrays">
-                <button className="inline-flex items-center gap-3 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#FACC15] via-[#FBBF24] to-[#F59E0B] hover:from-[#FDE047] hover:to-[#FACC15] text-[#1E1B4B] font-black text-base shadow-[0_0_25px_rgba(250,204,21,0.5)] hover:scale-105 active:scale-95 transition-all duration-200">
-                  Continue <ArrowRight className="w-5 h-5 stroke-[2.5]" />
-                </button>
-              </Link>
-            </div>
-          </div>
-
-          {/* Right 3D Visual Illustration (Boy + Robot + Island + Castle) */}
-          <div className="lg:col-span-6 relative flex items-center justify-center min-h-[220px] sm:min-h-[260px]">
-            <HeroScene3D className="w-full max-w-lg" />
-          </div>
-        </div>
-      </motion.div>
-
-      {/* ═══════════════════════════════════════════════════════════════
-          THE 4 VIBRANT STAT CARDS (GLOSSY NEON GRADIENTS)
-      ═══════════════════════════════════════════════════════════════ */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* 1. BLUE CARD: DSA Progress */}
-        <div className="relative rounded-3xl p-5 bg-gradient-to-br from-[#0c3b6d]/90 via-[#0a4d8c]/80 to-[#041f3f]/95 border-2 border-[#38bdf8]/50 shadow-[0_0_25px_rgba(56,189,248,0.25)] flex items-center justify-between overflow-hidden group hover:-translate-y-1 transition-all duration-300">
-          <div className="flex items-center gap-3.5">
-            <GraduationBooks3D className="w-14 h-14 shrink-0" />
-            <div>
-              <p className="text-xs font-bold text-sky-200 tracking-wide">
-                DSA Progress
-              </p>
-              <p className="text-3xl font-black text-white tracking-tight mt-0.5">
-                {dsaProgressPercent}%
-              </p>
-            </div>
-          </div>
-          <div className="w-8 h-8 rounded-xl bg-sky-400/20 border border-sky-400/30 flex items-center justify-center text-sky-300 shadow-neon-cyan">
-            <TrendingUp className="w-4 h-4" />
-          </div>
-        </div>
-
-        {/* 2. GREEN CARD: Games Played */}
-        <div className="relative rounded-3xl p-5 bg-gradient-to-br from-[#064e3b]/90 via-[#059669]/80 to-[#022c22]/95 border-2 border-[#34d399]/50 shadow-[0_0_25px_rgba(52,211,153,0.25)] flex items-center justify-between overflow-hidden group hover:-translate-y-1 transition-all duration-300">
-          <div className="flex items-center gap-3.5">
-            <GamepadTrophy3D className="w-14 h-14 shrink-0" />
-            <div>
-              <p className="text-xs font-bold text-emerald-200 tracking-wide">
-                Games Played
-              </p>
-              <p className="text-3xl font-black text-white tracking-tight mt-0.5">
-                {gamesPlayed}
-              </p>
-            </div>
-          </div>
-          <div className="text-2xl drop-shadow-[0_2px_8px_rgba(250,204,21,0.5)]">
-            🏆
-          </div>
-        </div>
-
-        {/* 3. ORANGE CARD: Current Streak */}
-        <div className="relative rounded-3xl p-5 bg-gradient-to-br from-[#7c2d12]/90 via-[#ea580c]/80 to-[#431407]/95 border-2 border-[#fb923c]/50 shadow-[0_0_25px_rgba(251,146,60,0.25)] flex items-center justify-between overflow-hidden group hover:-translate-y-1 transition-all duration-300">
-          <div className="flex items-center gap-3.5">
-            <StreakFlameCalendar3D className="w-14 h-14 shrink-0" />
-            <div>
-              <p className="text-xs font-bold text-amber-200 tracking-wide">
-                Current Streak
-              </p>
-              <p className="text-3xl font-black text-white tracking-tight mt-0.5">
-                {currentStreak} {currentStreak === 1 ? "Day" : "Days"}
-              </p>
-            </div>
-          </div>
-          <div className="text-2xl drop-shadow-[0_2px_8px_rgba(245,158,11,0.5)]">
-            📅
-          </div>
-        </div>
-
-        {/* 4. PURPLE CARD: Total XP */}
-        <div className="relative rounded-3xl p-5 bg-gradient-to-br from-[#581c87]/90 via-[#7c3aed]/80 to-[#2e1065]/95 border-2 border-[#c084fc]/50 shadow-[0_0_25px_rgba(192,132,252,0.25)] flex items-center justify-between overflow-hidden group hover:-translate-y-1 transition-all duration-300">
-          <div className="flex items-center gap-3.5">
-            <XPStarGift3D className="w-14 h-14 shrink-0" />
-            <div>
-              <p className="text-xs font-bold text-purple-200 tracking-wide">
-                Total XP
-              </p>
-              <p className="text-3xl font-black text-white tracking-tight mt-0.5">
-                {currentXp} XP
-              </p>
-            </div>
-          </div>
-          <div className="text-2xl drop-shadow-[0_2px_8px_rgba(236,72,153,0.5)]">
-            🎁
-          </div>
-        </div>
-      </div>
-
-      {/* ═══════════════════════════════════════════════════════════════
-          DAILY QUIZ ARENA (INTERACTIVE DSA CHALLENGE SECTION)
-      ═══════════════════════════════════════════════════════════════ */}
-      <QuickQuizSection />
-
-      {/* ═══════════════════════════════════════════════════════════════
-          BOTTOM ROW: ACHIEVEMENTS (LEFT) & RECENT ACTIVITY / TREASURE (RIGHT)
-      ═══════════════════════════════════════════════════════════════ */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* LEFT: Your Achievements (7 cols) */}
-        <div className="lg:col-span-7 rounded-3xl bg-[#0e112b]/85 backdrop-blur-2xl border-2 border-purple-500/30 shadow-[0_0_30px_rgba(139,92,246,0.2)] p-6 flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-2.5">
-              <Trophy className="w-5 h-5 text-amber-400" />
-              <h3 className="text-lg font-black text-white tracking-tight">
-                Your Achievements
-              </h3>
             </div>
             <Link
-              href="/dashboard"
-              className="text-xs font-bold text-purple-300 hover:text-white transition-colors flex items-center gap-1"
+              href="/topics/arrays"
+              className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-amber-200 px-5 py-3 text-sm font-extrabold text-slate-950 transition hover:bg-amber-100 focus-visible:outline-cyan-100"
             >
-              View All <ArrowRight className="w-3.5 h-3.5" />
+              Continue lesson <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </div>
+          <div className="flex min-h-[150px] items-center justify-center lg:min-h-[190px]">
+            <HeroScene3D compact className="w-full max-w-[280px]" />
+          </div>
+        </div>
+      </section>
 
-          {/* 5 Distinct Glowing Achievement Medals */}
-          <div className="grid grid-cols-5 gap-2 sm:gap-3">
-            {[
-              { id: "star", icon: "⭐", name: "Problem Solver", color: "from-amber-400 to-yellow-500" },
-              { id: "silver", icon: "🌟", name: "Game Victor", color: "from-slate-300 to-sky-200" },
-              { id: "crown", icon: "👑", name: "DSA Master", color: "from-yellow-400 to-amber-600" },
-              { id: "rocket", icon: "🚀", name: "Speed Runner", color: "from-pink-500 to-rose-600" },
-              { id: "shield", icon: "🛡️", name: "Code Knight", color: "from-orange-400 to-amber-500" },
-            ].map((ach) => (
-              <div key={ach.id} className="text-center group">
-                <div className="relative mx-auto w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-white/[0.08] to-white/[0.03] border border-white/15 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform shadow-glass-sm">
-                  <span>{ach.icon}</span>
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#10132b] border border-white/20 flex items-center justify-center text-[10px] text-slate-400">
-                    <Lock className="w-2.5 h-2.5" />
+      <section aria-label="Learning snapshot" className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+        {statCards.map((stat, index) => {
+          const Icon = stat.icon;
+          const value = stat.value(progress, recentGames.length, currentStreak, currentXp);
+          return (
+            <motion.article
+              key={stat.id}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.04, duration: 0.28 }}
+              whileHover={{ y: -2 }}
+              className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.035] p-3 transition-colors hover:border-white/20 hover:bg-white/[0.055] sm:gap-4 sm:p-4"
+            >
+              <Icon className="h-10 w-10 shrink-0 sm:h-12 sm:w-12" />
+              <div className="min-w-0">
+                <p className="truncate text-xs font-bold text-slate-400">{stat.label}</p>
+                <p className={`mt-1 truncate text-lg font-black text-white sm:text-xl ${stat.tone}`}>{value}</p>
+              </div>
+            </motion.article>
+          );
+        })}
+      </section>
+
+      <section aria-label="Daily quiz challenge">
+        <QuickQuizSection />
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-[24px] border border-white/10 bg-white/[0.035] p-5 sm:p-6">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <Trophy className="h-5 w-5 text-amber-200" aria-hidden="true" />
+              <h2 className="text-lg font-black text-white">Recent achievements</h2>
+            </div>
+            <span className="text-xs font-bold text-slate-500">{achievements.length}</span>
+          </div>
+          {achievements.length ? (
+            <ul className="divide-y divide-white/[0.08]">
+              {achievements.map((achievement) => (
+                <li key={achievement.id} className="flex items-center gap-3 py-3 first:pt-1 last:pb-1">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-amber-300/10 text-amber-200">
+                    <Trophy className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-bold text-white">{achievement.name}</p>
+                    <p className="mt-0.5 truncate text-xs text-slate-400">{achievement.description}</p>
                   </div>
-                </div>
-                <p className="text-[10px] sm:text-xs font-bold text-slate-300 mt-2 truncate">
-                  {ach.name}
+                  {achievement.xp_reward ? <span className="text-xs font-extrabold text-amber-200">+{achievement.xp_reward} XP</span> : null}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="rounded-xl bg-slate-950/25 px-4 py-5">
+              <p className="text-sm font-bold text-slate-200">Your first achievement is waiting.</p>
+              <p className="mt-1 text-xs leading-5 text-slate-400">Try a game preview or answer the daily quiz to get started.</p>
+            </div>
+          )}
+        </div>
+
+        <div className="rounded-[24px] border border-white/10 bg-white/[0.035] p-5 sm:p-6">
+          <div className="mb-4 flex items-center gap-2.5">
+            <Zap className="h-5 w-5 text-cyan-200" aria-hidden="true" />
+            <h2 className="text-lg font-black text-white">Recently played</h2>
+          </div>
+          {recentGame ? (
+            <div className="flex items-center gap-4 rounded-2xl bg-slate-950/25 p-4">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-cyan-300/10 text-cyan-100">
+                <RecentGameIcon className="h-6 w-6" aria-hidden="true" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-extrabold text-white">
+                  {recentGameDefinition?.title ?? recentGame.game_name ?? "Game preview"}
                 </p>
+                {typeof recentGame.score === "number" ? <p className="mt-1 text-xs font-semibold text-slate-400">Last score: {recentGame.score}</p> : null}
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* RIGHT: Recent Activity with 3D Treasure Chest (5 cols) */}
-        <div className="lg:col-span-5 rounded-3xl bg-[#0e112b]/85 backdrop-blur-2xl border-2 border-purple-500/30 shadow-[0_0_30px_rgba(139,92,246,0.2)] p-6 flex flex-col justify-between">
-          <div className="flex items-center gap-2 mb-4">
-            <Zap className="w-5 h-5 text-amber-400 fill-amber-400" />
-            <h3 className="text-lg font-black text-white tracking-tight">
-              Recent Activity
-            </h3>
-          </div>
-
-          <div className="flex items-center justify-between gap-4 py-1">
-            <div className="space-y-1.5 flex-1">
-              <div className="flex items-center gap-2 text-slate-300 font-bold text-xs sm:text-sm">
-                <Calendar className="w-4 h-4 text-sky-400" />
-                <span>No recent activity yet!</span>
-              </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Start a game or complete a lesson to see your progress here.
-              </p>
+              <Link
+                href={recentGameDefinition ? `/mini-games/${recentGameDefinition.slug}` : "/mini-games"}
+                className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-xl border border-white/10 px-3 text-xs font-extrabold text-slate-100 transition hover:border-cyan-200/30 hover:text-cyan-100"
+              >
+                {recentGameDefinition ? "Open" : "Browse"} <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </Link>
             </div>
-
-            {/* Glowing 3D Treasure Chest */}
-            <div className="w-24 h-24 shrink-0">
-              <TreasureChest3D className="w-full h-full" />
+          ) : (
+            <div className="rounded-xl bg-slate-950/25 px-4 py-5">
+              <p className="text-sm font-bold text-slate-200">No game previews yet.</p>
+              <p className="mt-1 text-xs leading-5 text-slate-400">Choose a world in the arcade and your latest attempt will appear here.</p>
+              <Link href="/mini-games" className="mt-4 inline-flex items-center gap-2 text-sm font-extrabold text-cyan-100 hover:text-white">
+                Browse the arcade <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
             </div>
-          </div>
+          )}
         </div>
-      </div>
-    </div>
+      </section>
+    </motion.main>
   );
 }

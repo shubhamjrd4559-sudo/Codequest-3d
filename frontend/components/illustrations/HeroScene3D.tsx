@@ -3,10 +3,10 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-export function HeroScene3D({ className = "" }: { className?: string }) {
+export function HeroScene3D({ className = "", compact = false }: { className?: string; compact?: boolean }) {
   return (
     <motion.div
-      className={`relative w-full h-full min-h-[260px] pointer-events-none select-none ${className}`}
+      className={`relative w-full h-full pointer-events-none select-none ${compact ? "min-h-[140px]" : "min-h-[260px]"} ${className}`}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.6 }}

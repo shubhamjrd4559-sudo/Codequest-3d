@@ -177,7 +177,7 @@ export default function LandingPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Feature 1 */}
-          <Card variant="glowPurple" className="p-7 space-y-4">
+          <Card variant="glowPurple" className="group p-7 space-y-4 transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(139,92,246,0.2)]">
             <div className="w-14 h-14 rounded-2xl bg-purple-600/20 border border-purple-400/30 flex items-center justify-center text-purple-300 shadow-neon-purple">
               <Layers className="w-7 h-7" />
             </div>
@@ -191,7 +191,7 @@ export default function LandingPage() {
           </Card>
 
           {/* Feature 2 */}
-          <Card variant="glowCyan" className="p-7 space-y-4">
+          <Card variant="glowCyan" className="group p-7 space-y-4 transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(6,182,212,0.2)]">
             <div className="w-14 h-14 rounded-2xl bg-cyan-600/20 border border-cyan-400/30 flex items-center justify-center text-cyan-300 shadow-neon-cyan">
               <Gamepad2 className="w-7 h-7" />
             </div>
@@ -205,7 +205,7 @@ export default function LandingPage() {
           </Card>
 
           {/* Feature 3 */}
-          <Card variant="glowAmber" className="p-7 space-y-4">
+          <Card variant="glowAmber" className="group p-7 space-y-4 transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(245,158,11,0.2)]">
             <div className="w-14 h-14 rounded-2xl bg-amber-600/20 border border-amber-400/30 flex items-center justify-center text-amber-300 shadow-neon-amber">
               <Trophy className="w-7 h-7" />
             </div>
@@ -269,7 +269,7 @@ export default function LandingPage() {
             return (
               <div
                 key={item.step}
-                className="p-6 rounded-3xl bg-white/[0.04] border border-white/10 backdrop-blur-xl space-y-4 hover:border-purple-500/40 transition-colors"
+                className="p-6 rounded-3xl bg-white/[0.04] border border-white/10 backdrop-blur-xl space-y-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] hover:-translate-y-1 hover:bg-white/[0.07] hover:border-purple-400/40 hover:shadow-[0_16px_36px_rgba(124,58,237,0.14)] transition-all duration-300"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-2xl font-black text-white/20 font-mono">

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Mail, Lock, User as UserIcon, ArrowRight, Loader2, AlertCircle, Sparkles } from "lucide-react";
@@ -77,7 +78,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="relative rounded-[32px] bg-[#0e112b]/90 backdrop-blur-2xl border-2 border-purple-500/35 p-6 sm:p-8 shadow-[0_0_40px_rgba(139,92,246,0.3)] space-y-6">
+    <motion.div initial={{ opacity: 0, y: 16, scale: 0.985 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.45, ease: "easeOut" }} className="relative rounded-[32px] bg-gradient-to-br from-[#171a3a]/95 via-[#0e112b]/95 to-[#11102c]/95 backdrop-blur-2xl border border-purple-300/30 p-6 sm:p-8 shadow-[0_0_48px_rgba(139,92,246,0.25),inset_0_1px_0_rgba(255,255,255,0.1)] space-y-6">
       {/* Top Mascot Header */}
       <div className="flex items-center gap-4 border-b border-white/10 pb-5">
         <RobotMascot size="sm" className="w-16 h-20 shrink-0 drop-shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
@@ -173,6 +174,6 @@ export default function RegisterPage() {
           Log In Here
         </Link>
       </div>
-    </div>
+    </motion.div>
   );
 }

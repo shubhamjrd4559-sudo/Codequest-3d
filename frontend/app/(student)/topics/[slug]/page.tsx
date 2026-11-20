@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -15,6 +15,11 @@ import {
   Box,
   Loader2,
   Database,
+  Video,
+  Play,
+  Pause,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -24,15 +29,34 @@ import { RobotMascot } from "@/components/characters/RobotMascot";
 import { topicsApi } from "@/lib/api/topics";
 import { Topic, Lesson } from "@/lib/api/types";
 
+function renderHighlightedCode(source: string) {
+  const tokenPattern = /(\/\/.*|#include\s*<[^>]+>|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b(?:using|namespace|int|return|for|while|if|else|const|let|def|class|print|cout|endl|true|false|null|void|std)\b|\b\d+\b|\b[a-zA-Z_]\w*(?=\s*\())/g;
+  const keywords = new Set(["using", "namespace", "int", "return", "for", "while", "if", "else", "const", "let", "def", "class", "print", "cout", "endl", "true", "false", "null", "void", "std"]);
+  return source.split(tokenPattern).map((token, index) => {
+    if (!token) return null;
+    let color = "text-slate-200";
+    if (token.startsWith("//")) color = "text-slate-500 italic";
+    else if (token.startsWith("#include")) color = "text-cyan-300";
+    else if (token.startsWith('"') || token.startsWith("'")) color = "text-emerald-300";
+    else if (/^\d+$/.test(token)) color = "text-amber-300";
+    else if (keywords.has(token)) color = "text-violet-300";
+    else if (/^[a-zA-Z_]\w*$/.test(token)) color = "text-sky-200";
+    return <span key={`${index}-${token}`} className={color}>{token}</span>;
+  });
+}
+
 export default function TopicLearningPage({
   params,
 }: {
   params: { slug: string };
 }) {
   const [leftTab, setLeftTab] = useState<"intro" | "explanation" | "code">("intro");
-  const [rightTab, setRightTab] = useState<"visualization" | "minigame" | "quiz">("visualization");
+  const [rightTab, setRightTab] = useState<"visualization" | "minigame" | "quiz" | "video">("visualization");
   const [copied, setCopied] = useState(false);
   const [quizAnswer, setQuizAnswer] = useState<string | null>(null);
+  const [lessonIndex, setLessonIndex] = useState(0);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const [topic, setTopic] = useState<Topic | null>(null);
   const [loading, setLoading] = useState(true);
@@ -69,7 +93,7 @@ export default function TopicLearningPage({
     };
   }, [params.slug]);
 
-  const activeLesson: Lesson | undefined = topic?.lessons?.[0];
+  const activeLesson: Lesson | undefined = topic?.lessons?.[lessonIndex] || topic?.lessons?.[0];
 
   const topicTitle = topic?.title || fallbackTitle;
   const topicDescription =
@@ -195,16 +219,21 @@ int main() {
             </div>
 
             {/* 3D Mini Block Array Visual [1][2][3][4][5] */}
-            <div className="flex items-center gap-1.5 p-2 rounded-2xl bg-white/[0.03] border border-white/10 overflow-x-auto">
+            <div className="relative isolate rounded-[26px] border border-cyan-200/15 bg-gradient-to-b from-slate-900/70 via-indigo-950/55 to-[#080918] px-4 pb-5 pt-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_38px_rgba(0,0,0,0.3)] overflow-hidden">
+              <div className="pointer-events-none absolute inset-x-1/4 -top-14 h-28 rounded-full bg-cyan-400/20 blur-3xl" />
+              <div className="relative flex items-center justify-center gap-1.5 overflow-x-auto pb-3">
               {[1, 2, 3, 4, 5].map((num) => (
                 <div
                   key={num}
-                  className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-700 flex flex-col items-center justify-center border border-cyan-400/40 shadow-[0_0_10px_rgba(6,182,212,0.3)] shrink-0"
+                  className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-700 flex flex-col items-center justify-center border border-cyan-300/50 shadow-[0_0_18px_rgba(6,182,212,0.35)] shrink-0"
                 >
                   <span className="text-xs font-extrabold text-white">{num}</span>
                   <span className="text-[8px] font-mono text-cyan-200">[{num - 1}]</span>
                 </div>
               ))}
+              </div>
+              <div className="mx-auto h-3 w-4/5 rounded-full border border-cyan-200/20 bg-gradient-to-r from-slate-700 via-indigo-800 to-slate-700 shadow-[0_8px_22px_rgba(0,0,0,0.55)]" />
+              <div className="mx-auto mt-1 h-1 w-3/5 rounded-full bg-cyan-300/30 blur-sm" />
             </div>
 
             {/* Content Switcher based on Tab */}
@@ -279,9 +308,18 @@ int main() {
             </div>
 
             {/* Code Block Container */}
-            <div className="rounded-2xl bg-[#070914] border border-white/10 p-3.5 font-mono text-xs overflow-x-auto shadow-inner text-slate-200">
-              <pre className="leading-relaxed">
-                <code>{cppCode}</code>
+            <div className="overflow-hidden rounded-2xl border border-slate-700/80 bg-[#080b18] shadow-[0_18px_40px_rgba(0,0,0,0.4)]">
+              <div className="flex items-center justify-between border-b border-white/10 bg-white/[0.035] px-4 py-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full bg-rose-400/90" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-amber-300/90" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/90" />
+                  <span className="ml-2 text-[11px] font-semibold text-slate-400">solution.{(activeLesson?.programming_language || "cpp").toLowerCase().includes("python") ? "py" : "cpp"}</span>
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-violet-300">{activeLesson?.programming_language || "C++"}</span>
+              </div>
+              <pre className="max-h-[440px] overflow-auto p-4 font-mono text-[11px] leading-6 sm:p-5 sm:text-xs">
+                <code>{renderHighlightedCode(cppCode)}</code>
               </pre>
             </div>
           </Card>
@@ -290,7 +328,7 @@ int main() {
         {/* ================= RIGHT COLUMN: INTERACTIVE 3D PLAYGROUND (7 COLS) ================= */}
         <div className="lg:col-span-7 space-y-4">
           {/* Right Column Interactive Tabs Header */}
-          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[#0e112b]/80 border border-white/10 backdrop-blur-xl">
+          <div className="grid grid-cols-2 sm:flex items-center gap-1.5 p-1 rounded-2xl bg-[#0e112b]/80 border border-white/10 backdrop-blur-xl">
             <button
               onClick={() => setRightTab("visualization")}
               className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
@@ -323,6 +361,17 @@ int main() {
             >
               <HelpCircle className="w-3.5 h-3.5" />
               Quiz
+            </button>
+            <button
+              onClick={() => setRightTab("video")}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                rightTab === "video"
+                  ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-neon-purple"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <Video className="w-3.5 h-3.5" />
+              Lecture
             </button>
           </div>
 
@@ -415,6 +464,13 @@ int main() {
                     </Badge>
                   </div>
 
+                  <div className="space-y-1.5" aria-label="Quiz progress">
+                    <div className="flex justify-between text-[10px] font-bold text-slate-400"><span>Quest progress</span><span>{quizAnswer ? "1 / 3 complete" : "Ready when you are"}</span></div>
+                    <div className="h-2 overflow-hidden rounded-full border border-white/10 bg-slate-950/70 p-0.5">
+                      <motion.div initial={{ width: "18%" }} animate={{ width: quizAnswer ? "34%" : "18%" }} className="h-full rounded-full bg-gradient-to-r from-amber-300 via-orange-400 to-pink-400 shadow-[0_0_12px_rgba(251,146,60,0.55)]" />
+                    </div>
+                  </div>
+
                   <p className="text-sm sm:text-base font-semibold text-slate-200">
                     What is the time complexity to access an element at a given index in a standard array?
                   </p>
@@ -457,6 +513,78 @@ int main() {
                       )}
                     </div>
                   )}
+                </Card>
+              </motion.div>
+            )}
+
+            {rightTab === "video" && (
+              <motion.div
+                key="video"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25 }}
+                className="space-y-4"
+              >
+                <Card variant="glowCyan" className="overflow-hidden p-0">
+                  <div className="border-b border-white/10 bg-gradient-to-r from-cyan-400/[0.08] via-purple-400/[0.06] to-transparent px-5 py-4 sm:px-6">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-200">Quest lecture</p>
+                        <h3 className="mt-1 text-lg font-black text-white">{activeLesson?.title || `${topicTitle} essentials`}</h3>
+                      </div>
+                      <Badge variant="cyan" size="sm">Lesson {(lessonIndex + 1).toString().padStart(2, "0")}</Badge>
+                    </div>
+                  </div>
+
+                  <div className="p-4 sm:p-6">
+                    <div className="relative aspect-video overflow-hidden rounded-2xl border border-cyan-200/20 bg-[radial-gradient(ellipse_at_50%_35%,rgba(99,102,241,0.3),transparent_55%),linear-gradient(135deg,#111438,#070914)] shadow-[0_16px_42px_rgba(0,0,0,0.35)]">
+                      {activeLesson?.video_url ? (
+                        <>
+                          <video
+                            ref={videoRef}
+                            src={activeLesson.video_url}
+                            controls
+                            onPlay={() => setIsVideoPlaying(true)}
+                            onPause={() => setIsVideoPlaying(false)}
+                            className="h-full w-full object-contain"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (videoRef.current?.paused) void videoRef.current.play();
+                              else videoRef.current?.pause();
+                            }}
+                            aria-label={isVideoPlaying ? "Pause lecture" : "Play lecture"}
+                            className="absolute left-4 top-4 grid h-11 w-11 place-items-center rounded-2xl border border-white/20 bg-slate-950/70 text-white shadow-lg backdrop-blur-xl transition hover:scale-105 hover:bg-slate-900"
+                          >
+                            {isVideoPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 fill-current" />}
+                          </button>
+                        </>
+                      ) : (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+                          <motion.div animate={{ y: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 3.4, ease: "easeInOut" }} className="mb-4 grid h-16 w-16 place-items-center rounded-3xl border border-cyan-200/25 bg-cyan-300/10 text-cyan-100 shadow-[0_0_34px_rgba(34,211,238,0.18)]">
+                            <Play className="ml-1 h-7 w-7 fill-current" />
+                          </motion.div>
+                          <p className="text-base font-black text-white">Your lecture portal is ready</p>
+                          <p className="mt-2 max-w-sm text-xs leading-5 text-slate-300">A video will appear here when one is attached to this lesson. Use the lesson notes below to keep learning.</p>
+                        </div>
+                      )}
+                      <div className="pointer-events-none absolute bottom-3 left-3 rounded-full border border-white/10 bg-slate-950/55 px-3 py-1 text-[10px] font-bold text-slate-200 backdrop-blur-md">{activeLesson?.video_url ? "Lesson video" : "Lecture preview"}</div>
+                    </div>
+
+                    <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+                        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-violet-300">Lesson notes</p>
+                        <p className="mt-2 text-xs leading-5 text-slate-300">{activeLesson?.introduction || topicDescription}</p>
+                      </div>
+                      <div className="flex items-center justify-between gap-2 lg:justify-end">
+                        <button type="button" disabled={lessonIndex <= 0} onClick={() => { setLessonIndex((index) => Math.max(0, index - 1)); setIsVideoPlaying(false); }} className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2 text-xs font-bold text-slate-200 transition hover:border-purple-300/30 hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-40"><ChevronLeft className="h-4 w-4" /> Previous</button>
+                        <span className="text-[10px] font-bold text-slate-400">{lessonIndex + 1} / {Math.max(topic?.lessons?.length || 1, 1)}</span>
+                        <button type="button" disabled={lessonIndex >= (topic?.lessons?.length || 1) - 1} onClick={() => { setLessonIndex((index) => Math.min((topic?.lessons?.length || 1) - 1, index + 1)); setIsVideoPlaying(false); }} className="inline-flex items-center gap-1.5 rounded-xl border border-cyan-300/25 bg-cyan-400/10 px-3 py-2 text-xs font-bold text-cyan-100 transition hover:bg-cyan-400/20 disabled:cursor-not-allowed disabled:opacity-40">Next <ChevronRight className="h-4 w-4" /></button>
+                      </div>
+                    </div>
+                  </div>
                 </Card>
               </motion.div>
             )}

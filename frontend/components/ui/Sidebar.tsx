@@ -11,6 +11,7 @@ import {
   Trophy,
   Settings,
   LogOut,
+  UserRound,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
@@ -71,9 +72,9 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
     return false;
   };
 
-  const level = user?.student_profile?.level ?? 12;
+  const level = user?.student_profile?.level ?? 1;
   const xp = user?.student_profile?.total_xp ?? 0;
-  const displayXp = xp > 0 ? `${xp} XP` : "3200 XP";
+  const displayXp = `${xp.toLocaleString()} XP`;
 
   return (
     <aside
@@ -139,11 +140,11 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
       <div className="pt-4 border-t border-white/10 space-y-3">
         {/* Player Level Badge */}
         <div className="p-3.5 rounded-2xl bg-gradient-to-br from-purple-950/50 via-white/[0.04] to-indigo-950/40 border border-purple-400/30 shadow-glass-sm">
-          <div className="flex items-center gap-3 mb-2.5">
+          <div className="flex items-center gap-3">
             {/* Glowing Avatar */}
-            <div className="relative w-10 h-10 rounded-full p-0.5 bg-gradient-to-tr from-amber-400 via-orange-500 to-pink-500 shadow-neon-amber">
+            <div className="relative w-10 h-10 rounded-full p-0.5 bg-gradient-to-tr from-amber-300/80 via-violet-400/80 to-cyan-300/80">
               <div className="w-full h-full rounded-full bg-[#0c0e24] flex items-center justify-center overflow-hidden border border-white/20">
-                <span className="text-lg">🧑‍💻</span>
+                <UserRound className="h-5 w-5 text-slate-100" aria-hidden="true" />
               </div>
             </div>
             <div>
@@ -154,13 +155,6 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
                 {displayXp}
               </p>
             </div>
-          </div>
-          {/* Progress bar */}
-          <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden p-0.5 border border-white/10">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-amber-400 via-orange-400 to-pink-500 shadow-[0_0_10px_rgba(245,158,11,0.6)]"
-              style={{ width: "65%" }}
-            />
           </div>
         </div>
 

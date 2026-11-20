@@ -39,7 +39,7 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
     },
     {
       name: "Mini-Games",
-      href: "/dashboard",
+      href: "/mini-games",
       icon: Gamepad2,
       id: "games",
     },
@@ -66,6 +66,7 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
   const getIsActive = (item: (typeof navItems)[0]) => {
     if (activeItem) return activeItem === item.id;
     if (item.href === "/dashboard" && pathname === "/dashboard") return true;
+    if (item.id === "games" && pathname.startsWith("/mini-games")) return true;
     if (item.id === "dsa_topics" && pathname.startsWith("/topics")) return true;
     return false;
   };

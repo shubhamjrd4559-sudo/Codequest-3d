@@ -11,7 +11,7 @@ export function MobileNav() {
 
   const navItems = [
     { name: "Home", href: "/dashboard", icon: Home },
-    { name: "Play", href: "/topics/arrays", icon: Gamepad2 },
+    { name: "Play", href: "/mini-games", icon: Gamepad2 },
     { name: "Leaderboard", href: "/dashboard", icon: Trophy },
     { name: "Profile", href: "/dashboard", icon: User },
   ];
@@ -23,7 +23,7 @@ export function MobileNav() {
           const Icon = item.icon;
           const isActive =
             (item.href === "/dashboard" && pathname === "/dashboard" && item.name === "Home") ||
-            (item.href.startsWith("/topics") && pathname.startsWith("/topics") && item.name === "Play");
+            (item.href.startsWith("/mini-games") && pathname.startsWith("/mini-games") && item.name === "Play");
 
           return (
             <Link

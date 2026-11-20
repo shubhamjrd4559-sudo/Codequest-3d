@@ -2,9 +2,10 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Bell, Search, Gamepad2, Sparkles } from "lucide-react";
+import { Bell, Search, Gamepad2, Sparkles, LogIn, LogOut } from "lucide-react";
 import { Button } from "./Button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
 
 interface NavigationBarProps {
   isPublic?: boolean;
@@ -13,6 +14,12 @@ interface NavigationBarProps {
 }
 
 export function NavigationBar({ isPublic = false, className }: NavigationBarProps) {
+  const { user, isAuthenticated, logout } = useAuth();
+
+  const displayName = user?.student_profile?.display_name || user?.email?.split("@")[0] || "Champion";
+  const userInitial = displayName.charAt(0).toUpperCase();
+  const userLevel = user?.student_profile?.level ?? 1;
+
   return (
     <header
       className={cn(
@@ -20,7 +27,7 @@ export function NavigationBar({ isPublic = false, className }: NavigationBarProp
         className
       )}
     >
-      {/* Brand logo (visible on public or mobile) */}
+      {/* Brand logo */}
       <div className="flex items-center gap-6">
         <Link href="/" className="flex items-center gap-3 group">
           <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 shadow-neon-purple group-hover:scale-105 transition-transform">
@@ -70,17 +77,33 @@ export function NavigationBar({ isPublic = false, className }: NavigationBarProp
       <div className="flex items-center gap-3">
         {isPublic ? (
           <div className="flex items-center gap-3">
-            <Link href="/dashboard">
-              <Button variant="secondary" size="sm">
-                Explore Demo
-              </Button>
-            </Link>
-            <Link href="/dashboard">
-              <Button variant="primary" size="sm">
-                <Sparkles className="w-3.5 h-3.5 mr-1" />
-                Launch Quest
-              </Button>
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link href="/dashboard">
+                  <Button variant="secondary" size="sm">
+                    Dashboard
+                  </Button>
+                </Link>
+                <Button variant="ghost" size="sm" onClick={logout} className="text-slate-400 hover:text-white">
+                  <LogOut className="w-4 h-4 mr-1" /> Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="secondary" size="sm">
+                    <LogIn className="w-3.5 h-3.5 mr-1 text-cyan-400" />
+                    Log In
+                  </Button>
+                </Link>
+                <Link href="/register">
+                  <Button variant="primary" size="sm">
+                    <Sparkles className="w-3.5 h-3.5 mr-1" />
+                    Join Quest
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         ) : (
           <>
@@ -96,23 +119,28 @@ export function NavigationBar({ isPublic = false, className }: NavigationBarProp
             </button>
 
             {/* User Avatar with Glowing Ring */}
-            <Link
-              href="/dashboard"
-              className="flex items-center gap-3 pl-2 group"
-            >
-              <div className="relative w-10 h-10 rounded-2xl p-0.5 bg-gradient-to-tr from-cyan-400 via-purple-500 to-pink-500 shadow-neon-purple group-hover:scale-105 transition-transform">
-                <div className="w-full h-full rounded-[14px] bg-[#0c0e24] flex items-center justify-center overflow-hidden">
-                  <span className="font-extrabold text-sm text-transparent bg-clip-text bg-gradient-to-br from-amber-200 to-amber-500">
-                    S
-                  </span>
+            {isAuthenticated ? (
+              <div className="flex items-center gap-3 pl-2">
+                <div className="relative w-10 h-10 rounded-2xl p-0.5 bg-gradient-to-tr from-cyan-400 via-purple-500 to-pink-500 shadow-neon-purple">
+                  <div className="w-full h-full rounded-[14px] bg-[#0c0e24] flex items-center justify-center overflow-hidden">
+                    <span className="font-extrabold text-sm text-transparent bg-clip-text bg-gradient-to-br from-amber-200 to-amber-500">
+                      {userInitial}
+                    </span>
+                  </div>
+                  <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-[#0c0e24] shadow-[0_0_8px_#10B981]" />
                 </div>
-                <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-[#0c0e24] shadow-[0_0_8px_#10B981]" />
+                <div className="hidden xl:block text-left">
+                  <p className="text-xs font-bold text-white leading-tight">{displayName}</p>
+                  <p className="text-[10px] font-medium text-purple-300">Level {userLevel} Warrior</p>
+                </div>
               </div>
-              <div className="hidden xl:block text-left">
-                <p className="text-xs font-bold text-white leading-tight">Shubham</p>
-                <p className="text-[10px] font-medium text-purple-300">Level 12 Warrior</p>
-              </div>
-            </Link>
+            ) : (
+              <Link href="/login">
+                <Button variant="primary" size="sm">
+                  <LogIn className="w-3.5 h-3.5 mr-1" /> Log In
+                </Button>
+              </Link>
+            )}
           </>
         )}
       </div>

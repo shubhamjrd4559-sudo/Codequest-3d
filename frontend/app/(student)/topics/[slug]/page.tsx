@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -13,12 +13,16 @@ import {
   Eye,
   Layers,
   Box,
+  Loader2,
+  Database,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Array3DStage } from "@/components/illustrations/Array3DStage";
 import { RobotMascot } from "@/components/characters/RobotMascot";
+import { topicsApi } from "@/lib/api/topics";
+import { Topic, Lesson } from "@/lib/api/types";
 
 export default function TopicLearningPage({
   params,
@@ -30,13 +34,58 @@ export default function TopicLearningPage({
   const [copied, setCopied] = useState(false);
   const [quizAnswer, setQuizAnswer] = useState<string | null>(null);
 
-  const topicTitle = params.slug ? params.slug.charAt(0).toUpperCase() + params.slug.slice(1) : "Arrays";
+  const [topic, setTopic] = useState<Topic | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isBackendConnected, setIsBackendConnected] = useState(false);
 
-  const cppCode = `#include <iostream>
+  const fallbackTitle = params.slug
+    ? params.slug.charAt(0).toUpperCase() + params.slug.slice(1)
+    : "Arrays";
+
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchTopic() {
+      try {
+        const data = await topicsApi.getBySlug(params.slug);
+        if (isMounted && data) {
+          setTopic(data);
+          setIsBackendConnected(true);
+        }
+      } catch {
+        // Backend returned 404 (content not yet seeded) or network issue
+        console.log(`Topic '${params.slug}' not yet seeded in backend database. Using interactive fallback.`);
+        if (isMounted) {
+          setIsBackendConnected(false);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+
+    fetchTopic();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [params.slug]);
+
+  const activeLesson: Lesson | undefined = topic?.lessons?.[0];
+
+  const topicTitle = topic?.title || fallbackTitle;
+  const topicDescription =
+    activeLesson?.introduction ||
+    topic?.description ||
+    "An array is a collection of elements of the same data type, stored in contiguous memory locations. This allows constant-time O(1) access by index.";
+
+  const topicExplanation =
+    activeLesson?.explanation ||
+    "Arrays provide indexed access to elements stored sequentially in memory. Because memory addresses are calculated as Base Address + (Index * Element Size), retrieval is instantaneous.";
+
+  const defaultCppCode = `#include <iostream>
 using namespace std;
 
 int main() {
-    // Declare and initialize an array of size 5
+    // Fixed-size contiguous array
     int arr[5] = {1, 2, 3, 4, 5};
 
     // Print array elements in contiguous memory
@@ -46,6 +95,8 @@ int main() {
 
     return 0;
 }`;
+
+  const cppCode = activeLesson?.code_example || defaultCppCode;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(cppCode);
@@ -66,11 +117,21 @@ int main() {
         </Link>
 
         <div className="flex items-center gap-2">
-          <Badge variant="purple" size="sm">
-            <Layers className="w-3 h-3 mr-1" /> {topicTitle} · Chapter 1
-          </Badge>
+          {loading ? (
+            <Badge variant="purple" size="sm">
+              <Loader2 className="w-3 h-3 mr-1 animate-spin" /> Loading API...
+            </Badge>
+          ) : isBackendConnected ? (
+            <Badge variant="success" size="sm">
+              <Database className="w-3 h-3 mr-1" /> Live API Connected
+            </Badge>
+          ) : (
+            <Badge variant="purple" size="sm">
+              <Layers className="w-3 h-3 mr-1" /> {topicTitle} · Chapter 1
+            </Badge>
+          )}
           <Badge variant="xp" size="sm">
-            +300 XP
+            +{topic?.total_xp || 300} XP
           </Badge>
         </div>
       </div>
@@ -128,7 +189,7 @@ int main() {
                   {topicTitle}
                 </h2>
                 <p className="text-xs font-bold bg-gradient-to-r from-purple-300 to-cyan-300 bg-clip-text text-transparent">
-                  Learn, Practice, and Level Up!
+                  {topic?.category || "Learn, Practice, and Level Up!"}
                 </p>
               </div>
             </div>
@@ -146,13 +207,34 @@ int main() {
               ))}
             </div>
 
-            {/* Concept Definition */}
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              An <span className="font-semibold text-cyan-300">array</span> is a
-              collection of elements of the same data type, stored in{" "}
-              <span className="font-semibold text-purple-300">contiguous memory locations</span>
-              . This allows constant-time <code className="text-amber-300 font-mono">O(1)</code> access by index.
-            </p>
+            {/* Content Switcher based on Tab */}
+            {leftTab === "intro" && (
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                {topicDescription}
+              </p>
+            )}
+
+            {leftTab === "explanation" && (
+              <div className="space-y-2 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                <p>{topicExplanation}</p>
+                {activeLesson?.real_life_example && (
+                  <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10 mt-2">
+                    <p className="text-[11px] font-bold text-amber-300 uppercase">
+                      Real-Life Example:
+                    </p>
+                    <p className="text-xs text-slate-300 mt-1">
+                      {activeLesson.real_life_example}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {leftTab === "code" && (
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                Review the production-grade {activeLesson?.programming_language || "C++"} implementation below. Notice how the array elements reside next to each other in RAM.
+              </p>
+            )}
 
             {/* Complexity Badges */}
             <div className="pt-1 flex items-center gap-2 flex-wrap">
@@ -174,7 +256,7 @@ int main() {
               <div className="flex items-center gap-2">
                 <Code2 className="w-4 h-4 text-purple-400" />
                 <span className="text-xs font-bold uppercase tracking-wider text-white">
-                  C++ Implementation
+                  {activeLesson?.programming_language || "C++"} Implementation
                 </span>
               </div>
               <button
@@ -199,14 +281,7 @@ int main() {
             {/* Code Block Container */}
             <div className="rounded-2xl bg-[#070914] border border-white/10 p-3.5 font-mono text-xs overflow-x-auto shadow-inner text-slate-200">
               <pre className="leading-relaxed">
-                <code className="text-purple-300">#include &lt;iostream&gt;</code>{"\n"}
-                <code className="text-purple-300">using namespace std;</code>{"\n\n"}
-                <code className="text-blue-400">int</code> <code className="text-yellow-300">main</code>() {"{"}{"\n"}
-                {"    "}<code className="text-emerald-400">{"// Fixed-size contiguous array"}</code>{"\n"}
-                {"    "}<code className="text-blue-400">int</code> arr[<code className="text-orange-400">5</code>] = {"{"}
-                <code className="text-orange-400">1, 2, 3, 4, 5</code>{"}"};{"\n"}
-                {"    "}<code className="text-blue-400">return</code> <code className="text-orange-400">0</code>;{"\n"}
-                {"}"}
+                <code>{cppCode}</code>
               </pre>
             </div>
           </Card>

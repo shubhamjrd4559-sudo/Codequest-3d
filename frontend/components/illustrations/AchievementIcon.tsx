@@ -5,14 +5,21 @@ import { Star, Crown, Code2, Award } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AchievementItemProps {
-  id: "solver" | "champion" | "master" | "learner";
+  id: "solver" | "champion" | "master" | "learner" | string;
   title: string;
   xp: string;
   className?: string;
 }
 
 export function AchievementItem({ id, title, xp, className }: AchievementItemProps) {
-  const configs = {
+  const configs: Record<string, {
+    gradient: string;
+    border: string;
+    shadow: string;
+    icon: React.ElementType;
+    textColor: string;
+    bgTint: string;
+  }> = {
     solver: {
       gradient: "from-amber-400 via-yellow-500 to-amber-600",
       border: "border-amber-400/40",
@@ -47,7 +54,7 @@ export function AchievementItem({ id, title, xp, className }: AchievementItemPro
     },
   };
 
-  const conf = configs[id];
+  const conf = configs[id] || configs.solver;
   const Icon = conf.icon;
 
   return (

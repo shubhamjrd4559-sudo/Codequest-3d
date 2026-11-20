@@ -4,16 +4,16 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard,
+  Home,
   BookOpen,
   Gamepad2,
+  Code2,
   Trophy,
-  Award,
   Settings,
-  Crown,
-  ChevronRight,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
 
 interface SidebarProps {
   className?: string;
@@ -22,12 +22,13 @@ interface SidebarProps {
 
 export function Sidebar({ className, activeItem }: SidebarProps) {
   const pathname = usePathname();
+  const { user, isAuthenticated, logout } = useAuth();
 
   const navItems = [
     {
       name: "Dashboard",
       href: "/dashboard",
-      icon: LayoutDashboard,
+      icon: Home,
       id: "dashboard",
     },
     {
@@ -43,15 +44,15 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
       id: "games",
     },
     {
-      name: "Leaderboard",
-      href: "/dashboard",
-      icon: Trophy,
-      id: "leaderboard",
+      name: "DSA Topics",
+      href: "/topics/arrays",
+      icon: Code2,
+      id: "dsa_topics",
     },
     {
       name: "Achievements",
       href: "/dashboard",
-      icon: Award,
+      icon: Trophy,
       id: "achievements",
     },
     {
@@ -65,38 +66,43 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
   const getIsActive = (item: (typeof navItems)[0]) => {
     if (activeItem) return activeItem === item.id;
     if (item.href === "/dashboard" && pathname === "/dashboard") return true;
-    if (item.href.startsWith("/topics") && pathname.startsWith("/topics")) return true;
+    if (item.id === "dsa_topics" && pathname.startsWith("/topics")) return true;
     return false;
   };
+
+  const level = user?.student_profile?.level ?? 12;
+  const xp = user?.student_profile?.total_xp ?? 0;
+  const displayXp = xp > 0 ? `${xp} XP` : "3200 XP";
 
   return (
     <aside
       className={cn(
-        "flex flex-col justify-between w-64 min-h-[calc(100vh-2.5rem)] rounded-3xl",
-        "bg-[#0e112b]/80 backdrop-blur-2xl border border-white/10 p-5 shadow-glass-lg",
+        "flex flex-col justify-between w-64 min-h-[calc(100vh-2.5rem)] rounded-[32px]",
+        "bg-[#0e112b]/90 backdrop-blur-2xl border-2 border-purple-500/30 p-5 shadow-[0_0_35px_rgba(139,92,246,0.25)]",
         className
       )}
     >
       {/* Top Section: Logo & Nav Links */}
       <div className="space-y-6">
-        {/* Brand Logo */}
+        {/* Brand Logo with Neon Gamepad */}
         <Link href="/" className="flex items-center gap-3 px-2 py-1 group">
-          <div className="relative flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 shadow-neon-purple group-hover:scale-105 transition-transform">
-            <Gamepad2 className="w-6 h-6 text-white" />
-            <div className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="relative flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-purple-600 shadow-[0_0_20px_rgba(6,182,212,0.6)] group-hover:scale-105 transition-transform p-0.5">
+            <div className="w-full h-full rounded-[14px] bg-[#0c0e26] flex items-center justify-center">
+              <Gamepad2 className="w-6 h-6 text-cyan-300" />
+            </div>
           </div>
           <div>
-            <span className="font-extrabold text-lg tracking-tight text-white block leading-none">
+            <span className="font-black text-xl tracking-tight text-white block leading-none">
               CodeQuest
             </span>
-            <span className="text-xs font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
-              3D PLATFORM
+            <span className="text-xs font-black tracking-widest text-[#FACC15] block mt-0.5">
+              3D
             </span>
           </div>
         </Link>
 
         {/* Navigation Menu */}
-        <nav className="space-y-1.5 pt-2">
+        <nav className="space-y-2 pt-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = getIsActive(item);
@@ -106,21 +112,21 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
                 key={item.name}
                 href={item.href}
                 className={cn(
-                  "relative flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-200 select-none group",
+                  "relative flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-black transition-all duration-200 select-none group",
                   isActive
-                    ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-neon-purple border border-purple-400/40"
-                    : "text-slate-400 hover:text-white hover:bg-white/[0.06]"
+                    ? "bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white shadow-[0_0_25px_rgba(147,51,234,0.6)] border border-purple-300/40"
+                    : "text-slate-300 hover:text-white hover:bg-white/[0.08]"
                 )}
               >
                 <Icon
                   className={cn(
                     "w-5 h-5 transition-transform duration-200 group-hover:scale-110",
-                    isActive ? "text-white" : "text-slate-400 group-hover:text-purple-400"
+                    isActive ? "text-white" : "text-slate-400 group-hover:text-purple-300"
                   )}
                 />
                 <span>{item.name}</span>
                 {isActive && (
-                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_white]" />
+                  <div className="ml-auto w-2 h-2 rounded-full bg-white shadow-[0_0_10px_white]" />
                 )}
               </Link>
             );
@@ -128,29 +134,45 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
         </nav>
       </div>
 
-      {/* Bottom Section: Level & XP Status Widget */}
+      {/* Bottom Section: Level & XP Status Widget + Sign Out */}
       <div className="pt-4 border-t border-white/10 space-y-3">
-        <div className="p-3.5 rounded-2xl bg-gradient-to-br from-purple-950/40 via-white/[0.03] to-indigo-950/30 border border-purple-500/20 shadow-glass-sm group hover:border-purple-400/40 transition-colors">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-400 to-orange-500 flex items-center justify-center shadow-neon-amber text-slate-950">
-                <Crown className="w-4 h-4 fill-slate-950 text-slate-950" />
-              </div>
-              <div>
-                <p className="text-xs font-bold text-white leading-none">Level 12</p>
-                <p className="text-[11px] font-medium text-amber-300">3200 XP</p>
+        {/* Player Level Badge */}
+        <div className="p-3.5 rounded-2xl bg-gradient-to-br from-purple-950/50 via-white/[0.04] to-indigo-950/40 border border-purple-400/30 shadow-glass-sm">
+          <div className="flex items-center gap-3 mb-2.5">
+            {/* Glowing Avatar */}
+            <div className="relative w-10 h-10 rounded-full p-0.5 bg-gradient-to-tr from-amber-400 via-orange-500 to-pink-500 shadow-neon-amber">
+              <div className="w-full h-full rounded-full bg-[#0c0e24] flex items-center justify-center overflow-hidden border border-white/20">
+                <span className="text-lg">🧑‍💻</span>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
+            <div>
+              <p className="text-xs font-black text-white leading-none">
+                Level {level}
+              </p>
+              <p className="text-[11px] font-bold text-amber-300 mt-0.5">
+                {displayXp}
+              </p>
+            </div>
           </div>
           {/* Progress bar */}
-          <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+          <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden p-0.5 border border-white/10">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-amber-400 via-orange-400 to-pink-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"
+              className="h-full rounded-full bg-gradient-to-r from-amber-400 via-orange-400 to-pink-500 shadow-[0_0_10px_rgba(245,158,11,0.6)]"
               style={{ width: "65%" }}
             />
           </div>
         </div>
+
+        {/* Sign out button */}
+        {isAuthenticated && (
+          <button
+            onClick={logout}
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-black text-rose-300 hover:text-white hover:bg-rose-500/20 border border-rose-500/30 transition-colors"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Sign Out</span>
+          </button>
+        )}
       </div>
     </aside>
   );

@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowDownToLine, ArrowUpFromLine, Layers3 } from "lucide-react";
 import StackTowerScene, { type StackBlock } from "@/games/scenes/StackTowerScene";
-import LogicBuilderScene, { logicPath, type LogicCommand, type LogicState } from "@/games/scenes/LogicBuilderScene";
+import LogicBuilderScene, { type LogicCommand, type LogicState } from "@/games/scenes/LogicBuilderScene";
 import NumberSortingScene, { type NumberTile } from "@/games/scenes/NumberSortingScene";
 import TreasureSearchScene, { type TreasureChest } from "@/games/scenes/TreasureSearchScene";
 import QueueCounterScene, { type QueueCustomer } from "@/games/scenes/QueueCounterScene";
@@ -653,89 +653,114 @@ function TreasureSearchGame({ game }: { game: { title: string; instructions: str
   />;
 }
 
-const initialLogicState: LogicState = { x: 0, z: 0, direction: 0 };
-const commandNames: Record<LogicCommand, string> = { forward: "Move Forward", left: "Turn Left", right: "Turn Right" };
-const logicGoals = [{ x: 1, z: 0 }, { x: 2, z: 0 }, { x: 2, z: 1 }, { x: 2, z: 2 }];
+type LogicModeDefinition = {
+  name: string;
+  instructions: string;
+  objective: string;
+  start: { x: number; z: number };
+  goal: { x: number; z: number };
+  gridWidth: number;
+  gridDepth: number;
+  path: string[];
+  obstacle?: { x: number; z: number };
+};
+const logicModes: LogicModeDefinition[] = [
+  { name: "Straight Line", instructions: "Use only Forward commands. Guide the robot three tiles straight to the gem.", objective: "Sequence forward commands", start: { x: 0, z: 1 }, goal: { x: 3, z: 1 }, gridWidth: 4, gridDepth: 3, path: ["0,1", "1,1", "2,1", "3,1"] },
+  { name: "The L-Turn", instructions: "Use Forward and Turn Right to follow the L-shaped path to the goal.", objective: "Sequence movement and turns", start: { x: 0, z: 0 }, goal: { x: 2, z: 2 }, gridWidth: 3, gridDepth: 3, path: ["0,0", "1,0", "2,0", "2,1", "2,2"] },
+  { name: "Loops", instructions: "The gem is six tiles straight ahead. Add the Repeat 6× Forward block and run it to avoid repeating the same command by hand.", objective: "Use a loop to repeat instructions", start: { x: 0, z: 1 }, goal: { x: 6, z: 1 }, gridWidth: 7, gridDepth: 3, path: ["0,1", "1,1", "2,1", "3,1", "4,1", "5,1", "6,1"] },
+  { name: "Conditions", instructions: "Move forward once. The obstacle blocks the next tile. Add If Path Blocked → Turn Right, then move forward twice to reach the gem.", objective: "Use a condition to react to an obstacle", start: { x: 0, z: 0 }, goal: { x: 1, z: 2 }, gridWidth: 4, gridDepth: 3, path: ["0,0", "1,0", "1,1", "1,2"], obstacle: { x: 2, z: 0 } },
+];
+const commandNames: Record<LogicCommand, string> = {
+  forward: "Forward",
+  left: "Turn Left",
+  right: "Turn Right",
+  repeat6: "Repeat 6 { Forward }",
+  ifBlockedRight: "If Path Blocked → Turn Right",
+};
 
 function LogicBuilderGame({ game }: { game: { title: string; instructions: string; objective: string } }) {
+  const [mode, setMode] = useState(1);
+  const activeMode = logicModes[mode - 1];
+  const initialState: LogicState = { ...activeMode.start, direction: 0 };
   const [commands, setCommands] = useState<LogicCommand[]>([]);
-  const [robot, setRobot] = useState(initialLogicState);
+  const [robot, setRobot] = useState<LogicState>(initialState);
   const [score, setScore] = useState(0);
-  const [status, setStatus] = useState("Build a command sequence, then run it.");
+  const [status, setStatus] = useState("Add commands, then run your program.");
   const [running, setRunning] = useState(false);
+  const [complete, setComplete] = useState(false);
   const [result, setResult] = useState<"info" | "success" | "error">("info");
-  const [goalIndex, setGoalIndex] = useState(0);
+
+  const startMode = (nextMode: number) => {
+    const definition = logicModes[nextMode - 1];
+    setMode(nextMode); setCommands([]); setRobot({ ...definition.start, direction: 0 });
+    setRunning(false); setComplete(false); setResult("info");
+    setStatus(nextMode === 3 ? "Use the Repeat 6× Forward loop block to reach the gem." : nextMode === 4 ? "The obstacle is ahead. Use the condition block to choose the safe turn." : "Build a command sequence, then run it.");
+  };
 
   const runCode = async () => {
-    if (running || commands.length === 0) return;
-    setRunning(true);
-    setRobot(initialLogicState);
-    setResult("info");
-    setStatus("Running your program…");
-    let current = { ...initialLogicState };
-    for (const command of commands) {
-      await new Promise((resolve) => window.setTimeout(resolve, 650));
+    if (running || complete || commands.length === 0) return;
+    const definition = logicModes[mode - 1];
+    const walkable = new Set(definition.path);
+    setRunning(true); setRobot({ ...definition.start, direction: 0 }); setResult("info"); setStatus("Running your program…");
+    let current: LogicState = { ...definition.start, direction: 0 };
+    const sequence = commands.flatMap((command) => command === "repeat6" ? Array.from({ length: 6 }, () => "forward" as LogicCommand) : [command]);
+    for (const command of sequence) {
+      await new Promise((resolve) => window.setTimeout(resolve, command === "forward" && mode === 3 ? 280 : 430));
       if (command === "left") current = { ...current, direction: (current.direction + 3) % 4 };
       if (command === "right") current = { ...current, direction: (current.direction + 1) % 4 };
+      if (command === "ifBlockedRight") {
+        const vectors = [[1, 0], [0, 1], [-1, 0], [0, -1]];
+        const [dx, dz] = vectors[current.direction];
+        const ahead = `${current.x + dx},${current.z + dz}`;
+        const blocked = ahead === `${definition.obstacle?.x},${definition.obstacle?.z}` || !walkable.has(ahead);
+        if (blocked) {
+          current = { ...current, direction: (current.direction + 1) % 4 };
+          setStatus("Condition true: path blocked. Turning right to the safe route.");
+        } else setStatus("Condition checked: path is clear, keep moving forward.");
+        setRobot({ ...current });
+        continue;
+      }
       if (command === "forward") {
         const vectors = [[1, 0], [0, 1], [-1, 0], [0, -1]];
         current = { ...current, x: current.x + vectors[current.direction][0], z: current.z + vectors[current.direction][1] };
-        if (!logicPath.has(`${current.x},${current.z}`)) {
-          setRobot(current);
-          setStatus("Try Again! The robot left the pathway.");
-          setResult("error");
-          setRunning(false);
-          return;
+        if (!walkable.has(`${current.x},${current.z}`)) {
+          setRobot(current); setStatus("Try Again! The robot hit a blocked tile or left the pathway."); setResult("error"); setRunning(false); return;
         }
       }
       setRobot({ ...current });
     }
-    const activeGoal = logicGoals[goalIndex];
-    const reachedGoal = current.x === activeGoal.x && current.z === activeGoal.z;
-    setStatus(reachedGoal ? `Goal ${goalIndex + 1} complete! Preparing the next target…` : "Try Again! Your sequence ended before the gem.");
-    setResult(reachedGoal ? "success" : "error");
+    const reachedGoal = current.x === definition.goal.x && current.z === definition.goal.z;
     if (reachedGoal) {
-      setScore((value) => value + 100);
-      if (goalIndex < logicGoals.length - 1) {
-        await new Promise((resolve) => window.setTimeout(resolve, 1200));
-        setGoalIndex((value) => value + 1);
-        setCommands([]);
-        setRobot(initialLogicState);
-        setStatus("New goal set! Build a fresh sequence.");
-        setResult("info");
-      } else {
-        setStatus("All goals complete! Reset to play the course again.");
-      }
+      setComplete(true); setScore((value) => value + 100); setStatus(`${definition.name} complete! The robot reached the gem.`); setResult("success");
+    } else {
+      setStatus("Try Again! The command sequence ended before the robot reached the gem."); setResult("error");
     }
     setRunning(false);
   };
 
-  const reset = () => {
-    setCommands([]);
-    setRobot(initialLogicState);
-    setScore(0);
-    setStatus("Build a command sequence, then run it.");
-    setResult("info");
-    setRunning(false);
-    setGoalIndex(0);
-  };
-  const add = (command: LogicCommand) => setCommands((items) => items.length < 8 ? [...items, command] : items);
-  const smallButton = "rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-[11px] font-extrabold text-slate-100 transition hover:border-cyan-200/40 hover:bg-cyan-400/10 disabled:opacity-40";
+  const reset = () => { setScore(0); startMode(mode); };
+  const add = (command: LogicCommand) => setCommands((items) => items.length < 8 && !complete ? [...items, command] : items);
+  const smallButton = "rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-[11px] font-extrabold text-slate-100 transition hover:border-cyan-200/40 hover:bg-cyan-400/10 disabled:cursor-not-allowed disabled:opacity-40";
+  const availableCommands: LogicCommand[] = mode === 1 ? ["forward"] : mode === 2 ? ["forward", "left", "right"] : mode === 3 ? ["repeat6"] : ["forward", "ifBlockedRight"];
+  const buttonLabel: Record<LogicCommand, string> = { forward: "↑ Forward", left: "↶ Turn Left", right: "↷ Turn Right", repeat6: "↻ Repeat 6× Forward", ifBlockedRight: "◇ If Path Blocked → Turn Right" };
+  const modeTone = ["border-cyan-200/20", "border-violet-200/20", "border-emerald-200/20", "border-amber-200/20"][mode - 1];
+  const modeInstructions = mode === 4 ? "Move forward once, then use the condition block. It checks the tile ahead and turns right only when blocked." : activeMode.instructions;
 
-  return <GameShell title={game.title} instructions={game.instructions} objective={`${game.objective} · Goal ${goalIndex + 1} of ${logicGoals.length}`} score={score} onReset={reset} scene={<LogicBuilderScene state={robot} goal={logicGoals[goalIndex]} />}
-    controls={<div className="rounded-[26px] border border-cyan-200/20 bg-slate-950/70 p-4 shadow-xl backdrop-blur-xl">
-      <div className="mb-3 flex items-center justify-between"><h2 className="text-xs font-black uppercase tracking-wider text-cyan-100">Program · {commands.length}/8</h2><button type="button" onClick={() => setCommands([])} disabled={!commands.length || running} className="text-[10px] font-bold text-slate-400 hover:text-white">Clear</button></div>
-      <div className="grid grid-cols-3 gap-2">
-        <button className={smallButton} type="button" onClick={() => add("forward")} disabled={running}>↑ Forward</button>
-        <button className={smallButton} type="button" onClick={() => add("left")} disabled={running}>↶ Left</button>
-        <button className={smallButton} type="button" onClick={() => add("right")} disabled={running}>↷ Right</button>
+  return <GameShell title={game.title} instructions={modeInstructions} objective={activeMode.objective} score={score} levelLabel={`Mode ${mode}/4 · ${activeMode.name}`} levelComplete={complete} completionTitle={`${activeMode.name} Complete!`} onNextLevel={mode < 4 ? () => startMode(mode + 1) : undefined} onReset={reset} scene={<LogicBuilderScene state={robot} start={activeMode.start} goal={activeMode.goal} pathCells={activeMode.path} gridWidth={activeMode.gridWidth} gridDepth={activeMode.gridDepth} obstacle={activeMode.obstacle} showLabels={!complete} />}
+    controls={<div className={`rounded-[26px] border bg-slate-950/70 p-4 shadow-xl backdrop-blur-xl ${modeTone}`}>
+      <div className="mb-3 flex items-center justify-between gap-2"><h2 className="text-xs font-black uppercase tracking-wider text-cyan-100">Program · {commands.length}/8</h2><button type="button" onClick={() => setCommands([])} disabled={!commands.length || running || complete} className="text-[10px] font-bold text-slate-400 hover:text-white disabled:opacity-40">Clear</button></div>
+      <div className={`grid gap-2 ${availableCommands.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
+        {availableCommands.map((command) => <button key={command} className={smallButton} type="button" onClick={() => add(command)} disabled={running || complete || (mode === 3 && commands.includes("repeat6"))}>{buttonLabel[command]}</button>)}
       </div>
-      <ol aria-label="Command queue" className="mt-3 flex min-h-11 flex-wrap gap-1.5 rounded-xl border border-white/10 bg-black/20 p-2">
-        {commands.length ? commands.map((command, index) => <li key={`${index}-${command}`} className="rounded-lg bg-cyan-300/10 px-2 py-1 text-[10px] font-bold text-cyan-100">{index + 1}. {commandNames[command]}</li>) : <li className="self-center text-[10px] text-slate-500">Your commands will appear here</li>}
+      <ol aria-label="Command queue" className="mt-3 flex min-h-14 flex-wrap gap-1.5 rounded-xl border border-white/10 bg-black/20 p-2">
+        {commands.length ? commands.map((command, index) => <li key={`${index}-${command}`} className={`rounded-lg px-2 py-1 text-[10px] font-bold ${command === "repeat6" ? "border border-emerald-300/25 bg-emerald-300/10 text-emerald-100" : command === "ifBlockedRight" ? "border border-amber-300/25 bg-amber-300/10 text-amber-100" : "bg-cyan-300/10 text-cyan-100"}`}>{index + 1}. {commandNames[command]}</li>) : <li className="self-center text-[10px] text-slate-500">Your commands will appear here</li>}
       </ol>
-      <button type="button" onClick={runCode} disabled={running || commands.length === 0} className="mt-3 w-full rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 py-3 text-sm font-black text-slate-950 shadow-[0_0_18px_rgba(52,211,153,0.22)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40">{running ? "Running…" : "▶ Run Code"}</button>
+      {mode === 3 && <p className="mt-2 rounded-lg bg-emerald-400/10 px-2 py-1.5 text-[10px] font-bold text-emerald-100">Repeat 6 times <span className="text-white">&#123; Forward &#125;</span> · runs six forward steps</p>}
+      {mode === 4 && <p className="mt-2 rounded-lg bg-amber-400/10 px-2 py-1.5 text-[10px] font-bold text-amber-100">If the next tile is blocked, turn right; otherwise continue.</p>}
+      <button type="button" onClick={runCode} disabled={running || complete || commands.length === 0} className="mt-3 w-full rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 py-3 text-sm font-black text-slate-950 shadow-[0_0_18px_rgba(52,211,153,0.22)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40">{running ? "Running program…" : "▶ Run Program"}</button>
+      <div className="mt-3 grid grid-cols-2 gap-1.5">{logicModes.map((definition, index) => <button key={definition.name} type="button" onClick={() => startMode(index + 1)} disabled={running} className={`rounded-lg px-2 py-2 text-[10px] font-black transition disabled:opacity-40 ${mode === index + 1 ? "bg-violet-400/30 text-white" : "bg-white/5 text-slate-400 hover:bg-white/10"}`}>Mode {index + 1} · {definition.name}</button>)}</div>
+      <p aria-live="polite" role="status" className={`mt-3 text-xs font-bold ${result === "success" ? "text-emerald-200" : result === "error" ? "text-rose-200" : "text-slate-200"}`}>{status}</p>
     </div>}
-    feedback={<p aria-live="polite" role="status" className={`rounded-2xl border px-4 py-3 text-sm font-bold ${result === "success" ? "border-emerald-300/40 bg-emerald-400/10 text-emerald-100" : result === "error" ? "border-rose-400/40 bg-rose-500/10 text-rose-200" : "border-white/10 bg-white/[0.04] text-slate-300"}`}>{status}</p>}
   />;
 }
 
@@ -753,7 +778,7 @@ export default function MiniGamePage() {
   }
 
   if (params.slug === "stack-tower") return <StackTowerGame game={game} />;
-  if (params.slug === "logic-builder") return <LogicBuilderGame game={{ ...game, instructions: "Add commands to the queue and run your program. Guide the robot along the pathway to the glowing goal." }} />;
+  if (params.slug === "logic-builder") return <LogicBuilderGame game={game} />;
   if (params.slug === "number-sorting" || params.slug === "number-sorting-challenge") return <NumberSortingGame game={game} />;
   if (params.slug === "treasure-search") return <TreasureSearchGame game={game} />;
   if (params.slug === "queue-counter" || params.slug === "queue-ticket-counter") return <QueueCounterGame game={game} />;

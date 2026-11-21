@@ -88,8 +88,8 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "flex flex-col justify-between w-64 min-h-[calc(100vh-2.5rem)] rounded-[32px]",
-        "bg-[#0e112b]/90 backdrop-blur-2xl border-2 border-purple-500/30 p-5 shadow-[0_0_35px_rgba(139,92,246,0.25)]",
+        "flex h-full min-h-0 w-64 flex-col justify-between overflow-y-auto overscroll-contain rounded-[28px]",
+        "bg-[#0e112b]/90 backdrop-blur-2xl border border-purple-500/30 p-4 shadow-[0_0_35px_rgba(139,92,246,0.2)]",
         className
       )}
     >

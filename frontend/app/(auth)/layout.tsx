@@ -7,7 +7,7 @@ import { FloatingIsland } from "@/components/characters/FloatingIsland";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#070814] text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-hidden">
+    <div className="min-h-[100dvh] bg-[#070814] text-slate-100 flex flex-col justify-center items-center gap-1 px-4 py-6 relative overflow-hidden">
       {/* Background Nebulae & Cosmic Starfield */}
       <div className="fixed -top-20 -left-20 w-[60vw] h-[60vw] rounded-full bg-purple-700/25 blur-[150px] pointer-events-none -z-10" />
       <div className="fixed -bottom-20 -right-20 w-[60vw] h-[60vw] rounded-full bg-cyan-600/20 blur-[160px] pointer-events-none -z-10" />
@@ -22,7 +22,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       </div>
 
       {/* Floating Header Logo */}
-      <div className="mb-6 z-10 text-center">
+      <div className="mb-4 z-10 text-center">
         <Link href="/" className="inline-flex items-center gap-3 group">
           <div className="w-13 h-13 rounded-2xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-purple-600 p-0.5 shadow-[0_0_25px_rgba(6,182,212,0.6)] group-hover:scale-105 transition-transform">
             <div className="w-12 h-12 rounded-[14px] bg-[#0c0e26] flex items-center justify-center">
@@ -44,7 +44,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       <div className="w-full max-w-md z-10">{children}</div>
 
       {/* Back to Home Link */}
-      <div className="mt-6 text-center text-xs font-bold text-slate-400 z-10">
+      <div className="mt-4 text-center text-xs font-bold text-slate-400 z-10">
         <Link href="/" className="hover:text-purple-300 transition-colors">
           ← Back to CodeQuest 3D Home
         </Link>

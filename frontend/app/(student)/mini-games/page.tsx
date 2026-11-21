@@ -39,7 +39,7 @@ export default function MiniGamesPage() {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
-      className="mx-auto max-w-7xl space-y-8 pb-10"
+      className="mx-auto max-w-7xl space-y-6 pb-2"
     >
       <header className="flex flex-col justify-between gap-5 border-b border-white/10 pb-6 sm:flex-row sm:items-end">
         <div>
@@ -62,7 +62,7 @@ export default function MiniGamesPage() {
         </div>
       </header>
 
-      <section aria-labelledby="featured-game-heading" className="relative overflow-hidden rounded-[28px] border border-cyan-200/15 bg-gradient-to-br from-[#101b3a] via-[#10152e] to-[#0c0d20] p-6 sm:p-8">
+      <section aria-labelledby="featured-game-heading" className="relative overflow-hidden rounded-[26px] border border-cyan-200/15 bg-gradient-to-br from-[#101b3a] via-[#10152e] to-[#0c0d20] p-5 sm:p-7">
         <div className="pointer-events-none absolute -right-10 -top-16 h-64 w-64 rounded-full bg-cyan-400/[0.08] blur-3xl" />
         <div className="relative z-10 flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
           <div className="max-w-2xl">
@@ -92,7 +92,7 @@ export default function MiniGamesPage() {
         </div>
       </section>
 
-      <section aria-labelledby="game-catalog-heading" className="space-y-5">
+      <section aria-labelledby="game-catalog-heading" className="space-y-4">
         <div className="flex flex-col justify-between gap-4 xl:flex-row xl:items-center">
           <div>
             <h2 id="game-catalog-heading" className="text-xl font-black text-white">Explore games</h2>
@@ -132,7 +132,7 @@ export default function MiniGamesPage() {
         </div>
 
         {visibleGames.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 items-stretch gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {visibleGames.map((game, index) => {
               const Icon = game.Icon;
               const artworkPosition = Math.round((index / Math.max(visibleGames.length - 1, 1)) * 100);
@@ -142,7 +142,7 @@ export default function MiniGamesPage() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.28, delay: index * 0.035 }}
-                  className="group relative flex min-h-[250px] flex-col overflow-hidden rounded-[24px] border border-white/10 bg-[#080b20] bg-cover p-5 transition duration-200 hover:-translate-y-1 hover:border-cyan-400/40 hover:shadow-[0_0_30px_rgba(34,211,238,0.18)] sm:p-6"
+                  className="group relative flex h-full min-h-[230px] flex-col overflow-hidden rounded-[22px] border border-white/10 bg-[#080b20] bg-cover p-4 transition duration-200 hover:-translate-y-1 hover:border-cyan-400/40 hover:shadow-[0_0_30px_rgba(34,211,238,0.18)] sm:p-5"
                   style={{
                     backgroundImage: "linear-gradient(180deg, rgba(7, 10, 31, .54) 0%, rgba(7, 8, 22, .78) 48%, rgba(7, 8, 20, .94) 100%), url('/images/mini-games-arcade-background.png')",
                     backgroundSize: "cover, cover",
@@ -155,7 +155,7 @@ export default function MiniGamesPage() {
                     </span>
                     <span className="text-xs font-extrabold tracking-[0.16em] text-slate-500">{game.number}</span>
                   </div>
-                  <div className="mt-5 flex-1">
+                  <div className="mt-4 flex-1">
                     <div className="flex items-center gap-2">
                       <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-slate-400">{game.category}</p>
                       {game.category === 'Algorithms' && (
@@ -171,7 +171,7 @@ export default function MiniGamesPage() {
                   </div>
                   <Link
                     href={`/mini-games/${game.slug}`}
-                    className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-black text-sm shadow-lg hover:shadow-cyan-500/40 hover:scale-105 transition-all"
+                    className="mt-4 inline-flex min-h-10 items-center gap-2 self-start rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 px-4 py-2.5 text-sm font-black text-white shadow-lg transition-all hover:scale-[1.02] hover:shadow-cyan-500/40"
                   >
                     Open preview <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </Link>

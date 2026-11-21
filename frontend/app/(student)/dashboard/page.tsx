@@ -104,7 +104,7 @@ export default function StudentDashboardPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="mx-auto max-w-7xl space-y-6 pb-8"
+      className="mx-auto max-w-7xl space-y-5 pb-2"
     >
       <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
@@ -126,7 +126,7 @@ export default function StudentDashboardPage() {
       </header>
 
       <section
-        className="relative overflow-hidden rounded-[28px] border border-violet-200/15 bg-cover bg-center p-5 shadow-[0_18px_55px_rgba(0,0,0,0.22)] sm:p-7"
+        className="relative overflow-hidden rounded-[26px] border border-violet-200/15 bg-cover bg-center p-5 shadow-[0_18px_55px_rgba(0,0,0,0.22)] sm:p-6"
         style={{
           backgroundImage:
             "linear-gradient(90deg, rgba(11, 10, 42, .94) 0%, rgba(11, 10, 42, .79) 38%, rgba(11, 10, 42, .2) 100%), url('/images/continue-learning-background.png')",

@@ -268,7 +268,7 @@ export default function TopicPage() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
-      className="mx-auto max-w-5xl space-y-7 px-4 pb-12"
+      className="mx-auto max-w-5xl space-y-5 px-2 pb-6 sm:px-3"
     >
       {/* Header */}
       <div className="space-y-2 pt-2">
@@ -284,12 +284,12 @@ export default function TopicPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 p-1 rounded-2xl bg-white/[0.04] border border-white/10 w-fit">
+      <div className="flex max-w-full gap-1 overflow-x-auto p-1 rounded-2xl bg-white/[0.04] border border-white/10 w-fit">
         {TABS.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+            className={`flex shrink-0 items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-all sm:px-4 ${
               activeTab === tab.key
                 ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg'
                 : 'text-slate-400 hover:text-white hover:bg-white/[0.06]'

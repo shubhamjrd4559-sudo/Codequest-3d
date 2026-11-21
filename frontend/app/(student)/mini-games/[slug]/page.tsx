@@ -7,6 +7,7 @@ import { ArrowDownToLine, ArrowUpFromLine, Layers3 } from "lucide-react";
 import StackTowerScene, { type StackBlock } from "@/games/scenes/StackTowerScene";
 import LogicBuilderScene, { logicPath, type LogicCommand, type LogicState } from "@/games/scenes/LogicBuilderScene";
 import NumberSortingScene, { type NumberTile } from "@/games/scenes/NumberSortingScene";
+import TreasureSearchScene, { type TreasureChest } from "@/games/scenes/TreasureSearchScene";
 import QueueCounterScene, { type QueueCustomer } from "@/games/scenes/QueueCounterScene";
 import LinkedListScene, { type ListLink, type ListNode } from "@/games/scenes/LinkedListScene";
 import TreeTraversalScene, { type TreeEdge, type TreeNode } from "@/games/scenes/TreeTraversalScene";
@@ -554,6 +555,104 @@ function NumberSortingGame({ game }: { game: { title: string; instructions: stri
   />;
 }
 
+const treasureInstructions = [
+  "Linear Search: the treasure is hidden in an unsorted set of wooden chests. Open boxes one by one and watch your search count.",
+  "Binary Search: inspect the sorted numbered vaults. Find the target number; each miss tells you to search Higher or Lower.",
+  "Speed Search: search the 5 × 5 chest grid and find the treasure in five guesses or fewer.",
+  "Blind Search: the fog hides the grid. Open a chest and use Hot or Cold clues to track down the treasure.",
+];
+const treasureModeNames = ["Linear Search", "Binary Search", "Speed Search", "Blind Search"];
+const targetNumber = 7;
+
+function makeTreasureChests(mode: number): TreasureChest[] {
+  const count = mode === 1 ? 9 : mode === 2 ? 10 : 25;
+  const treasureId = mode === 1 ? 7 : mode === 2 ? targetNumber : mode === 3 ? 18 : 20;
+  return Array.from({ length: count }, (_, index) => {
+    const id = index + 1;
+    return { id, number: mode === 2 ? id : undefined, opened: false, treasure: id === treasureId, hint: null };
+  });
+}
+
+function TreasureSearchGame({ game }: { game: { title: string; instructions: string; objective: string } }) {
+  const [mode, setMode] = useState(1);
+  const [chests, setChests] = useState<TreasureChest[]>(() => makeTreasureChests(1));
+  const [openedCount, setOpenedCount] = useState(0);
+  const [clicksUsed, setClicksUsed] = useState(0);
+  const [low, setLow] = useState(1);
+  const [high, setHigh] = useState(10);
+  const [complete, setComplete] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [message, setMessage] = useState("Open a chest to begin the linear search.");
+
+  const startMode = (nextMode: number) => {
+    setMode(nextMode); setChests(makeTreasureChests(nextMode)); setOpenedCount(0); setClicksUsed(0);
+    setLow(1); setHigh(10); setComplete(false); setFailed(false);
+    setMessage(nextMode === 1 ? "Open a chest to begin the linear search." : nextMode === 2 ? `Find ${targetNumber}. Try the middle of the sorted range first.` : nextMode === 3 ? "You have five guesses. Search the whole grid." : "The grid is hidden. Open a chest and follow the temperature clue.");
+  };
+
+  const openChest = (id: number) => {
+    if (complete || failed) return;
+    const chest = chests.find((item) => item.id === id);
+    if (!chest || chest.opened) return;
+    const nextCount = openedCount + 1;
+    const nextClicks = clicksUsed + 1;
+    setOpenedCount(nextCount); setClicksUsed(nextClicks);
+    setChests((items) => items.map((item) => item.id === id ? { ...item, opened: true } : item));
+
+    if (chest.treasure) {
+      setComplete(true);
+      setMessage(mode === 2 ? `Correct! ${targetNumber} is the target. Binary search found it in ${nextClicks} ${nextClicks === 1 ? "guess" : "guesses"}.` : `Treasure found in ${nextClicks} ${nextClicks === 1 ? "chest" : "chests"}!`);
+      return;
+    }
+
+    if (mode === 1) {
+      setMessage(`No treasure in Chest ${id}. You have opened ${nextCount} of ${chests.length} chests.`);
+      return;
+    }
+
+    if (mode === 2) {
+      const hint = (chest.number ?? id) < targetNumber ? "higher" : "lower";
+      setChests((items) => items.map((item) => item.id === id ? { ...item, opened: true, hint } : item));
+      if (hint === "higher") setLow((value) => Math.max(value, id + 1));
+      else setHigh((value) => Math.min(value, id - 1));
+      setMessage(`${id} is too low. Search Higher.`);
+      if (hint === "lower") setMessage(`${id} is too high. Search Lower.`);
+      return;
+    }
+
+    if (mode === 3) {
+      if (nextClicks >= 5) { setFailed(true); setMessage("Five guesses used. The treasure slipped away—retry and search strategically."); }
+      else setMessage(`Empty chest. ${5 - nextClicks} ${5 - nextClicks === 1 ? "guess" : "guesses"} left.`);
+      return;
+    }
+
+    const targetIndex = chests.findIndex((item) => item.treasure);
+    const distance = Math.abs(Math.floor((id - 1) / 5) - Math.floor(targetIndex / 5)) + Math.abs(((id - 1) % 5) - (targetIndex % 5));
+    const hint = distance <= 2 ? "hot" : "cold";
+    setChests((items) => items.map((item) => item.id === id ? { ...item, opened: true, hint } : item));
+    setMessage(hint === "hot" ? "Hot! You are close to the treasure. Search nearby chests." : "Cold. The treasure is farther away—try another area.");
+  };
+
+  const totalChests = mode === 1 ? 9 : mode === 2 ? 10 : 25;
+  const progressLabel = mode === 1 ? `${openedCount}/9 opened` : mode === 2 ? `${clicksUsed} guesses` : mode === 3 ? `${Math.max(0, 5 - clicksUsed)}/5 guesses left` : `${openedCount} opened`;
+  const controlTone = ["border-amber-300/20 bg-amber-950/20", "border-violet-300/20 bg-violet-950/25", "border-orange-300/20 bg-orange-950/20", "border-cyan-300/20 bg-slate-950/75"][mode - 1];
+
+  return <GameShell title={game.title} instructions={treasureInstructions[mode - 1]} objective={game.objective} score={complete ? 100 + Math.max(0, 50 - clicksUsed * 5) : openedCount * 10} levelLabel={`${treasureModeNames[mode - 1]} · Mode ${mode}/4`} timerLabel={progressLabel} levelComplete={complete} completionTitle={`${treasureModeNames[mode - 1]} Complete!`} onNextLevel={mode < 4 ? () => startMode(mode + 1) : undefined} onReset={() => startMode(mode)} scene={<TreasureSearchScene chests={chests} mode={mode} onOpen={openChest} />}
+    controls={<div className={`space-y-3 rounded-[26px] border p-4 shadow-xl backdrop-blur-xl ${controlTone}`}>
+      <div className="flex items-center justify-between gap-2"><p className="text-xs font-black uppercase tracking-wider text-cyan-100">{treasureModeNames[mode - 1]}</p><span className="text-[10px] font-bold text-slate-300">{progressLabel}</span></div>
+      {mode === 2 && <div className="flex items-center justify-between rounded-xl border border-violet-200/15 bg-violet-400/10 px-3 py-2 text-xs"><span className="text-violet-200">Find target</span><strong className="text-lg font-black text-white">{targetNumber}</strong><span className="text-slate-300">Range {low}–{high}</span></div>}
+      {mode === 3 && <p className="text-xs font-bold text-orange-100">Five guesses maximum · choose carefully.</p>}
+      {mode === 4 && <p className="text-xs font-bold text-cyan-100">Hot means nearby · Cold means search farther away.</p>}
+      <div className={`grid gap-1.5 ${mode === 1 ? "grid-cols-3" : mode === 2 ? "grid-cols-5" : "grid-cols-5"}`}>
+        {chests.map((chest) => <button key={chest.id} type="button" onClick={() => openChest(chest.id)} disabled={chest.opened || complete || failed} aria-label={`Open ${mode === 2 ? `numbered vault ${chest.number}` : `chest ${chest.id}`}`} className={`min-h-9 rounded-lg border px-1 py-1.5 text-[10px] font-black transition disabled:cursor-not-allowed disabled:opacity-40 ${chest.opened ? chest.treasure ? "border-amber-200 bg-amber-300 text-slate-950" : "border-slate-500/40 bg-slate-800 text-slate-400" : mode === 2 ? "border-violet-200/20 bg-violet-400/10 text-violet-100 hover:bg-violet-400/25" : mode === 3 ? "border-orange-200/20 bg-orange-400/10 text-orange-100 hover:bg-orange-400/25" : mode === 4 ? "border-cyan-200/20 bg-cyan-400/10 text-cyan-100 hover:bg-cyan-400/25" : "border-amber-200/20 bg-amber-400/10 text-amber-100 hover:bg-amber-400/25"}`}>{mode === 4 && !chest.opened ? "??" : mode === 2 ? chest.number : chest.id}</button>)}
+      </div>
+      {failed && <button type="button" onClick={() => startMode(mode)} className="w-full rounded-xl border border-rose-300/30 bg-rose-400/10 py-2 text-xs font-black text-rose-100">Retry Mode {mode}</button>}
+      <p aria-live="polite" className={`text-xs font-bold ${failed ? "text-rose-200" : complete ? "text-emerald-200" : "text-slate-200"}`}>{message}</p>
+      <div className="grid grid-cols-2 gap-1.5">{[1, 2, 3, 4].map((item) => <button key={item} type="button" onClick={() => startMode(item)} className={`rounded-lg px-2 py-2 text-[10px] font-black transition ${mode === item ? "bg-violet-400/30 text-white" : "bg-white/5 text-slate-400 hover:bg-white/10"}`}>{treasureModeNames[item - 1]}</button>)}</div>
+    </div>}
+  />;
+}
+
 const initialLogicState: LogicState = { x: 0, z: 0, direction: 0 };
 const commandNames: Record<LogicCommand, string> = { forward: "Move Forward", left: "Turn Left", right: "Turn Right" };
 const logicGoals = [{ x: 1, z: 0 }, { x: 2, z: 0 }, { x: 2, z: 1 }, { x: 2, z: 2 }];
@@ -656,6 +755,7 @@ export default function MiniGamePage() {
   if (params.slug === "stack-tower") return <StackTowerGame game={game} />;
   if (params.slug === "logic-builder") return <LogicBuilderGame game={{ ...game, instructions: "Add commands to the queue and run your program. Guide the robot along the pathway to the glowing goal." }} />;
   if (params.slug === "number-sorting" || params.slug === "number-sorting-challenge") return <NumberSortingGame game={game} />;
+  if (params.slug === "treasure-search") return <TreasureSearchGame game={game} />;
   if (params.slug === "queue-counter" || params.slug === "queue-ticket-counter") return <QueueCounterGame game={game} />;
   if (params.slug === "linked-list" || params.slug === "linked-list-node-connection") return <LinkedListGame game={game} />;
   if (params.slug === "tree-traversal" || params.slug === "tree-traversal-challenge") return <TreeTraversalGame game={game} />;

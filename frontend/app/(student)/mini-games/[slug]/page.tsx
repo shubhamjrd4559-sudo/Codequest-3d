@@ -7,6 +7,7 @@ import { ArrowDownToLine, ArrowUpFromLine, Layers3 } from "lucide-react";
 import StackTowerScene, { type StackBlock } from "@/games/scenes/StackTowerScene";
 import LogicBuilderScene, { logicPath, type LogicCommand, type LogicState } from "@/games/scenes/LogicBuilderScene";
 import NumberSortingScene, { type NumberTile } from "@/games/scenes/NumberSortingScene";
+import QueueCounterScene, { type QueueCustomer } from "@/games/scenes/QueueCounterScene";
 
 const GameShell = dynamic(() => import("@/components/games/GameShell"), {
   ssr: false,
@@ -42,6 +43,11 @@ const gameInfo: Record<string, { title: string; instructions: string; objective:
     title: "Queue Ticket Counter",
     instructions: "Explore the scene and get ready to help tickets move through a line.",
     objective: "FIFO: first in, first out",
+  },
+  "queue-counter": {
+    title: "Queue Ticket Counter",
+    instructions: "Help customers move through the line in FIFO order.",
+    objective: "Queues and first-in, first-out logic",
   },
   "linked-list-node-connection": {
     title: "Linked List Node Connection",
@@ -261,6 +267,73 @@ function StackTowerGame({ game }: { game: { title: string; instructions: string;
   );
 }
 
+const queueColors = ["#22d3ee", "#a78bfa", "#fb7185", "#34d399", "#fbbf24", "#60a5fa"];
+const queueInstructions = [
+  "Lineup: drag customers from the visitor portal into the queue. Add 5 customers.",
+  "Serve Next removes the customer at the front. Watch everyone move forward. Clear the line.",
+  "Drag the VIP into the highlighted FRONT position. The VIP joins before everyone else.",
+  "Rush Hour: serve as many customers as you can in 15 seconds. FIFO means the front leaves first.",
+];
+function QueueCounterGame({ game }: { game: { title: string; instructions: string; objective: string } }) {
+  const [mode, setMode] = useState(1);
+  const [customers, setCustomers] = useState<QueueCustomer[]>([]);
+  const [nextId, setNextId] = useState(1);
+  const [served, setServed] = useState(0);
+  const [seconds, setSeconds] = useState(15);
+  const [complete, setComplete] = useState(false);
+  const [message, setMessage] = useState("Drag a customer into the queue to begin.");
+  const [feedbackError, setFeedbackError] = useState(false);
+
+  const startMode = (nextMode: number) => {
+    const count = nextMode === 2 ? 4 : nextMode === 3 ? 3 : nextMode === 4 ? 5 : 0;
+    setMode(nextMode); setNextId(count + 1); setServed(0); setSeconds(15); setComplete(false); setFeedbackError(false);
+    setCustomers(Array.from({ length: count }, (_, index) => ({ id: index + 1, color: queueColors[index % queueColors.length] })));
+    setMessage(nextMode === 3 ? "A VIP is waiting. Drop them at the highlighted front spot." : nextMode === 2 ? "Serve the first customer in line." : queueInstructions[nextMode - 1]);
+  };
+
+  useEffect(() => {
+    if (mode !== 4 || complete) return;
+    const timer = window.setInterval(() => setSeconds((value) => {
+      if (value <= 1) { window.clearInterval(timer); setComplete(true); setMessage(`Rush Hour over! You served ${served} customers.`); return 0; }
+      return value - 1;
+    }), 1000);
+    return () => window.clearInterval(timer);
+  }, [mode, complete, served]);
+
+  const addCustomer = () => {
+    if (complete || mode !== 1) return;
+    if (customers.length >= 5) return;
+    setCustomers((items) => [...items, { id: nextId, color: queueColors[(nextId - 1) % queueColors.length] }]);
+    setNextId((id) => id + 1);
+    if (customers.length + 1 === 5) { setComplete(true); setMessage("Lineup complete! Five customers joined the queue."); }
+  };
+  const insertVip = () => {
+    if (mode !== 3 || complete) return;
+    setCustomers((items) => [{ id: nextId, color: "#fbbf24", vip: true }, ...items]);
+    setNextId((id) => id + 1); setComplete(true); setMessage("VIP inserted at the front of the line!");
+  };
+  const serveNext = () => {
+    if (!customers.length || complete) return;
+    const customer = customers[0];
+    setCustomers((items) => mode === 4 ? [...items.slice(1), { id: nextId, color: queueColors[(nextId - 1) % queueColors.length] }] : items.slice(1));
+    if (mode === 4) setNextId((id) => id + 1);
+    setServed((value) => value + 1);
+    setMessage(`${customer.vip ? "VIP" : "Customer"} served from the front. The queue moved forward.`);
+    if (mode === 2 && customers.length === 1) { setComplete(true); setMessage("Mode complete! Every customer was served FIFO."); }
+  };
+  const modeTitle = mode === 4 ? "Rush Hour Complete!" : `Mode ${mode} Complete!`;
+
+  return <GameShell title={game.title} instructions={queueInstructions[mode - 1]} objective={game.objective} score={served * 10} levelLabel={`Mode ${mode}/4`} timerLabel={mode === 4 ? `${seconds}s` : "Ready"} levelComplete={complete} completionTitle={modeTitle} onNextLevel={mode < 4 ? () => startMode(mode + 1) : undefined} onReset={() => startMode(mode)} scene={<QueueCounterScene customers={customers} mode={mode} onDropAtBack={addCustomer} onDropAtFront={insertVip} />}
+    controls={<div className="space-y-3 rounded-[26px] border border-cyan-200/20 bg-slate-950/70 p-4 shadow-xl backdrop-blur-xl">
+      <div className="flex items-center justify-between text-xs font-black text-cyan-100"><span>Queue length · {customers.length}</span><span>Served · {served}</span></div>
+      {mode === 2 && <button type="button" onClick={serveNext} disabled={!customers.length || complete} className="w-full rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 py-3 text-sm font-black text-slate-950 disabled:opacity-40">Serve Next →</button>}
+      {mode === 4 && <button type="button" onClick={serveNext} disabled={!customers.length || complete} className="w-full rounded-xl bg-gradient-to-r from-amber-300 to-orange-400 py-3 text-sm font-black text-slate-950 disabled:opacity-40">Serve Front Customer</button>}
+      <p aria-live="polite" className={`text-xs font-bold ${feedbackError ? "text-rose-200" : "text-slate-200"}`}>{message}</p>
+      <div className="grid grid-cols-4 gap-1">{[1,2,3,4].map((item) => <button key={item} type="button" onClick={() => startMode(item)} className={`rounded-lg px-2 py-2 text-[10px] font-black ${mode === item ? "bg-violet-400/30 text-white" : "bg-white/5 text-slate-400"}`}>Mode {item}</button>)}</div>
+    </div>}
+  />;
+}
+
 const sortInstructions = [
   "Manual Swap: click two adjacent blocks to swap them. Sort all four numbers low to high.",
   "Bubble Sort: click Next Step to compare the highlighted pair and swap when needed.",
@@ -437,5 +510,6 @@ export default function MiniGamePage() {
   if (params.slug === "stack-tower") return <StackTowerGame game={game} />;
   if (params.slug === "logic-builder") return <LogicBuilderGame game={{ ...game, instructions: "Add commands to the queue and run your program. Guide the robot along the pathway to the glowing goal." }} />;
   if (params.slug === "number-sorting" || params.slug === "number-sorting-challenge") return <NumberSortingGame game={game} />;
+  if (params.slug === "queue-counter" || params.slug === "queue-ticket-counter") return <QueueCounterGame game={game} />;
   return <GameShell title={game.title} instructions={game.instructions} objective={game.objective} />;
 }

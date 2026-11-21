@@ -73,7 +73,6 @@ const gameInfo: Record<string, { title: string; instructions: string; objective:
 };
 
 const blockColors = ["#ef4444", "#3b82f6", "#22c55e", "#fbbf24", "#a78bfa", "#22d3ee", "#fb7185"];
-const targetPattern = ["Red", "Blue", "Green"];
 const recallPattern = ["Green", "Blue", "Red"];
 const patternColors: Record<string, string> = { Red: "#ef4444", Blue: "#3b82f6", Green: "#22c55e" };
 const levelInstructions = [

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Gamepad2, Play, Trophy, TrendingUp, Zap } from "lucide-react";
+import { ArrowRight, Gamepad2, Play, Trophy, Zap } from "lucide-react";
 
 import { useAuth } from "@/context/AuthContext";
 import { dashboardApi } from "@/lib/api/dashboard";

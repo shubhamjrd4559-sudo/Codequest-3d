@@ -87,6 +87,18 @@ Create an original design system with:
 
 Use a professional balance of playful colors and clean layouts.
 
+### NEW UI/UX DIRECTION (CodinGame Inspired Redesign)
+
+The entire frontend UI must be redesigned to feel like a sleek, premium, modern arcade platform inspired by CodinGame.
+
+- **Global:** Use a clean, uncluttered layout with ample whitespace, a sleek font such as Inter or Geist, and smooth Framer Motion animations.
+- **Coding UI (Topic Page Left):** Present a premium modern IDE with a VS Code-inspired layout and C++ syntax highlighting.
+- **Quiz UI (Topic Page Right and Dashboard):** Use glassmorphic MCQ cards with smooth hover effects and instant green/red neon feedback for correct and incorrect answers.
+- **Video Lecture UI (Topic Page Right):** Provide a premium custom video player in a glassmorphic container, with chapter notes and smooth controls.
+- **Game HUD (Inside GameShell):** Use translucent, glowing panels for the score, timer, instructions, and reset controls to create a high-end gaming interface.
+- **Mini-Games Catalog:** Present interactive Arcade Cards with hover lifts and glowing borders.
+- Do not copy CodinGame's branding. Adopt only its sleek layout and design principles to present original CodeQuest 3D content.
+
 --------------------------------------------------
 3. LANDING PAGE
 --------------------------------------------------

@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Canvas } from "@react-three/fiber";
 import { Html, OrbitControls } from "@react-three/drei";
@@ -13,6 +13,11 @@ export interface GameShellProps {
   title: string;
   instructions: string;
   objective: string;
+  scene?: ReactNode;
+  score?: number;
+  controls?: ReactNode;
+  feedback?: ReactNode;
+  onReset?: () => void;
 }
 
 function SceneLoader() {
@@ -25,7 +30,7 @@ function SceneLoader() {
   );
 }
 
-export default function GameShell({ title, instructions, objective }: GameShellProps) {
+export default function GameShell({ title, instructions, objective, scene, score = 0, controls, feedback, onReset }: GameShellProps) {
   const [webglSupported, setWebglSupported] = useState<boolean | null>(null);
   const [resetKey, setResetKey] = useState(0);
 
@@ -60,7 +65,7 @@ export default function GameShell({ title, instructions, objective }: GameShellP
         </div>
         <motion.button
           type="button"
-          onClick={() => setResetKey((key) => key + 1)}
+          onClick={() => { onReset?.(); setResetKey((key) => key + 1); }}
           whileHover={{ scale: 1.035, y: -1 }}
           whileTap={{ scale: 0.96 }}
           className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-rose-500 to-orange-500 px-5 py-3 text-sm font-extrabold text-white shadow-[0_0_20px_rgba(239,68,68,0.35)] hover:shadow-[0_0_30px_rgba(239,68,68,0.5)] transition-all"
@@ -78,7 +83,7 @@ export default function GameShell({ title, instructions, objective }: GameShellP
                 <Trophy className="h-3 w-3" /> Score
                 <span className="ml-1 w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               </p>
-              <p className="mt-0.5 text-3xl font-black leading-none text-white">0</p>
+              <p className="mt-0.5 text-3xl font-black leading-none text-white">{score}</p>
             </div>
             <div className="rounded-2xl border border-cyan-300/40 bg-slate-950/80 px-4 py-3 text-right shadow-[0_0_30px_rgba(34,211,238,0.2)] backdrop-blur-xl">
               <p className="flex items-center justify-end gap-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-cyan-200">
@@ -94,7 +99,7 @@ export default function GameShell({ title, instructions, objective }: GameShellP
           ) : webglSupported ? (
             <Canvas
               key={resetKey}
-              camera={{ position: [4, 3.2, 5], fov: 45 }}
+              camera={{ position: [4.5, 4.5, 6.5], fov: 45 }}
               dpr={[1, 1.5]}
               gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
               className="!absolute inset-0"
@@ -103,7 +108,7 @@ export default function GameShell({ title, instructions, objective }: GameShellP
               <ambientLight intensity={0.75} />
               <directionalLight position={[4, 7, 5]} intensity={1.6} castShadow />
               <Suspense fallback={<SceneLoader />}>
-                <TestScene />
+                {scene ?? <TestScene />}
               </Suspense>
               <OrbitControls
                 makeDefault
@@ -142,14 +147,16 @@ export default function GameShell({ title, instructions, objective }: GameShellP
             <p className="text-xs font-black uppercase tracking-[0.18em] text-violet-300">How to play</p>
             <p className="mt-3 text-sm leading-6 text-slate-200">{instructions}</p>
           </motion.div>
+          {controls}
+          {feedback}
           <motion.div initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.16 }} className="rounded-[26px] border border-amber-300/20 bg-gradient-to-br from-amber-400/10 to-orange-500/[0.04] p-5 shadow-xl backdrop-blur-2xl">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-amber-200">Objective</p>
             <p className="mt-2 text-sm leading-6 text-slate-100">{objective}</p>
             <div className="mt-5 flex items-end justify-between border-t border-white/10 pt-4">
               <span className="text-sm font-bold text-slate-300">Current score</span>
-              <span className="text-3xl font-black text-white">0</span>
+              <span className="text-3xl font-black text-white">{score}</span>
             </div>
-            <p className="mt-1 text-right text-[11px] font-semibold text-slate-400">Test scene · scoring arrives in Phase 7</p>
+            <p className="mt-1 text-right text-[11px] font-semibold text-slate-400">{scene ? "Stack Tower · LIFO practice" : "Test scene · scoring arrives in Phase 7"}</p>
           </motion.div>
         </aside>
       </div>

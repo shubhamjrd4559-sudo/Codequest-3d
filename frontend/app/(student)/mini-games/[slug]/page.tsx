@@ -279,10 +279,10 @@ function StackTowerGame({ game }: { game: { title: string; instructions: string;
 }
 
 const listModeInstructions = [
-  "Connect Dots: select a source node, then its next node to draw the pointer chain.",
-  "Traversal: start at HEAD and click each node in order until the tail.",
-  "Insert Node: click a pointer to break it, then select the floating node to insert it.",
-  "Reverse List: click each pointer to reverse its direction from tail back to head.",
+  "Balls & Strings: select the next pair of numbered balls and connect them with a glowing string from Head to Tail.",
+  "Train & Bogies: the orange engine is the Head. Attach each coach in order by selecting the next bogie in the line.",
+  "Metal Chain: break the middle chain link, then place the floating golden link into the gap to reconnect the list.",
+  "Glowing Snake: the tail is leading. Reverse each green pointer until the snake's Head leads the path.",
 ];
 const treeNodes: TreeNode[] = [
   { id: 1, value: 8, x: 0, y: 1.55 },
@@ -349,58 +349,60 @@ function LinkedListGame({ game }: { game: { title: string; instructions: string;
   const startMode = (nextMode: number) => {
     setMode(nextMode); setSelected(null); setStep(1); setBrokenLink(null); setBrokenEdge(null); setComplete(false);
     setNodes(nextMode === 3 ? [...baseNodes, { id: 5, value: 25 }] : baseNodes);
-    setLinks(nextMode === 1 ? [] : nextMode === 3 ? baseLinks : baseLinks);
-    setMessage(nextMode === 1 ? "Select Node 1 then Node 2, continuing to Node 4." : listModeInstructions[nextMode - 1]);
+    setLinks(nextMode === 1 || nextMode === 2 ? [] : baseLinks);
+    setMessage(listModeInstructions[nextMode - 1]);
   };
 
   const clickNode = (id: number) => {
     if (complete) return;
     if (mode === 2) {
       if (id !== step) { setMessage(`Not next in the list. Follow the pointer to Node ${step}.`); return; }
-      if (step === 1) { setMessage("Head found. Follow the arrow to the next node."); setStep(2); return; }
-      if (step === 4) { setComplete(true); setMessage("Traversal complete! You followed Head → Tail."); return; }
-      setStep((value) => value + 1); setMessage(`Node ${id} visited. Follow its pointer onward.`); return;
+      if (step === 1) { setMessage("First bogie attached to the engine. Select Coach 2 next."); setStep(2); return; }
+      setLinks((current) => [...current, { from: id - 1, to: id }]);
+      if (step === 4) { setComplete(true); setMessage("All bogies attached! You traversed the train from engine to tail."); return; }
+      setStep((value) => value + 1); setMessage(`Coach ${id} attached. Select the next bogie.`); return;
     }
     if (mode === 3) {
-      if (brokenLink === null) { setMessage("First click a pointer to choose where to insert the new node."); return; }
+      if (brokenLink === null) { setMessage("Break one metal link first to open a gap for the golden link."); return; }
       if (id !== 5) return;
       const previous = brokenEdge;
       if (!previous) return;
       const updated = [...links]; updated.splice(brokenLink, 1, { from: previous.from, to: 5 }, { from: 5, to: previous.to });
       setLinks(updated); setNodes([baseNodes[0], baseNodes[1], nodes[4], baseNodes[2], baseNodes[3]]);
-      setComplete(true); setMessage("Node 25 inserted! Both pointers now connect the list."); return;
+      setComplete(true); setMessage("Golden link installed! The metal chain is connected again."); return;
     }
     if (mode === 1) {
-      if (selected === null) { setSelected(id); return; }
-      if (id !== selected + 1) { setMessage("Choose the next node in the chain."); return; }
+      if (selected === null) { setSelected(id); setMessage(`String anchored at Ball ${id}. Connect the next ball.`); return; }
+      if (id !== selected + 1) { setMessage("Follow the numbered order and connect to the next ball."); return; }
       const next = links.some((link) => link.from === selected && link.to === id) ? links : [...links, { from: selected, to: id }]; setLinks(next); setSelected(null);
-      if (next.length === 3) { setComplete(true); setMessage("Chain complete! All four nodes are connected."); }
-      else setMessage(`Pointer ${selected} → ${id} connected. Continue the chain.`);
+      if (next.length === 3) { setComplete(true); setMessage("String path complete! All four balls are connected from Head to Tail."); }
+      else setMessage(`Glowing string connected Ball ${selected} → Ball ${id}. Continue the chain.`);
     }
   };
 
   const clickLink = (index: number) => {
     if (complete) return;
     if (mode === 3) {
-      setBrokenLink(index); setBrokenEdge(links[index]); setLinks((items) => items.filter((_, itemIndex) => itemIndex !== index)); setMessage("Pointer broken. Drag/select Node 25 into the open gap."); return;
+      setBrokenLink(index); setBrokenEdge(links[index]); setLinks((items) => items.filter((_, itemIndex) => itemIndex !== index)); setMessage("Chain link broken. Place the golden link into the open gap."); return;
     }
     if (mode === 4) {
       setLinks((items) => items.map((link, itemIndex) => itemIndex === index ? { from: link.to, to: link.from } : link));
       if (links.filter((link, itemIndex) => itemIndex !== index).every((link) => link.from > link.to) && links[index].from < links[index].to) {
         setComplete(true); setMessage("List reversed! Pointers now run from tail to head.");
-      } else setMessage("Pointer reversed. Reverse each remaining link.");
+      } else setMessage("Snake segment reversed. Turn each remaining pointer toward the Head.");
     }
   };
 
-  return <GameShell title={game.title} instructions={listModeInstructions[mode - 1]} objective={game.objective} score={complete ? 100 : links.length * 10} levelLabel={`Mode ${mode}/4`} levelComplete={complete} completionTitle={`Mode ${mode} Complete!`} onNextLevel={mode < 4 ? () => startMode(mode + 1) : undefined} onReset={() => startMode(mode)} scene={<LinkedListScene nodes={nodes} links={links} selectedId={selected} headId={mode === 4 ? 4 : 1} reversed={mode === 4} onNodeClick={clickNode} onLinkClick={clickLink} />}
-    controls={<div className="space-y-3 rounded-[26px] border border-cyan-200/20 bg-slate-950/70 p-4 shadow-xl backdrop-blur-xl"><p className="text-xs font-black text-cyan-100">HEAD → {nodes.map((node) => node.value).join(" → ")} → NULL</p>
-      {mode === 2 && <p className="text-xs text-slate-200">Traversal progress: {Math.max(0, step - 1)}/{nodes.length} nodes</p>}
-      {mode === 3 && <p className="text-xs text-amber-100">Floating node: 25 · {brokenLink === null ? "Choose a pointer to break" : "Click Node 25 to insert"}</p>}
-      {mode === 4 && <p className="text-xs text-violet-100">Reverse every arrow. New head should be Node 4.</p>}
-      {mode === 1 && <div className="space-y-2"><p className="text-xs font-semibold text-slate-300">{selected === null ? "Step 1: Choose a source node." : `Source selected: Node ${selected}. Connect to Node ${selected + 1}.`}</p><div className="grid grid-cols-3 gap-1">{[1,2,3].map((id) => <button key={id} type="button" onClick={() => setSelected(id)} className={`rounded-lg px-2 py-2 text-[10px] font-bold ${selected === id ? "bg-cyan-300 text-slate-950" : "bg-cyan-400/10 text-cyan-100"}`}>Node {id}</button>)}</div>{selected !== null && <button type="button" onClick={() => clickNode(selected + 1)} className="w-full rounded-lg bg-gradient-to-r from-cyan-400 to-blue-500 px-3 py-2 text-xs font-black text-slate-950">Connect Node {selected} → Node {selected + 1}</button>}</div>}
-      {mode === 2 && <div className="grid grid-cols-4 gap-1">{[1,2,3,4].map((id) => <button key={id} type="button" onClick={() => clickNode(id)} className="rounded-lg bg-emerald-400/10 px-2 py-2 text-[10px] font-bold text-emerald-100">Visit {id}</button>)}</div>}
-      {mode === 3 && <div className="grid grid-cols-2 gap-1"><button type="button" onClick={() => clickLink(Math.max(0, Math.floor(links.length / 2)))} className="rounded-lg bg-rose-400/10 px-2 py-2 text-[10px] font-bold text-rose-100">Break middle link</button><button type="button" onClick={() => clickNode(5)} className="rounded-lg bg-amber-400/10 px-2 py-2 text-[10px] font-bold text-amber-100">Insert Node 25</button></div>}
-      {mode === 4 && <div className="grid grid-cols-3 gap-1">{links.map((link, index) => <button key={index} type="button" onClick={() => clickLink(index)} className="rounded-lg bg-violet-400/10 px-2 py-2 text-[10px] font-bold text-violet-100">Reverse {link.from}→{link.to}</button>)}</div>}
+  const controlTheme = ["border-cyan-200/20 bg-slate-950/70", "border-orange-300/25 bg-orange-950/25", "border-slate-300/25 bg-slate-900/85", "border-emerald-300/25 bg-emerald-950/25"][mode - 1];
+  return <GameShell title={game.title} instructions={listModeInstructions[mode - 1]} objective={game.objective} score={complete ? 100 : links.length * 10} levelLabel={`Mode ${mode}/4`} levelComplete={complete} completionTitle={`Mode ${mode} Complete!`} onNextLevel={mode < 4 ? () => startMode(mode + 1) : undefined} onReset={() => startMode(mode)} scene={<LinkedListScene nodes={nodes} links={links} selectedId={selected} mode={mode} trainAttached={mode === 2 && step > 1} onNodeClick={clickNode} onLinkClick={clickLink} />}
+    controls={<div className={`space-y-3 rounded-[26px] border p-4 shadow-xl backdrop-blur-xl ${controlTheme}`}><p className={`text-xs font-black ${mode === 2 ? "text-orange-100" : mode === 3 ? "text-slate-100" : mode === 4 ? "text-emerald-100" : "text-cyan-100"}`}>{mode === 2 ? "ENGINE → " : mode === 4 ? "TAIL → " : "HEAD → "}{nodes.map((node) => node.value).join(" → ")}{mode === 4 ? " → HEAD" : " → NULL"}</p>
+      {mode === 2 && <p className="text-xs text-orange-100">Bogie progress: {Math.max(0, step - 1)}/{nodes.length} attached</p>}
+      {mode === 3 && <p className="text-xs text-amber-100">Golden link: {brokenLink === null ? "Break a chain link to open a gap" : "Gap ready · insert the golden link"}</p>}
+      {mode === 4 && <p className="text-xs text-emerald-100">Reverse all three pointers so the Head leads the snake.</p>}
+      {mode === 1 && <div className="space-y-2"><p className="text-xs font-semibold text-slate-300">{selected === null ? "Choose a ball to anchor the string." : `String anchored at Ball ${selected}. Connect Ball ${selected + 1} next.`}</p><div className="grid grid-cols-3 gap-1">{[1,2,3].map((id) => <button key={id} type="button" onClick={() => setSelected(id)} className={`rounded-lg px-2 py-2 text-[10px] font-bold ${selected === id ? "bg-cyan-300 text-slate-950" : "bg-cyan-400/10 text-cyan-100"}`}>Ball {id}</button>)}</div>{selected !== null && <button type="button" onClick={() => clickNode(selected + 1)} className="w-full rounded-lg bg-gradient-to-r from-cyan-400 to-blue-500 px-3 py-2 text-xs font-black text-slate-950">Connect String · {selected} → {selected + 1}</button>}</div>}
+      {mode === 2 && <div className="grid grid-cols-2 gap-1">{[1,2,3,4].map((id) => <button key={id} type="button" onClick={() => clickNode(id)} className="rounded-lg bg-orange-400/10 px-2 py-2 text-[10px] font-bold text-orange-100">Attach Bogie {id}</button>)}</div>}
+      {mode === 3 && <div className="grid grid-cols-2 gap-1"><button type="button" onClick={() => clickLink(Math.max(0, Math.floor(links.length / 2)))} disabled={brokenLink !== null} className="rounded-lg bg-rose-400/10 px-2 py-2 text-[10px] font-bold text-rose-100 disabled:opacity-40">Break Link</button><button type="button" onClick={() => clickNode(5)} disabled={brokenLink === null} className="rounded-lg bg-amber-400/10 px-2 py-2 text-[10px] font-bold text-amber-100 disabled:opacity-40">Insert Golden Link</button></div>}
+      {mode === 4 && <div className="grid grid-cols-1 gap-1 sm:grid-cols-3">{links.map((link, index) => <button key={index} type="button" onClick={() => clickLink(index)} disabled={link.from > link.to} className="rounded-lg bg-emerald-400/10 px-2 py-2 text-[10px] font-bold text-emerald-100 disabled:opacity-40">Reverse Snake · {link.from} → {link.to}</button>)}</div>}
       <p aria-live="polite" className="text-xs font-bold text-slate-200">{message}</p>
       <div className="grid grid-cols-4 gap-1">{[1,2,3,4].map((item) => <button key={item} type="button" onClick={() => startMode(item)} className={`rounded-lg px-2 py-2 text-[10px] font-black ${mode === item ? "bg-violet-400/30 text-white" : "bg-white/5 text-slate-400"}`}>Mode {item}</button>)}</div>
     </div>}

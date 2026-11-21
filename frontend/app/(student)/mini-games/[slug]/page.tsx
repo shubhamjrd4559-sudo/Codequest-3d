@@ -477,10 +477,10 @@ function QueueCounterGame({ game }: { game: { title: string; instructions: strin
 }
 
 const sortInstructions = [
-  "Manual Swap: click two adjacent blocks to swap them. Sort all four numbers low to high.",
-  "Bubble Sort: click Next Step to compare the highlighted pair and swap when needed.",
-  "Reverse Sort: use adjacent swaps to order five numbers from highest to lowest.",
-  "Speed Sort: sort five random numbers from low to high before the 20-second timer ends.",
+  "Library Books: click two neighboring books to swap them. Arrange the shelf from shortest to tallest.",
+  "Magic Potions: press Next Step to compare the highlighted pair. The potions swap automatically when they are out of order.",
+  "Space Rockets: swap adjacent rockets until their fuel levels are ordered from highest to lowest.",
+  "Diamond Heist: sort five diamonds by weight, lightest to heaviest, before the 20-second vault alarm.",
 ];
 const makeTiles = (values: number[]): NumberTile[] => values.map((value, id) => ({ id: id + 1, value }));
 const ascending = (tiles: NumberTile[]) => tiles.every((tile, index) => index === 0 || tiles[index - 1].value <= tile.value);
@@ -509,7 +509,7 @@ function NumberSortingGame({ game }: { game: { title: string; instructions: stri
 
   const startMode = (nextMode: number) => {
     setMode(nextMode); setSelected(null); setComplete(false); setFailed(false); setScore(0); setSeconds(20); setBubbleI(0); setBubbleJ(0);
-    const values = nextMode === 1 ? [3, 1, 4, 2] : nextMode === 2 ? [5, 1, 4, 2, 3] : nextMode === 3 ? [2, 5, 1, 4, 3] : Array.from({ length: 5 }, () => Math.floor(Math.random() * 90) + 10);
+    const values = nextMode === 1 ? [3, 1, 4, 2] : nextMode === 2 ? [4, 1, 3, 2] : nextMode === 3 ? [32, 85, 18, 64, 47] : [44, 18, 72, 31, 56];
     setTiles(makeTiles(values)); setMessage(nextMode === 2 ? "Bubble Sort ready. Compare the first two blocks." : sortInstructions[nextMode - 1]);
   };
 
@@ -539,12 +539,16 @@ function NumberSortingGame({ game }: { game: { title: string; instructions: stri
     setMessage(`Comparing ${next[left].value} and ${next[right].value}${next[left].value <= next[right].value ? " — already in order." : " — swapped."}`);
   };
 
-  return <GameShell title={game.title} instructions={sortInstructions[mode - 1]} objective={game.objective} score={score} levelLabel={`Mode ${mode}/4`} timerLabel={mode === 4 ? `${seconds}s` : "Ready"} levelComplete={complete} completionTitle={mode === 4 ? "Speed Sort Complete!" : `Mode ${mode} Complete!`} onNextLevel={mode < 4 ? () => startMode(mode + 1) : undefined} onReset={() => startMode(mode)} scene={<NumberSortingScene tiles={tiles} selectedId={selected} compareIndices={mode === 2 ? [bubbleJ, bubbleJ + 1] : []} onSelect={selectTile} />}
-    controls={<div className="space-y-3 rounded-[26px] border border-cyan-200/20 bg-slate-950/70 p-4 shadow-xl backdrop-blur-xl">
-      <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider text-cyan-100"><span>{mode === 2 ? `Pass ${bubbleI + 1} · Compare ${bubbleJ + 1}/${tiles.length - 1 - bubbleI}` : mode === 3 ? "Descending order" : "Array values"}</span><span>{tiles.map((tile) => tile.value).join(" · ")}</span></div>
-      {mode === 2 ? <button type="button" onClick={nextBubbleStep} disabled={complete || failed} className="w-full rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 py-3 text-sm font-black text-slate-950 disabled:opacity-40">Next Step →</button> : <p className="text-xs text-slate-300">Click two adjacent blocks in 3D to swap them.</p>}
+  const modeNames = ["Library Books", "Magic Potions", "Space Rockets", "Diamond Heist"];
+  const themeClasses = ["border-amber-300/25 bg-amber-950/25", "border-violet-300/25 bg-violet-950/25", "border-sky-300/25 bg-slate-950/75", "border-cyan-300/25 bg-slate-950/75"][mode - 1];
+  const actionCopy = ["Select two adjacent books on the shelf.", "Compare each glowing pair and watch Bubble Sort work.", "Click two neighboring rockets to swap their fuel positions.", "Click two neighboring diamonds to swap their weights."][mode - 1];
+
+  return <GameShell title={game.title} instructions={sortInstructions[mode - 1]} objective={game.objective} score={score} levelLabel={`${modeNames[mode - 1]} · ${mode}/4`} timerLabel={mode === 4 ? `${seconds}s` : "Ready"} levelComplete={complete} completionTitle={mode === 4 ? "Diamond Heist Complete!" : `${modeNames[mode - 1]} Complete!`} onNextLevel={mode < 4 ? () => startMode(mode + 1) : undefined} onReset={() => startMode(mode)} scene={<NumberSortingScene tiles={tiles} mode={mode} selectedId={selected} compareIndices={mode === 2 ? [bubbleJ, bubbleJ + 1] : []} onSelect={selectTile} />}
+    controls={<div className={`space-y-3 rounded-[26px] border p-4 shadow-xl backdrop-blur-xl ${themeClasses}`}>
+      <div className="flex items-center justify-between gap-2 text-xs font-black uppercase tracking-wider text-cyan-100"><span>{mode === 2 ? `Pass ${bubbleI + 1} · Pair ${bubbleJ + 1}/${tiles.length - 1 - bubbleI}` : mode === 3 ? "Target · Highest fuel first" : mode === 4 ? "Target · Lightest first" : "Target · Shortest to tallest"}</span><span className="text-right">{tiles.map((tile) => tile.value).join(" · ")}{mode === 3 ? "%" : mode === 4 ? " kg" : ""}</span></div>
+      {mode === 2 ? <><p className="text-xs text-violet-100">Compare {tiles[bubbleJ]?.value} with {tiles[bubbleJ + 1]?.value}. {tiles[bubbleJ]?.value > tiles[bubbleJ + 1]?.value ? "They will swap." : "They are already in order."}</p><button type="button" onClick={nextBubbleStep} disabled={complete || failed} className="w-full rounded-xl bg-gradient-to-r from-violet-400 to-fuchsia-400 py-3 text-sm font-black text-slate-950 disabled:opacity-40">Next Step · Bubble Pair →</button></> : <p className="text-xs text-slate-300">{actionCopy}</p>}
       {failed && <button type="button" onClick={() => startMode(mode)} className="w-full rounded-xl border border-rose-300/40 bg-rose-400/10 py-2 text-xs font-black text-rose-100">Retry Mode {mode}</button>}
-      <div className="grid grid-cols-4 gap-1">{[1, 2, 3, 4].map((item) => <button type="button" key={item} onClick={() => startMode(item)} className={`rounded-lg px-2 py-2 text-[10px] font-black ${mode === item ? "bg-violet-400/30 text-white" : "bg-white/5 text-slate-400"}`}>Mode {item}</button>)}</div>
+      <div className="grid grid-cols-2 gap-1">{[1, 2, 3, 4].map((item) => <button type="button" key={item} onClick={() => startMode(item)} className={`rounded-lg px-2 py-2 text-[10px] font-black ${mode === item ? "bg-violet-400/30 text-white" : "bg-white/5 text-slate-400"}`}>{modeNames[item - 1]}</button>)}</div>
       <p aria-live="polite" className="text-xs font-bold text-cyan-100">{message}</p>
     </div>}
   />;

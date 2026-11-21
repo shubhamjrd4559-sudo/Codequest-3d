@@ -99,6 +99,7 @@ class VideoLecture(TimestampedModel):
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, null=True, blank=True, related_name="lectures")
     title = models.CharField(max_length=200)
     youtube_video_id = models.CharField(max_length=11, validators=[youtube_id_validator])
+    search_url = models.URLField(blank=True, help_text="YouTube search URL for this topic's recommended lecture.")
     description = models.TextField(blank=True)
     related_notes = models.TextField(blank=True)
     order = models.PositiveIntegerField(default=0)

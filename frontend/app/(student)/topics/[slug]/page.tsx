@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Copy, Check, BookOpen, HelpCircle, Video } from 'lucide-react';
 import { topicsApi } from '@/lib/api/topics';
 import { Topic } from '@/lib/api/types';
+import TopicQuizRunner from '@/components/quiz/TopicQuizRunner';
 
 // ─── Static fallback data ────────────────────────────────────────────────────
 
@@ -29,45 +30,6 @@ int main() {
 
     return 0;
 }`;
-
-const QUIZ_QUESTIONS = [
-  {
-    id: 1,
-    question: 'What is the time complexity to access an element at a given index in a contiguous array?',
-    options: [
-      { key: 'A', text: 'O(1) — Constant Time', correct: true },
-      { key: 'B', text: 'O(n) — Linear Time', correct: false },
-      { key: 'C', text: 'O(log n) — Logarithmic Time', correct: false },
-      { key: 'D', text: 'O(n²) — Quadratic Time', correct: false },
-    ],
-    explanation:
-      'Array elements are stored contiguously. The address is Base + (index × size), computed in a single step — O(1) direct access.',
-  },
-  {
-    id: 2,
-    question: 'What happens when you access an array out of its declared bounds in C++?',
-    options: [
-      { key: 'A', text: 'Compiler error always', correct: false },
-      { key: 'B', text: 'Undefined behaviour (memory corruption)', correct: true },
-      { key: 'C', text: 'Returns 0 by default', correct: false },
-      { key: 'D', text: 'Throws a runtime exception', correct: false },
-    ],
-    explanation:
-      'C++ does not perform bounds checking. Accessing out-of-bounds memory leads to undefined behaviour, which may corrupt data silently.',
-  },
-  {
-    id: 3,
-    question: 'Which of the following operations on an unsorted array has O(n) worst-case complexity?',
-    options: [
-      { key: 'A', text: 'Read at index i', correct: false },
-      { key: 'B', text: 'Write at index i', correct: false },
-      { key: 'C', text: 'Search for a value', correct: true },
-      { key: 'D', text: 'Get the size', correct: false },
-    ],
-    explanation:
-      'Linear search scans every element one by one, so in the worst case it checks all n elements — O(n) time.',
-  },
-];
 
 const LECTURE_NOTES = [
   {
@@ -165,154 +127,6 @@ function CodeTab({ topic }: { topic: Topic | null }) {
           </code>
         </pre>
       </div>
-    </div>
-  );
-}
-
-// ─── Quiz Tab ─────────────────────────────────────────────────────────────────
-
-function QuizTab() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [selected, setSelected] = useState<string | null>(null);
-  const [score, setScore] = useState(0);
-  const [done, setDone] = useState(false);
-
-  const q = QUIZ_QUESTIONS[currentIndex];
-  const isAnswered = selected !== null;
-
-  const handleSelect = (key: string) => {
-    if (isAnswered) return;
-    setSelected(key);
-    const opt = q.options.find((o) => o.key === key);
-    if (opt?.correct) setScore((s) => s + 1);
-  };
-
-  const handleNext = () => {
-    if (currentIndex < QUIZ_QUESTIONS.length - 1) {
-      setCurrentIndex((i) => i + 1);
-      setSelected(null);
-    } else {
-      setDone(true);
-    }
-  };
-
-  const handleReset = () => {
-    setCurrentIndex(0);
-    setSelected(null);
-    setScore(0);
-    setDone(false);
-  };
-
-  if (done) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="text-center space-y-4 py-10"
-      >
-        <div className="text-6xl">🏆</div>
-        <h3 className="text-2xl font-black text-white">Quiz Complete!</h3>
-        <p className="text-slate-300">
-          You scored{' '}
-          <span className="text-cyan-400 font-black">
-            {score}/{QUIZ_QUESTIONS.length}
-          </span>{' '}
-          correct answers.
-        </p>
-        <button
-          onClick={handleReset}
-          className="mt-2 inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-sm shadow-lg hover:scale-105 transition-transform"
-        >
-          Try Again
-        </button>
-      </motion.div>
-    );
-  }
-
-  return (
-    <div className="space-y-5">
-      {/* Progress bar */}
-      <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
-        <motion.div
-          className="h-full bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full"
-          initial={{ width: 0 }}
-          animate={{ width: `${((currentIndex + 1) / QUIZ_QUESTIONS.length) * 100}%` }}
-          transition={{ duration: 0.4 }}
-        />
-      </div>
-      <div className="flex items-center justify-between text-xs font-semibold text-slate-400">
-        <span>Question {currentIndex + 1} of {QUIZ_QUESTIONS.length}</span>
-        <span>Score: {score}</span>
-      </div>
-
-      {/* Question */}
-      <p className="text-base sm:text-lg font-bold text-white leading-relaxed">{q.question}</p>
-
-      {/* Options */}
-      <div className="space-y-3">
-        {q.options.map((opt) => {
-          const isSelected = selected === opt.key;
-          let cls =
-            'bg-white/[0.05] border border-white/10 backdrop-blur-xl rounded-xl p-4 text-left font-semibold cursor-pointer transition-all w-full text-sm text-slate-200';
-          if (isAnswered) {
-            if (opt.correct) {
-              cls += ' border-emerald-400 bg-emerald-500/15 shadow-[0_0_20px_rgba(16,185,129,0.4)] text-emerald-200';
-            } else if (isSelected) {
-              cls += ' border-red-400 bg-red-500/15 shadow-[0_0_20px_rgba(239,68,68,0.4)] text-red-200';
-            } else {
-              cls += ' opacity-50';
-            }
-          }
-
-          return (
-            <motion.button
-              key={opt.key}
-              whileHover={!isAnswered ? { scale: 1.02 } : {}}
-              whileTap={!isAnswered ? { scale: 0.98 } : {}}
-              onClick={() => handleSelect(opt.key)}
-              disabled={isAnswered}
-              className={cls}
-            >
-              <span className="inline-flex items-center gap-3">
-                <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center font-mono text-xs text-purple-300 shrink-0">
-                  {opt.key}
-                </span>
-                {opt.text}
-              </span>
-            </motion.button>
-          );
-        })}
-      </div>
-
-      {/* Explanation */}
-      <AnimatePresence>
-        {isAnswered && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3 }}
-            className="rounded-xl border border-white/15 bg-white/[0.05] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-          >
-            <div>
-              <p
-                className={`text-xs font-black mb-1 ${
-                  q.options.find((o) => o.key === selected)?.correct ? 'text-emerald-400' : 'text-red-400'
-                }`}
-              >
-                {q.options.find((o) => o.key === selected)?.correct ? '✅ Correct!' : '❌ Incorrect'}
-              </p>
-              <p className="text-xs text-slate-300 leading-relaxed">{q.explanation}</p>
-            </div>
-            <button
-              onClick={handleNext}
-              className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-500 text-white font-black text-xs shadow-lg hover:scale-105 transition-transform"
-            >
-              {currentIndex < QUIZ_QUESTIONS.length - 1 ? 'Next →' : 'Finish'}
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
@@ -497,7 +311,7 @@ export default function TopicPage() {
           transition={{ duration: 0.25 }}
         >
           {activeTab === 'Code' && <CodeTab topic={topic} />}
-          {activeTab === 'Quiz' && <QuizTab />}
+          {activeTab === 'Quiz' && <TopicQuizRunner topicTitle={topic?.title ?? slug} topicSlug={slug} />}
           {activeTab === 'Video' && <VideoTab topic={topic} />}
         </motion.div>
       </AnimatePresence>

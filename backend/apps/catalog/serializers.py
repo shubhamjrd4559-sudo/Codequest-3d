@@ -50,6 +50,7 @@ class VideoLectureSerializer(serializers.ModelSerializer):
             "lesson",
             "title",
             "youtube_video_id",
+            "search_url",
             "description",
             "related_notes",
             "order",

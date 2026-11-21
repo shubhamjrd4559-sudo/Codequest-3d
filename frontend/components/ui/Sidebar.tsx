@@ -9,6 +9,7 @@ import {
   Gamepad2,
   Code2,
   Trophy,
+  Video,
   Settings,
   LogOut,
   UserRound,
@@ -45,10 +46,16 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
       id: "games",
     },
     {
-      name: "DSA Topics",
-      href: "/topics/arrays",
+      name: "Video Help",
+      href: "/videos",
+      icon: Video,
+      id: "videos",
+    },
+    {
+      name: "DSA Quiz",
+      href: "/quizzes",
       icon: Code2,
-      id: "dsa_topics",
+      id: "quizzes",
     },
     {
       name: "Achievements",
@@ -67,8 +74,10 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
   const getIsActive = (item: (typeof navItems)[0]) => {
     if (activeItem) return activeItem === item.id;
     if (item.href === "/dashboard" && pathname === "/dashboard") return true;
+    if (item.id === "learning" && pathname.startsWith("/topics")) return true;
     if (item.id === "games" && pathname.startsWith("/mini-games")) return true;
-    if (item.id === "dsa_topics" && pathname.startsWith("/topics")) return true;
+    if (item.id === "videos" && pathname.startsWith("/videos")) return true;
+    if (item.id === "quizzes" && pathname.startsWith("/quizzes")) return true;
     return false;
   };
 

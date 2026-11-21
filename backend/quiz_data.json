@@ -1,0 +1,1458 @@
+[
+  {
+    "topic_id": 1,
+    "topic_name": "Time and Space Complexity",
+    "level": 1,
+    "question": "Imagine you have a list of 100 students. An activity takes exactly 5 seconds regardless of how many students are on the list. Which time complexity best describes this activity?",
+    "options": [
+      "A) O(n)",
+      "B) O(1)",
+      "C) O(n²)",
+      "D) O(log n)"
+    ],
+    "correct_answer": "B",
+    "explanation": "O(1) is called constant time complexity. The activity takes the same amount of time whether there are 10 students or 10,000 students.\n\nCoding use: C++ developers use complexity to compare loop and algorithm choices before running them on large inputs."
+  },
+  {
+    "topic_id": 1,
+    "topic_name": "Time and Space Complexity",
+    "level": 2,
+    "question": "A teacher checks every student's name once in a class of 30 students. Next year, the class grows to 60 students. If checking each name takes the same time, how does the total checking time change?",
+    "options": [
+      "A) It stays the same",
+      "B) It becomes half",
+      "C) It doubles",
+      "D) It becomes four times"
+    ],
+    "correct_answer": "C",
+    "explanation": "Every student requires one check. Doubling the number of students doubles the total checks. This is linear time complexity, O(n).\n\nCoding use: C++ developers use complexity to compare loop and algorithm choices before running them on large inputs."
+  },
+  {
+    "topic_id": 1,
+    "topic_name": "Time and Space Complexity",
+    "level": 3,
+    "question": "An activity requires 3 seconds for every item in a collection. If there are 20 items, how much time is needed? Assume there is no extra starting time.",
+    "options": [
+      "A) 20 seconds",
+      "B) 40 seconds",
+      "C) 60 seconds",
+      "D) 80 seconds"
+    ],
+    "correct_answer": "C",
+    "explanation": "Each item requires 3 seconds. Therefore, 20 × 3 = 60 seconds. The total time grows directly with the number of items, so it follows O(n).\n\nCoding use: C++ developers use complexity to compare loop and algorithm choices before running them on large inputs."
+  },
+  {
+    "topic_id": 1,
+    "topic_name": "Time and Space Complexity",
+    "level": 4,
+    "question": "Three students design different methods to check a collection of 100 items. Method A takes 100 steps, Method B takes 10,000 steps, and Method C takes 7 steps. If the collection grows to 200 items, their methods follow O(n), O(n²), and O(1), respectively. Which method will require the fewest steps?",
+    "options": [
+      "A) Method A: 200 steps",
+      "B) Method B: 40,000 steps",
+      "C) Method C: 7 steps",
+      "D) All methods require equal steps"
+    ],
+    "correct_answer": "C",
+    "explanation": "Method A requires 200 steps because its work doubles. Method B requires 200 × 200 = 40,000 steps. Method C always requires 7 steps because it has constant complexity. Therefore, Method C is the most efficient.\n\nCoding use: C++ developers use complexity to compare loop and algorithm choices before running them on large inputs."
+  },
+  {
+    "topic_id": 2,
+    "topic_name": "Basic Mathematics & Number Theory",
+    "level": 1,
+    "question": "Riya has 24 chocolates and wants to divide them equally among 6 friends without keeping any chocolate for herself. Which mathematical concept helps her solve this problem?",
+    "options": [
+      "A) Multiplication",
+      "B) Division",
+      "C) Subtraction",
+      "D) Squaring"
+    ],
+    "correct_answer": "B",
+    "explanation": "Division helps distribute a quantity into equal groups. Each friend receives 24 ÷ 6 = 4 chocolates.\n\nCoding use: C++ programs use integer arithmetic, remainder, and greatest-common-divisor routines for divisibility and number problems."
+  },
+  {
+    "topic_id": 2,
+    "topic_name": "Basic Mathematics & Number Theory",
+    "level": 2,
+    "question": "A school has 18 red balloons and 24 blue balloons. The teacher wants to make the maximum number of identical decoration groups without leaving any balloon unused. How many groups can be made?",
+    "options": [
+      "A) 3",
+      "B) 4",
+      "C) 6",
+      "D) 9"
+    ],
+    "correct_answer": "C",
+    "explanation": "We need the greatest common divisor of 18 and 24. Their common factors are 1, 2, 3, and 6. The greatest is 6, so 6 identical groups can be made. Each group gets 3 red and 4 blue balloons.\n\nCoding use: C++ programs use integer arithmetic, remainder, and greatest-common-divisor routines for divisibility and number problems."
+  },
+  {
+    "topic_id": 2,
+    "topic_name": "Basic Mathematics & Number Theory",
+    "level": 3,
+    "question": "A number is divisible by both 4 and 6. What is the smallest positive number that satisfies this condition?",
+    "options": [
+      "A) 8",
+      "B) 12",
+      "C) 18",
+      "D) 24"
+    ],
+    "correct_answer": "B",
+    "explanation": "Multiples of 4 are 4, 8, 12, 16, and so on. Multiples of 6 are 6, 12, 18, and so on. The smallest common multiple is 12.\n\nCoding use: C++ programs use integer arithmetic, remainder, and greatest-common-divisor routines for divisibility and number problems."
+  },
+  {
+    "topic_id": 2,
+    "topic_name": "Basic Mathematics & Number Theory",
+    "level": 4,
+    "question": "A treasure chest contains fewer than 100 coins. When the coins are arranged in groups of 5, there are 2 coins left over. When arranged in groups of 7, there are also 2 coins left over. What is the greatest possible number of coins in the chest?",
+    "options": [
+      "A) 72",
+      "B) 77",
+      "C) 87",
+      "D) 92"
+    ],
+    "correct_answer": "A",
+    "explanation": "The number must be 2 more than a multiple of 35. Below 100, the possibilities are 37 and 72. Of the choices, 72 is the greatest, so option A is correct.\n\nCoding use: C++ programs use integer arithmetic, remainder, and greatest-common-divisor routines for divisibility and number problems."
+  },
+  {
+    "topic_id": 3,
+    "topic_name": "Bit Manipulation",
+    "level": 1,
+    "question": "Computers represent information using binary digits. Which two digits are used in the binary number system?",
+    "options": [
+      "A) 0 and 1",
+      "B) 1 and 2",
+      "C) 0 and 9",
+      "D) 2 and 3"
+    ],
+    "correct_answer": "A",
+    "explanation": "The binary number system uses only two digits: 0 and 1. These are called bits.\n\nCoding use: C++ uses bitwise operators and masks to inspect, set, clear, or toggle compact binary flags."
+  },
+  {
+    "topic_id": 3,
+    "topic_name": "Bit Manipulation",
+    "level": 2,
+    "question": "Imagine two switches. A special machine turns ON only when BOTH switches are ON. Which logical operation represents this condition?",
+    "options": [
+      "A) OR",
+      "B) XOR",
+      "C) AND",
+      "D) NOT"
+    ],
+    "correct_answer": "C",
+    "explanation": "AND produces 1 only when both inputs are 1. For example, 1 AND 1 gives 1, while all other combinations give 0.\n\nCoding use: C++ uses bitwise operators and masks to inspect, set, clear, or toggle compact binary flags."
+  },
+  {
+    "topic_id": 3,
+    "topic_name": "Bit Manipulation",
+    "level": 3,
+    "question": "What is the decimal value of the binary number 1011?",
+    "options": [
+      "A) 9",
+      "B) 10",
+      "C) 11",
+      "D) 13"
+    ],
+    "correct_answer": "C",
+    "explanation": "The binary number 1011 represents (1 × 8) + (0 × 4) + (1 × 2) + (1 × 1) = 8 + 0 + 2 + 1 = 11.\n\nCoding use: C++ uses bitwise operators and masks to inspect, set, clear, or toggle compact binary flags."
+  },
+  {
+    "topic_id": 3,
+    "topic_name": "Bit Manipulation",
+    "level": 4,
+    "question": "A magical machine takes two binary numbers, 1100 and 1010, and applies the XOR operation. XOR gives 1 when the two corresponding bits are different and 0 when they are the same. What is the result?",
+    "options": [
+      "A) 0110",
+      "B) 1110",
+      "C) 1000",
+      "D) 0100"
+    ],
+    "correct_answer": "A",
+    "explanation": "Compare each position: 1 XOR 1 = 0, 1 XOR 0 = 1, 0 XOR 1 = 1, and 0 XOR 0 = 0. Therefore, the result is 0110.\n\nCoding use: C++ uses bitwise operators and masks to inspect, set, clear, or toggle compact binary flags."
+  },
+  {
+    "topic_id": 4,
+    "topic_name": "Recursion",
+    "level": 1,
+    "question": "A child asks their older sibling a question. The sibling does not know the answer and asks their parent. The parent asks the grandparent. What does this situation most closely represent in problem-solving?",
+    "options": [
+      "A) Sorting",
+      "B) Recursion",
+      "C) Searching",
+      "D) Hashing"
+    ],
+    "correct_answer": "B",
+    "explanation": "Recursion means solving a problem by asking a smaller or similar version of the same problem. Each level passes the question further until someone can provide an answer.\n\nCoding use: C++ recursive functions use a base case to stop and a smaller recursive call to solve the remaining subproblem."
+  },
+  {
+    "topic_id": 4,
+    "topic_name": "Recursion",
+    "level": 2,
+    "question": "A robot climbs a staircase by saying its current step number and then moving to the next step. It stops when it reaches step 5. If it starts at step 1, how many steps does it visit before stopping?",
+    "options": [
+      "A) 3",
+      "B) 4",
+      "C) 5",
+      "D) 6"
+    ],
+    "correct_answer": "C",
+    "explanation": "The robot visits steps 1, 2, 3, 4, and 5. It stops at step 5, so it visits exactly 5 steps. The stopping condition is similar to a base case in recursion.\n\nCoding use: C++ recursive functions use a base case to stop and a smaller recursive call to solve the remaining subproblem."
+  },
+  {
+    "topic_id": 4,
+    "topic_name": "Recursion",
+    "level": 3,
+    "question": "A magical box follows this rule: to solve a task numbered n, it first solves the task numbered n - 1 and then adds n to the result. The task numbered 1 has an answer of 1. What is the answer for task number 4?",
+    "options": [
+      "A) 6",
+      "B) 8",
+      "C) 10",
+      "D) 12"
+    ],
+    "correct_answer": "C",
+    "explanation": "Task 1 = 1. Task 2 = 1 + 2 = 3. Task 3 = 3 + 3 = 6. Task 4 = 6 + 4 = 10. Each task depends on the previous smaller task.\n\nCoding use: C++ recursive functions use a base case to stop and a smaller recursive call to solve the remaining subproblem."
+  },
+  {
+    "topic_id": 4,
+    "topic_name": "Recursion",
+    "level": 4,
+    "question": "A robot starts at position 0. Every time it moves, it can take either 1 step or 2 steps forward. It must reach exactly position 4. How many different ways can it reach position 4?",
+    "options": [
+      "A) 3",
+      "B) 4",
+      "C) 5",
+      "D) 6"
+    ],
+    "correct_answer": "C",
+    "explanation": "The possible ways are: 1+1+1+1, 1+1+2, 1+2+1, 2+1+1, and 2+2. There are 5 ways. This is a recursive problem because the number of ways to reach a position depends on the ways to reach smaller positions.\n\nCoding use: C++ recursive functions use a base case to stop and a smaller recursive call to solve the remaining subproblem."
+  },
+  {
+    "topic_id": 5,
+    "topic_name": "Arrays",
+    "level": 1,
+    "question": "A teacher writes the marks of 5 students in five consecutive boxes, keeping them in a fixed order. Which data structure best represents this arrangement?",
+    "options": [
+      "A) Stack",
+      "B) Array",
+      "C) Tree",
+      "D) Graph"
+    ],
+    "correct_answer": "B",
+    "explanation": "An array stores multiple elements in an ordered collection. Each element has a position, making it useful for storing student marks, scores, and other lists.\n\nCoding use: C++ arrays and vectors use indexes and loops to store, visit, and update ordered values."
+  },
+  {
+    "topic_id": 5,
+    "topic_name": "Arrays",
+    "level": 2,
+    "question": "A row of 6 lockers is numbered from position 0 to position 5. Rahul keeps his notebook in position 3. How many lockers are before his locker?",
+    "options": [
+      "A) 2",
+      "B) 3",
+      "C) 4",
+      "D) 5"
+    ],
+    "correct_answer": "B",
+    "explanation": "The positions before position 3 are 0, 1, and 2. Therefore, exactly 3 lockers are before Rahul's locker. Array positions commonly start from 0.\n\nCoding use: C++ arrays and vectors use indexes and loops to store, visit, and update ordered values."
+  },
+  {
+    "topic_id": 5,
+    "topic_name": "Arrays",
+    "level": 3,
+    "question": "An array contains the numbers [4, 7, 2, 9, 5]. A teacher asks you to calculate the sum of all elements at even positions, assuming positions start from 0. What is the answer?",
+    "options": [
+      "A) 9",
+      "B) 11",
+      "C) 14",
+      "D) 16"
+    ],
+    "correct_answer": "B",
+    "explanation": "With positions starting at 0, the even positions are 0, 2, and 4, containing 4, 2, and 5. Their sum is 11, so option B is correct.\n\nCoding use: C++ arrays and vectors use indexes and loops to store, visit, and update ordered values."
+  },
+  {
+    "topic_id": 5,
+    "topic_name": "Arrays",
+    "level": 4,
+    "question": "A treasure hunter has 6 boxes arranged in a row containing [3, 8, 5, 2, 7, 4]. The hunter swaps the first box with the last box, the second box with the second-last box, and the third box with the third-last box. What is the final arrangement?",
+    "options": [
+      "A) [4, 7, 2, 5, 8, 3]",
+      "B) [4, 8, 5, 2, 7, 3]",
+      "C) [3, 7, 5, 2, 8, 4]",
+      "D) [7, 4, 2, 5, 3, 8]"
+    ],
+    "correct_answer": "A",
+    "explanation": "The first and last elements exchange places: 3 and 4. The second and fifth elements exchange places: 8 and 7. The third and fourth elements exchange places: 5 and 2. The final arrangement is [4, 7, 2, 5, 8, 3], which is the reverse of the original array.\n\nCoding use: C++ arrays and vectors use indexes and loops to store, visit, and update ordered values."
+  },
+  {
+    "topic_id": 6,
+    "topic_name": "Strings",
+    "level": 1,
+    "question": "A word is made up of individual letters arranged in a particular order. What is this sequence of characters called in computer science?",
+    "options": [
+      "A) Array",
+      "B) String",
+      "C) Stack",
+      "D) Tree"
+    ],
+    "correct_answer": "B",
+    "explanation": "A string is a sequence of characters arranged in a particular order. Words, sentences, and names can all be represented as strings.\n\nCoding use: C++ strings use character indexes and standard string operations to search, compare, count, and transform text."
+  },
+  {
+    "topic_id": 6,
+    "topic_name": "Strings",
+    "level": 2,
+    "question": "Riya writes the word LEVEL on a board. She reads it from left to right and then from right to left. The word remains the same. What is this type of word called?",
+    "options": [
+      "A) Anagram",
+      "B) Palindrome",
+      "C) Substring",
+      "D) Duplicate"
+    ],
+    "correct_answer": "B",
+    "explanation": "A palindrome reads the same forward and backward. LEVEL remains unchanged when reversed.\n\nCoding use: C++ strings use character indexes and standard string operations to search, compare, count, and transform text."
+  },
+  {
+    "topic_id": 6,
+    "topic_name": "Strings",
+    "level": 3,
+    "question": "A word contains 8 characters. A student removes 3 characters and then adds 5 new characters. How many characters does the final word contain?",
+    "options": [
+      "A) 9",
+      "B) 10",
+      "C) 11",
+      "D) 13"
+    ],
+    "correct_answer": "B",
+    "explanation": "The final length is 8 - 3 + 5 = 10 characters, so option B is correct.\n\nCoding use: C++ strings use character indexes and standard string operations to search, compare, count, and transform text."
+  },
+  {
+    "topic_id": 6,
+    "topic_name": "Strings",
+    "level": 4,
+    "question": "A student has the letters A, A, B, and C. How many different arrangements can be made using all four letters exactly once?",
+    "options": [
+      "A) 6",
+      "B) 8",
+      "C) 12",
+      "D) 24"
+    ],
+    "correct_answer": "C",
+    "explanation": "There are 4! = 24 arrangements if all letters are different. Since the two A letters are identical, each arrangement is counted twice. Thus 24 ÷ 2 = 12 distinct arrangements, so option C is correct.\n\nCoding use: C++ strings use character indexes and standard string operations to search, compare, count, and transform text."
+  },
+  {
+    "topic_id": 7,
+    "topic_name": "Linked Lists",
+    "level": 1,
+    "question": "Imagine a treasure hunt where every clue tells you where to find the next clue. Which data structure works in a similar way?",
+    "options": [
+      "A) Array",
+      "B) Linked List",
+      "C) Heap",
+      "D) Matrix"
+    ],
+    "correct_answer": "B",
+    "explanation": "A linked list contains individual nodes. Each node stores information and a connection to the next node.\n\nCoding use: C++ linked-list nodes use pointers to connect elements, insert or remove nodes, and traverse the chain."
+  },
+  {
+    "topic_id": 7,
+    "topic_name": "Linked Lists",
+    "level": 2,
+    "question": "A chain has five connected links. A new link is added between the second and third links. How many links are present now?",
+    "options": [
+      "A) 4",
+      "B) 5",
+      "C) 6",
+      "D) 7"
+    ],
+    "correct_answer": "C",
+    "explanation": "Initially there are 5 links. Adding one new link gives 5 + 1 = 6 links. The connections must be updated to include the new link.\n\nCoding use: C++ linked-list nodes use pointers to connect elements, insert or remove nodes, and traverse the chain."
+  },
+  {
+    "topic_id": 7,
+    "topic_name": "Linked Lists",
+    "level": 3,
+    "question": "A linked list contains 12 nodes. A student wants to reach the last node by starting at the first node and moving one connection at a time. How many connections must be followed?",
+    "options": [
+      "A) 10",
+      "B) 11",
+      "C) 12",
+      "D) 13"
+    ],
+    "correct_answer": "B",
+    "explanation": "To visit 12 nodes starting from the first node, the student follows 11 connections. A list with n nodes has n - 1 connections in a simple linear arrangement.\n\nCoding use: C++ linked-list nodes use pointers to connect elements, insert or remove nodes, and traverse the chain."
+  },
+  {
+    "topic_id": 7,
+    "topic_name": "Linked Lists",
+    "level": 4,
+    "question": "A treasure chain contains 7 nodes. A visitor starts at the first node and follows every connection until reaching the seventh node. Then the visitor travels backward using a separate backward connection. How many connections are crossed in total?",
+    "options": [
+      "A) 6",
+      "B) 7",
+      "C) 12",
+      "D) 14"
+    ],
+    "correct_answer": "C",
+    "explanation": "Seven nodes in a linear chain have six forward connections. Returning to the first node crosses those six connections in reverse, for 6 + 6 = 12 total crossings. Option C is correct.\n\nCoding use: C++ linked-list nodes use pointers to connect elements, insert or remove nodes, and traverse the chain."
+  },
+  {
+    "topic_id": 8,
+    "topic_name": "Stacks",
+    "level": 1,
+    "question": "You place plates one above another. When you need a plate, you take the topmost plate first. Which data structure follows this rule?",
+    "options": [
+      "A) Queue",
+      "B) Stack",
+      "C) Graph",
+      "D) Tree"
+    ],
+    "correct_answer": "B",
+    "explanation": "A stack follows Last In, First Out (LIFO). The last item added is the first item removed.\n\nCoding use: C++ stack operations model undo history, expression parsing, and depth-first traversal using push and pop."
+  },
+  {
+    "topic_id": 8,
+    "topic_name": "Stacks",
+    "level": 2,
+    "question": "A stack initially contains books A, B, and C in that order, with C at the top. One more book D is placed on top. Which book will be removed first?",
+    "options": [
+      "A) A",
+      "B) B",
+      "C) C",
+      "D) D"
+    ],
+    "correct_answer": "D",
+    "explanation": "A stack follows the Last In, First Out rule. Book D was added last, so it will be removed first.\n\nCoding use: C++ stack operations model undo history, expression parsing, and depth-first traversal using push and pop."
+  },
+  {
+    "topic_id": 8,
+    "topic_name": "Stacks",
+    "level": 3,
+    "question": "A stack starts empty. Five items are added, two items are removed, and four more items are added. How many items are present now?",
+    "options": [
+      "A) 5",
+      "B) 6",
+      "C) 7",
+      "D) 9"
+    ],
+    "correct_answer": "C",
+    "explanation": "Initially there are 0 items. After adding 5, removing 2, and adding 4, the total is 0 + 5 - 2 + 4 = 7.\n\nCoding use: C++ stack operations model undo history, expression parsing, and depth-first traversal using push and pop."
+  },
+  {
+    "topic_id": 8,
+    "topic_name": "Stacks",
+    "level": 4,
+    "question": "A stack contains the numbers 2, 4, and 6, with 6 at the top. A student removes the top two numbers and adds their sum to the stack. What number is now at the top?",
+    "options": [
+      "A) 2",
+      "B) 4",
+      "C) 6",
+      "D) 10"
+    ],
+    "correct_answer": "D",
+    "explanation": "The two removed numbers are 6 and 4. Their sum is 6 + 4 = 10. The remaining stack contains 2 and 10, so 10 is at the top.\n\nCoding use: C++ stack operations model undo history, expression parsing, and depth-first traversal using push and pop."
+  },
+  {
+    "topic_id": 9,
+    "topic_name": "Queues & Deques",
+    "level": 1,
+    "question": "Students stand in a line to collect their report cards. The student who arrives first receives the report card first. Which data structure represents this arrangement?",
+    "options": [
+      "A) Stack",
+      "B) Queue",
+      "C) Tree",
+      "D) Heap"
+    ],
+    "correct_answer": "B",
+    "explanation": "A queue follows First In, First Out (FIFO). The first person to enter the queue is the first person to leave.\n\nCoding use: C++ queues and deques process items in arrival order or update either end for scheduling and window algorithms."
+  },
+  {
+    "topic_id": 9,
+    "topic_name": "Queues & Deques",
+    "level": 2,
+    "question": "A queue contains students A, B, and C in that order. Student D joins at the end, and student A leaves from the front. Which student is now at the front?",
+    "options": [
+      "A) A",
+      "B) B",
+      "C) C",
+      "D) D"
+    ],
+    "correct_answer": "B",
+    "explanation": "The queue changes from A, B, C to A, B, C, D after D joins. When A leaves, the remaining order is B, C, D. Therefore, B is at the front.\n\nCoding use: C++ queues and deques process items in arrival order or update either end for scheduling and window algorithms."
+  },
+  {
+    "topic_id": 9,
+    "topic_name": "Queues & Deques",
+    "level": 3,
+    "question": "A queue initially has 8 people. During an event, 5 people leave from the front and 7 new people join at the back. How many people are in the queue now?",
+    "options": [
+      "A) 8",
+      "B) 9",
+      "C) 10",
+      "D) 12"
+    ],
+    "correct_answer": "C",
+    "explanation": "The remaining people are 8 - 5 = 3. After 7 new people join, the total becomes 3 + 7 = 10.\n\nCoding use: C++ queues and deques process items in arrival order or update either end for scheduling and window algorithms."
+  },
+  {
+    "topic_id": 9,
+    "topic_name": "Queues & Deques",
+    "level": 4,
+    "question": "A deque contains 10 numbers. A student removes 3 numbers from the front, adds 4 numbers at the back, and removes 2 numbers from the back. How many numbers remain?",
+    "options": [
+      "A) 7",
+      "B) 8",
+      "C) 9",
+      "D) 11"
+    ],
+    "correct_answer": "C",
+    "explanation": "The count is 10 - 3 + 4 - 2 = 9. Therefore, option C is correct.\n\nCoding use: C++ queues and deques process items in arrival order or update either end for scheduling and window algorithms."
+  },
+  {
+    "topic_id": 10,
+    "topic_name": "Hashing",
+    "level": 1,
+    "question": "A school gives every student a unique identification number to find their records quickly. Which DSA concept is most closely related to this idea?",
+    "options": [
+      "A) Recursion",
+      "B) Hashing",
+      "C) Sorting",
+      "D) Backtracking"
+    ],
+    "correct_answer": "B",
+    "explanation": "Hashing uses a special mapping to connect a key with a storage location. It helps find information quickly using a key.\n\nCoding use: C++ unordered maps and sets use keys to count values and perform fast average-time lookups."
+  },
+  {
+    "topic_id": 10,
+    "topic_name": "Hashing",
+    "level": 2,
+    "question": "A library assigns a storage box to each book using the last digit of its identification number. Two books have identification numbers 123 and 453. What happens if both use the same storage box?",
+    "options": [
+      "A) Recursion",
+      "B) Collision",
+      "C) Reversal",
+      "D) Deletion"
+    ],
+    "correct_answer": "B",
+    "explanation": "Both identification numbers end in 3. Therefore, they are mapped to the same storage location. This situation is called a hash collision.\n\nCoding use: C++ unordered maps and sets use keys to count values and perform fast average-time lookups."
+  },
+  {
+    "topic_id": 10,
+    "topic_name": "Hashing",
+    "level": 3,
+    "question": "A school has 50 students. Their records are distributed equally among 5 storage groups. How many student records should each group contain?",
+    "options": [
+      "A) 5",
+      "B) 10",
+      "C) 15",
+      "D) 20"
+    ],
+    "correct_answer": "B",
+    "explanation": "The records are distributed equally. Therefore, 50 ÷ 5 = 10 records per group. Equal distribution can help manage stored information.\n\nCoding use: C++ unordered maps and sets use keys to count values and perform fast average-time lookups."
+  },
+  {
+    "topic_id": 10,
+    "topic_name": "Hashing",
+    "level": 4,
+    "question": "A hashing system stores numbers according to their remainder when divided by 7. Four numbers are 15, 22, 29, and 36. How many different storage locations will they use?",
+    "options": [
+      "A) 1",
+      "B) 2",
+      "C) 3",
+      "D) 4"
+    ],
+    "correct_answer": "A",
+    "explanation": "15, 22, 29, and 36 all leave a remainder of 1 when divided by 7. Therefore, all four numbers map to the same location, producing one distinct storage location.\n\nCoding use: C++ unordered maps and sets use keys to count values and perform fast average-time lookups."
+  },
+  {
+    "topic_id": 11,
+    "topic_name": "Trees",
+    "level": 1,
+    "question": "A family tree shows grandparents, parents, and children connected through relationships. Which data structure represents this hierarchical arrangement?",
+    "options": [
+      "A) Queue",
+      "B) Tree",
+      "C) Stack",
+      "D) Hash Table"
+    ],
+    "correct_answer": "B",
+    "explanation": "A tree is a hierarchical data structure made of connected nodes. It begins with a root node and can have child nodes.\n\nCoding use: C++ tree nodes connect parent and child values for hierarchy, search, and traversal operations."
+  },
+  {
+    "topic_id": 11,
+    "topic_name": "Trees",
+    "level": 2,
+    "question": "A tree has one root node. The root has two children, and each child has two children of its own. How many nodes are present in total?",
+    "options": [
+      "A) 5",
+      "B) 6",
+      "C) 7",
+      "D) 8"
+    ],
+    "correct_answer": "C",
+    "explanation": "There is 1 root, 2 children at the second level, and 4 children at the third level. Total nodes = 1 + 2 + 4 = 7.\n\nCoding use: C++ tree nodes connect parent and child values for hierarchy, search, and traversal operations."
+  },
+  {
+    "topic_id": 11,
+    "topic_name": "Trees",
+    "level": 3,
+    "question": "A complete binary tree has 4 levels, with every level completely filled. How many nodes does it contain?",
+    "options": [
+      "A) 7",
+      "B) 8",
+      "C) 12",
+      "D) 15"
+    ],
+    "correct_answer": "D",
+    "explanation": "The four levels contain 1, 2, 4, and 8 nodes. Total nodes = 1 + 2 + 4 + 8 = 15.\n\nCoding use: C++ tree nodes connect parent and child values for hierarchy, search, and traversal operations."
+  },
+  {
+    "topic_id": 11,
+    "topic_name": "Trees",
+    "level": 4,
+    "question": "A full binary tree has 6 nodes with children. How many leaf nodes does it have?",
+    "options": [
+      "A) 5",
+      "B) 6",
+      "C) 7",
+      "D) 8"
+    ],
+    "correct_answer": "C",
+    "explanation": "In a full binary tree, the number of leaves is one more than the number of nodes with children. With 6 such nodes, there are 6 + 1 = 7 leaves, so option C is correct.\n\nCoding use: C++ tree nodes connect parent and child values for hierarchy, search, and traversal operations."
+  },
+  {
+    "topic_id": 12,
+    "topic_name": "Heaps / Priority Queues",
+    "level": 1,
+    "question": "In a hospital, the most urgent patient is treated first, even if other patients arrived earlier. Which data structure best represents this system?",
+    "options": [
+      "A) Ordinary Queue",
+      "B) Priority Queue",
+      "C) Linked List",
+      "D) Stack"
+    ],
+    "correct_answer": "B",
+    "explanation": "A priority queue serves elements according to their priority rather than simply their arrival order. More important tasks can be handled first.\n\nCoding use: C++ priority queues keep the highest- or lowest-priority item ready for scheduling and repeated selection."
+  },
+  {
+    "topic_id": 12,
+    "topic_name": "Heaps / Priority Queues",
+    "level": 2,
+    "question": "A maximum heap contains the values 18, 12, 15, 7, and 9. Which value must be at the root of the heap?",
+    "options": [
+      "A) 7",
+      "B) 9",
+      "C) 15",
+      "D) 18"
+    ],
+    "correct_answer": "D",
+    "explanation": "In a maximum heap, every parent is greater than or equal to its children. Therefore, the largest value, 18, must be at the root.\n\nCoding use: C++ priority queues keep the highest- or lowest-priority item ready for scheduling and repeated selection."
+  },
+  {
+    "topic_id": 12,
+    "topic_name": "Heaps / Priority Queues",
+    "level": 3,
+    "question": "A maximum priority queue contains priorities 45, 20, 35, 10, and 15. The highest-priority item is removed. What is the highest priority remaining?",
+    "options": [
+      "A) 10",
+      "B) 15",
+      "C) 20",
+      "D) 35"
+    ],
+    "correct_answer": "D",
+    "explanation": "The highest priority is 45, so it is removed first. The remaining values are 20, 35, 10, and 15. Their maximum is 35.\n\nCoding use: C++ priority queues keep the highest- or lowest-priority item ready for scheduling and repeated selection."
+  },
+  {
+    "topic_id": 12,
+    "topic_name": "Heaps / Priority Queues",
+    "level": 4,
+    "question": "In a max heap, a node with value 80 has four distinct values available as possible children: 85, 80, 75, and 95. Which value could be a child of the 80 node?",
+    "options": [
+      "A) 85",
+      "B) 80",
+      "C) 75",
+      "D) 95"
+    ],
+    "correct_answer": "C",
+    "explanation": "In a max heap, a child cannot be larger than its parent. The values 85 and 95 are too large, and 80 is excluded because the values are distinct. The value 75 can be a child, so option C is correct.\n\nCoding use: C++ priority queues keep the highest- or lowest-priority item ready for scheduling and repeated selection."
+  },
+  {
+    "topic_id": 13,
+    "topic_name": "Graphs",
+    "level": 1,
+    "question": "A map shows cities as points and roads connecting them. Which data structure can represent these cities and roads?",
+    "options": [
+      "A) Stack",
+      "B) Graph",
+      "C) Array",
+      "D) String"
+    ],
+    "correct_answer": "B",
+    "explanation": "A graph consists of vertices and edges. Cities can be represented as vertices, while roads can be represented as edges.\n\nCoding use: C++ graph representations store vertices and edges so code can model routes and connections."
+  },
+  {
+    "topic_id": 13,
+    "topic_name": "Graphs",
+    "level": 2,
+    "question": "Four cities are connected in a straight route: A to B, B to C, and C to D. How many roads are needed to connect all four cities in this arrangement?",
+    "options": [
+      "A) 2",
+      "B) 3",
+      "C) 4",
+      "D) 6"
+    ],
+    "correct_answer": "B",
+    "explanation": "The connections are A-B, B-C, and C-D. Therefore, there are 3 roads. A connected graph with four vertices can be connected using three edges in a tree arrangement.\n\nCoding use: C++ graph representations store vertices and edges so code can model routes and connections."
+  },
+  {
+    "topic_id": 13,
+    "topic_name": "Graphs",
+    "level": 3,
+    "question": "A simple undirected graph contains 5 vertices. Every vertex is directly connected to every other vertex. How many edges does the graph contain?",
+    "options": [
+      "A) 5",
+      "B) 8",
+      "C) 10",
+      "D) 20"
+    ],
+    "correct_answer": "C",
+    "explanation": "Every pair of vertices forms one edge. The number of edges is 5 × 4 ÷ 2 = 10 because each edge connects two vertices and must be counted only once.\n\nCoding use: C++ graph representations store vertices and edges so code can model routes and connections."
+  },
+  {
+    "topic_id": 13,
+    "topic_name": "Graphs",
+    "level": 4,
+    "question": "A simple undirected graph has 6 vertices. Every vertex has exactly 2 connections. How many edges are present in the graph?",
+    "options": [
+      "A) 4",
+      "B) 6",
+      "C) 8",
+      "D) 12"
+    ],
+    "correct_answer": "B",
+    "explanation": "The sum of all vertex degrees is 6 × 2 = 12. Each undirected edge contributes 2 to this total. Therefore, the number of edges is 12 ÷ 2 = 6.\n\nCoding use: C++ graph representations store vertices and edges so code can model routes and connections."
+  },
+  {
+    "topic_id": 14,
+    "topic_name": "Tries",
+    "level": 1,
+    "question": "A mobile phone suggests words when you start typing their first few letters. Which data structure is commonly used to store words efficiently for prefix searching?",
+    "options": [
+      "A) Stack",
+      "B) Trie",
+      "C) Queue",
+      "D) Heap"
+    ],
+    "correct_answer": "B",
+    "explanation": "A trie is a tree-like data structure used to store strings. It allows words sharing common prefixes to share their initial paths.\n\nCoding use: C++ trie nodes share prefixes to support fast word lookup and autocomplete."
+  },
+  {
+    "topic_id": 14,
+    "topic_name": "Tries",
+    "level": 2,
+    "question": "A dictionary contains the words CAT, CAR, and CARE. How many initial letters are common to all three words?",
+    "options": [
+      "A) 1",
+      "B) 2",
+      "C) 3",
+      "D) 4"
+    ],
+    "correct_answer": "B",
+    "explanation": "All three words begin with C and A. Their third letters are different in CAT and CAR, so the common prefix is CA, containing 2 letters.\n\nCoding use: C++ trie nodes share prefixes to support fast word lookup and autocomplete."
+  },
+  {
+    "topic_id": 14,
+    "topic_name": "Tries",
+    "level": 3,
+    "question": "A trie stores the words APPLE, APPLY, and APE. How many different letters appear among all positions of these words?",
+    "options": [
+      "A) 4",
+      "B) 5",
+      "C) 6",
+      "D) 7"
+    ],
+    "correct_answer": "B",
+    "explanation": "The distinct letters are A, P, L, E, and Y. Therefore, there are 5 different letters. Repeated appearances of the same letter are counted only once.\n\nCoding use: C++ trie nodes share prefixes to support fast word lookup and autocomplete."
+  },
+  {
+    "topic_id": 14,
+    "topic_name": "Tries",
+    "level": 4,
+    "question": "A trie stores the words DOG, DOT, DO, and DOLL. How many distinct non-empty prefixes do these words have?",
+    "options": [
+      "A) 6",
+      "B) 7",
+      "C) 8",
+      "D) 9"
+    ],
+    "correct_answer": "A",
+    "explanation": "The distinct non-empty prefixes are D, DO, DOG, DOT, DOL, and DOLL. There are 6, so option A is correct.\n\nCoding use: C++ trie nodes share prefixes to support fast word lookup and autocomplete."
+  },
+  {
+    "topic_id": 15,
+    "topic_name": "Disjoint Set Union",
+    "level": 1,
+    "question": "A school has separate groups of students. Initially, students belong to different groups. A teacher combines two groups into one. Which data structure is designed to manage such group connections efficiently?",
+    "options": [
+      "A) Stack",
+      "B) Disjoint Set Union",
+      "C) Trie",
+      "D) Queue"
+    ],
+    "correct_answer": "B",
+    "explanation": "Disjoint Set Union manages separate groups and supports combining groups. It is also called Union-Find.\n\nCoding use: C++ Union-Find stores parent links and merges groups to answer connectivity questions efficiently."
+  },
+  {
+    "topic_id": 15,
+    "topic_name": "Disjoint Set Union",
+    "level": 2,
+    "question": "There are 8 students, each initially in a separate group. The teacher combines two groups three times, and each combination joins two previously separate groups. How many groups remain?",
+    "options": [
+      "A) 3",
+      "B) 4",
+      "C) 5",
+      "D) 6"
+    ],
+    "correct_answer": "C",
+    "explanation": "Initially there are 8 groups. Each successful combination reduces the number of groups by 1. After three combinations, 8 - 3 = 5 groups remain.\n\nCoding use: C++ Union-Find stores parent links and merges groups to answer connectivity questions efficiently."
+  },
+  {
+    "topic_id": 15,
+    "topic_name": "Disjoint Set Union",
+    "level": 3,
+    "question": "A sports club has 20 separate teams. The organizer combines teams through 12 successful group-merging operations. How many separate groups remain?",
+    "options": [
+      "A) 6",
+      "B) 7",
+      "C) 8",
+      "D) 10"
+    ],
+    "correct_answer": "C",
+    "explanation": "Each successful merging operation combines two previously separate groups. Therefore, 20 - 12 = 8 groups remain.\n\nCoding use: C++ Union-Find stores parent links and merges groups to answer connectivity questions efficiently."
+  },
+  {
+    "topic_id": 15,
+    "topic_name": "Disjoint Set Union",
+    "level": 4,
+    "question": "There are 10 people in separate groups. Six successful unions are performed. Later, a union is requested between two people who are already in the same group. How many groups remain?",
+    "options": [
+      "A) 3",
+      "B) 4",
+      "C) 5",
+      "D) 6"
+    ],
+    "correct_answer": "B",
+    "explanation": "The first six successful unions reduce the group count from 10 to 4. The final union does not change anything because both people already belong to the same group. Therefore, 4 groups remain.\n\nCoding use: C++ Union-Find stores parent links and merges groups to answer connectivity questions efficiently."
+  },
+  {
+    "topic_id": 16,
+    "topic_name": "Segment Trees",
+    "level": 1,
+    "question": "A teacher wants to find the total marks of students from position 3 to position 7 in a long marks list. Which data structure is especially useful for answering range-based queries efficiently?",
+    "options": [
+      "A) Stack",
+      "B) Segment Tree",
+      "C) Trie",
+      "D) Queue"
+    ],
+    "correct_answer": "B",
+    "explanation": "A segment tree divides data into smaller intervals. It can efficiently answer questions about ranges, such as finding the sum or minimum of selected elements.\n\nCoding use: C++ segment trees combine interval values to answer range queries and process point updates efficiently."
+  },
+  {
+    "topic_id": 16,
+    "topic_name": "Segment Trees",
+    "level": 2,
+    "question": "A list contains the values 2, 4, 6, 8, and 10. A teacher asks for the sum of values from the second position to the fourth position, using positions starting from 1. What is the answer?",
+    "options": [
+      "A) 12",
+      "B) 16",
+      "C) 18",
+      "D) 20"
+    ],
+    "correct_answer": "C",
+    "explanation": "Positions 2 through 4 contain 4, 6, and 8. Their sum is 18, so option C is correct.\n\nCoding use: C++ segment trees combine interval values to answer range queries and process point updates efficiently."
+  },
+  {
+    "topic_id": 16,
+    "topic_name": "Segment Trees",
+    "level": 3,
+    "question": "A segment tree is built for 8 elements. If the tree is represented as a complete binary tree with all leaves filled, how many total nodes are required?",
+    "options": [
+      "A) 8",
+      "B) 12",
+      "C) 15",
+      "D) 16"
+    ],
+    "correct_answer": "C",
+    "explanation": "A complete binary tree with 8 leaves has 7 internal nodes. Therefore, the total number of nodes is 8 + 7 = 15.\n\nCoding use: C++ segment trees combine interval values to answer range queries and process point updates efficiently."
+  },
+  {
+    "topic_id": 16,
+    "topic_name": "Segment Trees",
+    "level": 4,
+    "question": "A list contains 3, 5, 2, 8, 4, and 7. What is the difference between the sum of the first three values and the sum of the last three values?",
+    "options": [
+      "A) 7",
+      "B) 8",
+      "C) 9",
+      "D) 10"
+    ],
+    "correct_answer": "C",
+    "explanation": "The first three values sum to 3 + 5 + 2 = 10. The last three sum to 8 + 4 + 7 = 19. Their difference is 19 - 10 = 9, so option C is correct.\n\nCoding use: C++ segment trees combine interval values to answer range queries and process point updates efficiently."
+  },
+  {
+    "topic_id": 17,
+    "topic_name": "Searching Algorithms",
+    "level": 1,
+    "question": "You want to find your name in a list of student names. What is the main purpose of a searching algorithm?",
+    "options": [
+      "A) Arrange information",
+      "B) Find a required element",
+      "C) Delete all elements",
+      "D) Reverse a list"
+    ],
+    "correct_answer": "B",
+    "explanation": "A searching algorithm is used to locate a particular element in a collection of information. It helps determine whether an element exists and where it is located.\n\nCoding use: C++ search routines locate values; binary search uses sorted order to discard half the remaining range each step."
+  },
+  {
+    "topic_id": 17,
+    "topic_name": "Searching Algorithms",
+    "level": 2,
+    "question": "A teacher has an alphabetically sorted list of 64 students. Instead of checking every name, the teacher repeatedly checks the middle and eliminates half of the remaining list. Which searching method is being used?",
+    "options": [
+      "A) Linear Search",
+      "B) Binary Search",
+      "C) Random Search",
+      "D) Depth-First Search"
+    ],
+    "correct_answer": "B",
+    "explanation": "Binary search repeatedly divides a sorted search space into two halves. It eliminates the half that cannot contain the required item.\n\nCoding use: C++ search routines locate values; binary search uses sorted order to discard half the remaining range each step."
+  },
+  {
+    "topic_id": 17,
+    "topic_name": "Searching Algorithms",
+    "level": 3,
+    "question": "A sorted list contains 32 elements. In the worst case, how many divisions into halves are needed to reduce the search space to one element?",
+    "options": [
+      "A) 4",
+      "B) 5",
+      "C) 6",
+      "D) 8"
+    ],
+    "correct_answer": "B",
+    "explanation": "The list sizes become 32, 16, 8, 4, 2, and 1. Five divisions are required to reach one element.\n\nCoding use: C++ search routines locate values; binary search uses sorted order to discard half the remaining range each step."
+  },
+  {
+    "topic_id": 17,
+    "topic_name": "Searching Algorithms",
+    "level": 4,
+    "question": "A sorted list contains 1000 elements. A binary search repeatedly halves the search space. What is the maximum number of comparisons needed to find an element or confirm that it is absent?",
+    "options": [
+      "A) 9",
+      "B) 10",
+      "C) 11",
+      "D) 100"
+    ],
+    "correct_answer": "B",
+    "explanation": "Repeatedly halving a search space of 1,000 items requires at most 10 comparisons in the standard binary-search procedure. Option B is correct.\n\nCoding use: C++ search routines locate values; binary search uses sorted order to discard half the remaining range each step."
+  },
+  {
+    "topic_id": 18,
+    "topic_name": "Sorting Algorithms",
+    "level": 1,
+    "question": "A teacher arranges students according to their marks, from the lowest to the highest. Which computer science concept is being used?",
+    "options": [
+      "A) Searching",
+      "B) Sorting",
+      "C) Hashing",
+      "D) Recursion"
+    ],
+    "correct_answer": "B",
+    "explanation": "Sorting means arranging elements in a particular order. Common orders include ascending and descending order.\n\nCoding use: C++ sorting arranges data so later searches, comparisons, and ordered processing are simpler."
+  },
+  {
+    "topic_id": 18,
+    "topic_name": "Sorting Algorithms",
+    "level": 2,
+    "question": "A student arranges the numbers 9, 3, 7, and 1 from smallest to largest. Which is the correct arrangement?",
+    "options": [
+      "A) 9, 7, 3, 1",
+      "B) 1, 3, 7, 9",
+      "C) 3, 1, 7, 9",
+      "D) 7, 9, 1, 3"
+    ],
+    "correct_answer": "B",
+    "explanation": "Ascending order means arranging values from smallest to largest. Therefore, the correct arrangement is 1, 3, 7, 9.\n\nCoding use: C++ sorting arranges data so later searches, comparisons, and ordered processing are simpler."
+  },
+  {
+    "topic_id": 18,
+    "topic_name": "Sorting Algorithms",
+    "level": 3,
+    "question": "Five different numbers are arranged using bubble sort. In one complete pass, adjacent pairs are compared from left to right. How many adjacent comparisons are needed in the first pass?",
+    "options": [
+      "A) 3",
+      "B) 4",
+      "C) 5",
+      "D) 10"
+    ],
+    "correct_answer": "B",
+    "explanation": "For 5 numbers, the first pass compares positions 1 and 2, 2 and 3, 3 and 4, and 4 and 5. Therefore, 5 - 1 = 4 comparisons are needed.\n\nCoding use: C++ sorting arranges data so later searches, comparisons, and ordered processing are simpler."
+  },
+  {
+    "topic_id": 18,
+    "topic_name": "Sorting Algorithms",
+    "level": 4,
+    "question": "A student sorts the numbers 5, 1, 4, 2, and 8 using bubble sort in ascending order. After the first complete left-to-right pass, what is the arrangement?",
+    "options": [
+      "A) 1, 4, 2, 5, 8",
+      "B) 1, 2, 4, 5, 8",
+      "C) 5, 1, 2, 4, 8",
+      "D) 1, 5, 4, 2, 8"
+    ],
+    "correct_answer": "A",
+    "explanation": "Compare adjacent numbers: 5 and 1 swap, giving 1, 5, 4, 2, 8. Then 5 and 4 swap, followed by 5 and 2 swapping. The final arrangement after the first pass is 1, 4, 2, 5, 8.\n\nCoding use: C++ sorting arranges data so later searches, comparisons, and ordered processing are simpler."
+  },
+  {
+    "topic_id": 19,
+    "topic_name": "Two Pointers",
+    "level": 1,
+    "question": "Imagine two students standing at opposite ends of a line of boxes. They move toward each other to inspect the boxes. Which DSA technique does this resemble?",
+    "options": [
+      "A) Hashing",
+      "B) Two Pointers",
+      "C) Recursion",
+      "D) Heap"
+    ],
+    "correct_answer": "B",
+    "explanation": "The two-pointers technique uses two positions to examine elements in a collection. The positions can move independently according to a particular rule.\n\nCoding use: C++ two-pointer loops move indexes through a sequence to find pairs or process both ends without extra storage."
+  },
+  {
+    "topic_id": 19,
+    "topic_name": "Two Pointers",
+    "level": 2,
+    "question": "A sorted list contains 2, 4, 6, 8, and 10. Two students select one number each from opposite ends. What is the sum of the selected numbers?",
+    "options": [
+      "A) 10",
+      "B) 12",
+      "C) 14",
+      "D) 16"
+    ],
+    "correct_answer": "B",
+    "explanation": "The first student selects 2 and the second student selects 10. Their sum is 2 + 10 = 12.\n\nCoding use: C++ two-pointer loops move indexes through a sequence to find pairs or process both ends without extra storage."
+  },
+  {
+    "topic_id": 19,
+    "topic_name": "Two Pointers",
+    "level": 3,
+    "question": "A sorted list contains 1, 2, 3, 4, 6, and 8. How many different pairs of numbers have a sum equal to 10?",
+    "options": [
+      "A) 1",
+      "B) 2",
+      "C) 3",
+      "D) 4"
+    ],
+    "correct_answer": "B",
+    "explanation": "The valid pairs are (2, 8) and (4, 6). Therefore, there are 2 different pairs. The two-pointers technique can help find such pairs in a sorted list.\n\nCoding use: C++ two-pointer loops move indexes through a sequence to find pairs or process both ends without extra storage."
+  },
+  {
+    "topic_id": 19,
+    "topic_name": "Two Pointers",
+    "level": 4,
+    "question": "A student has a sorted list of 1, 3, 5, 7, and 9. Two pointers start at opposite ends. The student repeatedly moves the left pointer one position right and the right pointer one position left until they meet. How many distinct pairs can be formed before they meet?",
+    "options": [
+      "A) 1",
+      "B) 2",
+      "C) 3",
+      "D) 4"
+    ],
+    "correct_answer": "B",
+    "explanation": "The pairs are (1, 9) and (3, 7). Both pointers meet at 5, which cannot form another pair with a different position. Therefore, there are 2 pairs.\n\nCoding use: C++ two-pointer loops move indexes through a sequence to find pairs or process both ends without extra storage."
+  },
+  {
+    "topic_id": 20,
+    "topic_name": "Sliding Window",
+    "level": 1,
+    "question": "A student wants to calculate the total marks of three consecutive tests at a time. Then the student moves forward by one test and calculates the next group. Which technique does this represent?",
+    "options": [
+      "A) Binary Search",
+      "B) Sliding Window",
+      "C) Hashing",
+      "D) Tree Traversal"
+    ],
+    "correct_answer": "B",
+    "explanation": "Sliding window examines a continuous portion of a collection. The window moves forward to examine the next group without starting the entire calculation again.\n\nCoding use: C++ sliding-window loops update a running result as a fixed or variable range moves across a sequence."
+  },
+  {
+    "topic_id": 20,
+    "topic_name": "Sliding Window",
+    "level": 2,
+    "question": "A student's daily study hours are 2, 3, 4, 1, and 5. What is the total study time in the first window of 3 consecutive days?",
+    "options": [
+      "A) 7 hours",
+      "B) 8 hours",
+      "C) 9 hours",
+      "D) 10 hours"
+    ],
+    "correct_answer": "C",
+    "explanation": "The first three days contain 2, 3, and 4 hours. Their total is 2 + 3 + 4 = 9 hours.\n\nCoding use: C++ sliding-window loops update a running result as a fixed or variable range moves across a sequence."
+  },
+  {
+    "topic_id": 20,
+    "topic_name": "Sliding Window",
+    "level": 3,
+    "question": "A list contains 4, 2, 7, 3, 6, and 1. A sliding window has a size of 3. What is the maximum sum among all possible consecutive windows?",
+    "options": [
+      "A) 12",
+      "B) 13",
+      "C) 16",
+      "D) 17"
+    ],
+    "correct_answer": "C",
+    "explanation": "The window sums are 4 + 2 + 7 = 13, 2 + 7 + 3 = 12, 7 + 3 + 6 = 16, and 3 + 6 + 1 = 10. The maximum sum is 16.\n\nCoding use: C++ sliding-window loops update a running result as a fixed or variable range moves across a sequence."
+  },
+  {
+    "topic_id": 20,
+    "topic_name": "Sliding Window",
+    "level": 4,
+    "question": "A student records the marks 5, 2, 8, 1, 6, and 4. A window of size 2 moves one position at a time. How many windows have a sum greater than 9?",
+    "options": [
+      "A) 1",
+      "B) 2",
+      "C) 3",
+      "D) 4"
+    ],
+    "correct_answer": "B",
+    "explanation": "The window sums are 7, 10, 9, 7, and 10. Only 10 and 10 are greater than 9. Therefore, 2 windows satisfy the condition.\n\nCoding use: C++ sliding-window loops update a running result as a fixed or variable range moves across a sequence."
+  },
+  {
+    "topic_id": 21,
+    "topic_name": "Prefix Sum",
+    "level": 1,
+    "question": "A student records daily savings and wants to know the total money saved from the first day up to a particular day. Which concept helps calculate such cumulative totals?",
+    "options": [
+      "A) Prefix Sum",
+      "B) Binary Search",
+      "C) Stack",
+      "D) Heap"
+    ],
+    "correct_answer": "A",
+    "explanation": "A prefix sum stores cumulative totals from the beginning of a list. It makes it easier to calculate sums of different ranges.\n\nCoding use: C++ prefix arrays store cumulative totals so repeated range-sum questions can be answered with subtraction."
+  },
+  {
+    "topic_id": 21,
+    "topic_name": "Prefix Sum",
+    "level": 2,
+    "question": "A student saves ₹10 on Monday, ₹20 on Tuesday, and ₹15 on Wednesday. What is the prefix sum up to Wednesday?",
+    "options": [
+      "A) ₹35",
+      "B) ₹40",
+      "C) ₹45",
+      "D) ₹50"
+    ],
+    "correct_answer": "C",
+    "explanation": "The cumulative savings are 10 + 20 + 15 = ₹45. This is the prefix sum up to Wednesday.\n\nCoding use: C++ prefix arrays store cumulative totals so repeated range-sum questions can be answered with subtraction."
+  },
+  {
+    "topic_id": 21,
+    "topic_name": "Prefix Sum",
+    "level": 3,
+    "question": "A list contains 3, 5, 2, 6, and 4. Using positions starting from 1, what is the sum of elements from position 2 to position 4?",
+    "options": [
+      "A) 11",
+      "B) 12",
+      "C) 13",
+      "D) 14"
+    ],
+    "correct_answer": "C",
+    "explanation": "The required elements are 5, 2, and 6. Their sum is 5 + 2 + 6 = 13. Prefix sums allow this range sum to be calculated by subtracting the cumulative total before the range from the cumulative total at its end.\n\nCoding use: C++ prefix arrays store cumulative totals so repeated range-sum questions can be answered with subtraction."
+  },
+  {
+    "topic_id": 21,
+    "topic_name": "Prefix Sum",
+    "level": 4,
+    "question": "A list contains 2, 4, 6, 8, and 10. Its prefix sums are calculated from left to right. What is the difference between the fifth prefix sum and the second prefix sum?",
+    "options": [
+      "A) 18",
+      "B) 20",
+      "C) 22",
+      "D) 24"
+    ],
+    "correct_answer": "D",
+    "explanation": "The fifth prefix sum is 30 and the second prefix sum is 6. Their difference is 30 - 6 = 24, so option D is correct.\n\nCoding use: C++ prefix arrays store cumulative totals so repeated range-sum questions can be answered with subtraction."
+  },
+  {
+    "topic_id": 22,
+    "topic_name": "Greedy Algorithms",
+    "level": 1,
+    "question": "A student has limited time to collect rewards and always chooses the most valuable available reward first. Which problem-solving approach does this resemble?",
+    "options": [
+      "A) Recursion",
+      "B) Greedy Algorithm",
+      "C) Hashing",
+      "D) Backtracking"
+    ],
+    "correct_answer": "B",
+    "explanation": "A greedy algorithm makes the best-looking choice at each step according to a chosen rule. It does not normally reconsider earlier decisions.\n\nCoding use: C++ greedy solutions select the best valid next choice when the problem structure proves local choices lead to an optimum."
+  },
+  {
+    "topic_id": 22,
+    "topic_name": "Greedy Algorithms",
+    "level": 2,
+    "question": "A shopkeeper must return ₹18 using the fewest coins available. The available coins are ₹10, ₹5, ₹2, and ₹1. Which selection uses the fewest coins?",
+    "options": [
+      "A) 10 + 5 + 2 + 1",
+      "B) 5 + 5 + 5 + 2 + 1",
+      "C) 10 + 2 + 2 + 2 + 2",
+      "D) 10 + 5 + 1 + 1 + 1"
+    ],
+    "correct_answer": "A",
+    "explanation": "Using the largest suitable denominations gives 10 + 5 + 2 + 1 = 18. This requires 4 coins, which is the minimum for these denominations.\n\nCoding use: C++ greedy solutions select the best valid next choice when the problem structure proves local choices lead to an optimum."
+  },
+  {
+    "topic_id": 22,
+    "topic_name": "Greedy Algorithms",
+    "level": 3,
+    "question": "A student has 10 hours available and wants to complete activities. The activities take 2, 3, 4, and 5 hours respectively. If the student always chooses the shortest remaining activity first, how many activities can be completed?",
+    "options": [
+      "A) 2",
+      "B) 3",
+      "C) 4",
+      "D) 5"
+    ],
+    "correct_answer": "B",
+    "explanation": "The student chooses activities taking 2, 3, and 4 hours. Their total time is 2 + 3 + 4 = 9 hours. The remaining 1 hour is insufficient for the final activity.\n\nCoding use: C++ greedy solutions select the best valid next choice when the problem structure proves local choices lead to an optimum."
+  },
+  {
+    "topic_id": 22,
+    "topic_name": "Greedy Algorithms",
+    "level": 4,
+    "question": "A traveller has to cover 15 km. Three available transport options cover 6 km, 5 km, and 4 km per trip, respectively. The traveller wants to cover exactly 15 km using the fewest trips. Which combination is best?",
+    "options": [
+      "A) 6 + 6 + 4",
+      "B) 5 + 5 + 5",
+      "C) 6 + 5 + 4",
+      "D) 4 + 4 + 4 + 3"
+    ],
+    "correct_answer": "B",
+    "explanation": "Three trips of 5 km cover exactly 15 km. No combination of two available trips can cover exactly 15 km because the maximum distance of two trips is 12 km. Therefore, three trips are necessary.\n\nCoding use: C++ greedy solutions select the best valid next choice when the problem structure proves local choices lead to an optimum."
+  },
+  {
+    "topic_id": 23,
+    "topic_name": "Backtracking",
+    "level": 1,
+    "question": "A maze explorer tries one path. If the path is blocked, the explorer returns to an earlier junction and tries another path. Which problem-solving technique does this describe?",
+    "options": [
+      "A) Sorting",
+      "B) Backtracking",
+      "C) Hashing",
+      "D) Prefix Sum"
+    ],
+    "correct_answer": "B",
+    "explanation": "Backtracking explores possible choices and reverses a choice when it does not lead to a valid solution. It then tries another possibility.\n\nCoding use: C++ backtracking explores a choice, recurses, and undoes the choice when it cannot lead to a solution."
+  },
+  {
+    "topic_id": 23,
+    "topic_name": "Backtracking",
+    "level": 2,
+    "question": "A student has 3 different roads to choose from at the first junction and 2 roads at the next junction. If every first-road choice allows both second-road choices, how many possible routes exist?",
+    "options": [
+      "A) 5",
+      "B) 6",
+      "C) 8",
+      "D) 9"
+    ],
+    "correct_answer": "B",
+    "explanation": "Each of the 3 first choices has 2 possible second choices. Therefore, the total number of routes is 3 × 2 = 6.\n\nCoding use: C++ backtracking explores a choice, recurses, and undoes the choice when it cannot lead to a solution."
+  },
+  {
+    "topic_id": 23,
+    "topic_name": "Backtracking",
+    "level": 3,
+    "question": "A puzzle has 4 positions. Each position can contain either a red or a blue tile. How many different arrangements are possible if there are no restrictions?",
+    "options": [
+      "A) 8",
+      "B) 12",
+      "C) 16",
+      "D) 24"
+    ],
+    "correct_answer": "C",
+    "explanation": "Each of the 4 positions has 2 choices. Therefore, the total number of arrangements is 2 × 2 × 2 × 2 = 16.\n\nCoding use: C++ backtracking explores a choice, recurses, and undoes the choice when it cannot lead to a solution."
+  },
+  {
+    "topic_id": 23,
+    "topic_name": "Backtracking",
+    "level": 4,
+    "question": "A student must arrange 4 different books in a row. Book A must always appear before book B. How many valid arrangements are possible?",
+    "options": [
+      "A) 6",
+      "B) 8",
+      "C) 12",
+      "D) 24"
+    ],
+    "correct_answer": "C",
+    "explanation": "Four different books can be arranged in 4! = 24 ways. In exactly half of these arrangements, A appears before B. Therefore, 24 ÷ 2 = 12 valid arrangements.\n\nCoding use: C++ backtracking explores a choice, recurses, and undoes the choice when it cannot lead to a solution."
+  },
+  {
+    "topic_id": 24,
+    "topic_name": "Divide and Conquer",
+    "level": 1,
+    "question": "A teacher divides a large classroom into smaller groups so that each group can solve a part of a big problem. Which algorithmic approach does this resemble?",
+    "options": [
+      "A) Hashing",
+      "B) Divide and Conquer",
+      "C) Stack",
+      "D) Greedy"
+    ],
+    "correct_answer": "B",
+    "explanation": "Divide and Conquer breaks a large problem into smaller subproblems, solves them, and combines their results to solve the original problem.\n\nCoding use: C++ divide-and-conquer routines split input, solve smaller parts, and combine their results."
+  },
+  {
+    "topic_id": 24,
+    "topic_name": "Divide and Conquer",
+    "level": 2,
+    "question": "A school has 64 students. The teacher divides them into two equal groups, then divides each group into two equal groups again. How many students are in each group after three rounds of division?",
+    "options": [
+      "A) 4",
+      "B) 8",
+      "C) 16",
+      "D) 32"
+    ],
+    "correct_answer": "B",
+    "explanation": "The group sizes become 64, 32, 16, and 8 after three rounds. Therefore, each final group contains 8 students.\n\nCoding use: C++ divide-and-conquer routines split input, solve smaller parts, and combine their results."
+  },
+  {
+    "topic_id": 24,
+    "topic_name": "Divide and Conquer",
+    "level": 3,
+    "question": "A problem is divided into 4 smaller problems. Each smaller problem is divided into 4 more problems. How many smallest problems exist after these two rounds of division?",
+    "options": [
+      "A) 8",
+      "B) 12",
+      "C) 16",
+      "D) 20"
+    ],
+    "correct_answer": "C",
+    "explanation": "The first round creates 4 problems. Each of these creates 4 more problems in the second round. Therefore, 4 × 4 = 16 smallest problems exist.\n\nCoding use: C++ divide-and-conquer routines split input, solve smaller parts, and combine their results."
+  },
+  {
+    "topic_id": 24,
+    "topic_name": "Divide and Conquer",
+    "level": 4,
+    "question": "A list contains 16 elements. It is repeatedly divided into two equal halves until each part contains exactly one element. How many levels of division are required after the original list?",
+    "options": [
+      "A) 2",
+      "B) 3",
+      "C) 4",
+      "D) 5"
+    ],
+    "correct_answer": "C",
+    "explanation": "The sizes become 16, 8, 4, 2, and 1. Four divisions are needed to reach single-element parts.\n\nCoding use: C++ divide-and-conquer routines split input, solve smaller parts, and combine their results."
+  },
+  {
+    "topic_id": 25,
+    "topic_name": "Graph Algorithms (BFS, DFS)",
+    "level": 1,
+    "question": "A student explores a maze by visiting all nearby rooms first before moving farther away. Which graph traversal method follows this idea?",
+    "options": [
+      "A) Depth-First Search",
+      "B) Breadth-First Search",
+      "C) Sorting",
+      "D) Hashing"
+    ],
+    "correct_answer": "B",
+    "explanation": "Breadth-First Search explores nodes level by level. It visits nearby nodes before moving to nodes farther away.\n\nCoding use: C++ BFS and DFS use a queue or stack/recursion to visit graph vertices in a controlled order."
+  },
+  {
+    "topic_id": 25,
+    "topic_name": "Graph Algorithms (BFS, DFS)",
+    "level": 2,
+    "question": "A graph has a starting node A connected to B and C. Node B is connected to D, and node C is connected to E. If Breadth-First Search starts at A and visits B before C, what is the visiting order?",
+    "options": [
+      "A) A, B, D, C, E",
+      "B) A, B, C, D, E",
+      "C) A, C, E, B, D",
+      "D) A, D, B, E, C"
+    ],
+    "correct_answer": "B",
+    "explanation": "BFS first visits A, then its immediate neighbours B and C. After that, it visits the next-level nodes D and E. Therefore, the order is A, B, C, D, E.\n\nCoding use: C++ BFS and DFS use a queue or stack/recursion to visit graph vertices in a controlled order."
+  },
+  {
+    "topic_id": 25,
+    "topic_name": "Graph Algorithms (BFS, DFS)",
+    "level": 3,
+    "question": "A connected graph contains 8 vertices. A Breadth-First Search starts from one vertex and visits every vertex exactly once. How many vertices are visited in total?",
+    "options": [
+      "A) 6",
+      "B) 7",
+      "C) 8",
+      "D) 9"
+    ],
+    "correct_answer": "C",
+    "explanation": "A connected graph allows every vertex to be reached from the starting vertex. Therefore, BFS visits all 8 vertices exactly once.\n\nCoding use: C++ BFS and DFS use a queue or stack/recursion to visit graph vertices in a controlled order."
+  },
+  {
+    "topic_id": 25,
+    "topic_name": "Graph Algorithms (BFS, DFS)",
+    "level": 4,
+    "question": "A graph has vertices A, B, C, D, and E. Its connections are A-B, A-C, B-D, and C-E. A Depth-First Search starts at A and always chooses the alphabetically first unvisited neighbour. What is the visiting order?",
+    "options": [
+      "A) A, B, D, C, E",
+      "B) A, C, E, B, D",
+      "C) A, B, C, D, E",
+      "D) A, D, B, E, C"
+    ],
+    "correct_answer": "A",
+    "explanation": "Starting at A, DFS visits B before C. From B, it visits D. After finishing that branch, it returns to A and visits C, followed by E. The order is A, B, D, C, E.\n\nCoding use: C++ BFS and DFS use a queue or stack/recursion to visit graph vertices in a controlled order."
+  },
+  {
+    "topic_id": 26,
+    "topic_name": "Dynamic Programming",
+    "level": 1,
+    "question": "A student solves a mathematics problem and saves the answer so that the same calculation does not need to be repeated later. Which DSA technique uses this idea?",
+    "options": [
+      "A) Sorting",
+      "B) Dynamic Programming",
+      "C) Graph Traversal",
+      "D) Two Pointers"
+    ],
+    "correct_answer": "B",
+    "explanation": "Dynamic Programming stores answers to smaller subproblems and reuses them when needed. This avoids repeating the same calculations.\n\nCoding use: C++ dynamic-programming solutions store subproblem answers in a table or memo to avoid repeated work."
+  },
+  {
+    "topic_id": 26,
+    "topic_name": "Dynamic Programming",
+    "level": 2,
+    "question": "A student climbs stairs by taking either 1 step or 2 steps at a time. If there are 3 stairs, how many different ways can the student reach the top?",
+    "options": [
+      "A) 2",
+      "B) 3",
+      "C) 4",
+      "D) 5"
+    ],
+    "correct_answer": "B",
+    "explanation": "The possible ways are 1+1+1, 1+2, and 2+1. Therefore, there are 3 different ways to reach the third stair.\n\nCoding use: C++ dynamic-programming solutions store subproblem answers in a table or memo to avoid repeated work."
+  },
+  {
+    "topic_id": 26,
+    "topic_name": "Dynamic Programming",
+    "level": 3,
+    "question": "A student follows a number sequence in which each new number is the sum of the previous two numbers. The sequence begins with 1 and 1. What is the sixth number?",
+    "options": [
+      "A) 5",
+      "B) 8",
+      "C) 13",
+      "D) 21"
+    ],
+    "correct_answer": "B",
+    "explanation": "The sequence is 1, 1, 2, 3, 5, 8. Each number is obtained by adding the previous two numbers. Therefore, the sixth number is 8.\n\nCoding use: C++ dynamic-programming solutions store subproblem answers in a table or memo to avoid repeated work."
+  },
+  {
+    "topic_id": 26,
+    "topic_name": "Dynamic Programming",
+    "level": 4,
+    "question": "A robot must travel from the bottom-left corner to the top-right corner of a grid with 3 rows and 3 columns. It can only move right or upward. How many different shortest paths are possible?",
+    "options": [
+      "A) 4",
+      "B) 6",
+      "C) 8",
+      "D) 12"
+    ],
+    "correct_answer": "B",
+    "explanation": "The robot must make 2 right moves and 2 upward moves. The possible arrangements are RR UU, R U R U, R U U R, U R R U, U R U R, and U U R R. Therefore, there are 6 different shortest paths.\n\nCoding use: C++ dynamic-programming solutions store subproblem answers in a table or memo to avoid repeated work."
+  }
+]

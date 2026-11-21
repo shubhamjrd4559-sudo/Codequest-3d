@@ -30,6 +30,7 @@ class PublishedReadOnlyViewSet(ReadOnlyModelViewSet):
 class TopicViewSet(PublishedReadOnlyViewSet):
     serializer_class = TopicSerializer
     queryset = Topic.objects.filter(is_published=True)
+    lookup_field = "slug"
 
 
 class LessonViewSet(PublishedReadOnlyViewSet):

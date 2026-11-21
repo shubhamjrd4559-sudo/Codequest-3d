@@ -125,7 +125,13 @@ export default function StudentDashboardPage() {
         </div>
       </header>
 
-      <section className="relative overflow-hidden rounded-[28px] border border-violet-200/15 bg-gradient-to-r from-[#15143b]/95 via-[#1b1742]/90 to-[#10152e]/95 p-5 shadow-[0_18px_55px_rgba(0,0,0,0.22)] sm:p-7">
+      <section
+        className="relative overflow-hidden rounded-[28px] border border-violet-200/15 bg-cover bg-center p-5 shadow-[0_18px_55px_rgba(0,0,0,0.22)] sm:p-7"
+        style={{
+          backgroundImage:
+            "linear-gradient(90deg, rgba(11, 10, 42, .94) 0%, rgba(11, 10, 42, .79) 38%, rgba(11, 10, 42, .2) 100%), url('/images/continue-learning-background.png')",
+        }}
+      >
         <div className="pointer-events-none absolute -left-12 -top-24 h-64 w-64 rounded-full bg-violet-500/10 blur-3xl" />
         <div className="relative grid items-center gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(250px,0.9fr)]">
           <div className="relative z-10 space-y-4">
@@ -133,9 +139,6 @@ export default function StudentDashboardPage() {
               <Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" /> Continue learning
             </p>
             <div>
-              <h2 className="text-2xl font-black leading-tight tracking-tight text-white sm:text-3xl">
-                Arrays and <span className="text-amber-200">Searching</span>
-              </h2>
               <p className="mt-1 text-sm font-semibold text-slate-300">Learn · practice · play</p>
             </div>
             <div className="max-w-md space-y-2">

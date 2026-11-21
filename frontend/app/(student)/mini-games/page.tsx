@@ -135,13 +135,19 @@ export default function MiniGamesPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {visibleGames.map((game, index) => {
               const Icon = game.Icon;
+              const artworkPosition = Math.round((index / Math.max(visibleGames.length - 1, 1)) * 100);
               return (
                 <motion.article
                   key={game.slug}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.28, delay: index * 0.035 }}
-                  className="group relative flex min-h-[250px] flex-col overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.035] p-5 transition duration-200 hover:-translate-y-1 hover:border-cyan-400/40 hover:shadow-[0_0_30px_rgba(34,211,238,0.18)] hover:bg-white/[0.055] sm:p-6"
+                  className="group relative flex min-h-[250px] flex-col overflow-hidden rounded-[24px] border border-white/10 bg-[#080b20] bg-cover p-5 transition duration-200 hover:-translate-y-1 hover:border-cyan-400/40 hover:shadow-[0_0_30px_rgba(34,211,238,0.18)] sm:p-6"
+                  style={{
+                    backgroundImage: "linear-gradient(180deg, rgba(7, 10, 31, .54) 0%, rgba(7, 8, 22, .78) 48%, rgba(7, 8, 20, .94) 100%), url('/images/mini-games-arcade-background.png')",
+                    backgroundSize: "cover, cover",
+                    backgroundPosition: `center, ${artworkPosition}% center`,
+                  }}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <span className={`grid h-12 w-12 place-items-center rounded-2xl ${iconSurfaces[game.accent]} ${game.iconColor}`}>

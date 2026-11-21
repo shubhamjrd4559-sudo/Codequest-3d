@@ -63,10 +63,9 @@ export default function GameShell({ title, instructions, objective }: GameShellP
           onClick={() => setResetKey((key) => key + 1)}
           whileHover={{ scale: 1.035, y: -1 }}
           whileTap={{ scale: 0.96 }}
-          className="inline-flex items-center gap-2 rounded-2xl border border-cyan-300/25 bg-cyan-400/10 px-4 py-3 text-sm font-extrabold text-cyan-100 transition hover:bg-cyan-400/20"
+          className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-rose-500 to-orange-500 px-5 py-3 text-sm font-extrabold text-white shadow-[0_0_20px_rgba(239,68,68,0.35)] hover:shadow-[0_0_30px_rgba(239,68,68,0.5)] transition-all"
         >
-          <RotateCcw className="h-4 w-4" />
-          Reset scene
+          <RotateCcw className="h-4 w-4" /> Reset scene
         </motion.button>
       </motion.header>
 
@@ -74,13 +73,18 @@ export default function GameShell({ title, instructions, objective }: GameShellP
         <div className="relative min-h-[360px] overflow-hidden rounded-[28px] border border-cyan-100/15 bg-gradient-to-br from-indigo-950 via-[#10152f] to-slate-950 shadow-[0_24px_80px_rgba(0,0,0,0.35),0_0_34px_rgba(34,211,238,0.08)] sm:min-h-[500px]">
           <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(circle_at_50%_35%,rgba(34,211,238,0.12),transparent_42%)]" />
           <div className="pointer-events-none absolute inset-x-4 top-4 z-20 flex items-start justify-between gap-3 sm:inset-x-5 sm:top-5">
-            <div className="rounded-2xl border border-amber-200/25 bg-slate-950/70 px-3.5 py-2.5 shadow-[0_0_24px_rgba(245,158,11,0.12)] backdrop-blur-xl">
-              <p className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-amber-200"><Trophy className="h-3 w-3" /> Score</p>
-              <p className="mt-0.5 text-xl font-black leading-none text-white">0</p>
+            <div className="rounded-2xl border border-amber-300/40 bg-slate-950/80 px-4 py-3 shadow-[0_0_30px_rgba(245,158,11,0.2)] backdrop-blur-xl">
+              <p className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-amber-200">
+                <Trophy className="h-3 w-3" /> Score
+                <span className="ml-1 w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              </p>
+              <p className="mt-0.5 text-3xl font-black leading-none text-white">0</p>
             </div>
-            <div className="rounded-2xl border border-cyan-100/20 bg-slate-950/70 px-3.5 py-2.5 text-right shadow-[0_0_24px_rgba(34,211,238,0.1)] backdrop-blur-xl">
-              <p className="flex items-center justify-end gap-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-cyan-200"><Timer className="h-3 w-3" /> Timer</p>
-              <p className="mt-0.5 text-base font-black leading-none text-white">Ready</p>
+            <div className="rounded-2xl border border-cyan-300/40 bg-slate-950/80 px-4 py-3 text-right shadow-[0_0_30px_rgba(34,211,238,0.2)] backdrop-blur-xl">
+              <p className="flex items-center justify-end gap-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-cyan-200">
+                <Timer className="h-3 w-3" /> Timer
+              </p>
+              <motion.p animate={{ opacity: [1, 0.6, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="mt-0.5 text-xl font-black leading-none text-white">Ready</motion.p>
             </div>
           </div>
           {webglSupported === null ? (

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { HelpCircle, CheckCircle2, XCircle, Sparkles, ArrowRight, RotateCcw } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { RobotMascot } from "@/components/characters/RobotMascot";
@@ -161,6 +162,15 @@ export function QuickQuizSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
           {/* Question & Options (9 cols) */}
           <div className="lg:col-span-9 space-y-4">
+            {/* Quiz Progress Bar */}
+            <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden mb-4">
+              <motion.div
+                className="h-full bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${((currentIndex + 1) / DEFAULT_QUIZ_QUESTIONS.length) * 100}%` }}
+                transition={{ duration: 0.4 }}
+              />
+            </div>
             <p className="text-base sm:text-lg font-bold text-white leading-relaxed">
               {currentQ.question}
             </p>
@@ -185,11 +195,14 @@ export function QuickQuizSection() {
                 }
 
                 return (
-                  <button
+                  <motion.div
                     key={opt.key}
+                    whileHover={!isAnswered ? { scale: 1.015 } : {}}
+                  >
+                  <button
                     onClick={() => handleSelectOption(opt.key)}
                     disabled={isAnswered}
-                    className={`p-3.5 sm:p-4 rounded-2xl border-2 text-left text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-between group ${optionStyle}`}
+                    className={`p-3.5 sm:p-4 rounded-2xl border-2 text-left text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-between group w-full ${optionStyle}`}
                   >
                     <div className="flex items-center gap-2.5">
                       <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center font-mono text-xs text-purple-300 group-hover:bg-purple-500/30">
@@ -205,6 +218,7 @@ export function QuickQuizSection() {
                       <XCircle className="w-5 h-5 text-rose-400 shrink-0" />
                     )}
                   </button>
+                  </motion.div>
                 );
               })}
             </div>

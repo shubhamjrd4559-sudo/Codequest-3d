@@ -173,7 +173,7 @@ export default function GameShell({ title, instructions, objective, scene, score
               <span className="text-sm font-bold text-slate-300">Current score</span>
               <span className="text-3xl font-black text-white">{score}</span>
             </div>
-            <p className="mt-1 text-right text-[11px] font-semibold text-slate-400">{scene ? "Stack Tower · LIFO practice" : "Test scene · scoring arrives in Phase 7"}</p>
+            <p className="mt-1 text-right text-[11px] font-semibold text-slate-400">{title} · practice score</p>
           </motion.div>
         </aside>
       </div>

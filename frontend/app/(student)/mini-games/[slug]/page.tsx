@@ -8,6 +8,7 @@ import StackTowerScene, { type StackBlock } from "@/games/scenes/StackTowerScene
 import LogicBuilderScene, { logicPath, type LogicCommand, type LogicState } from "@/games/scenes/LogicBuilderScene";
 import NumberSortingScene, { type NumberTile } from "@/games/scenes/NumberSortingScene";
 import QueueCounterScene, { type QueueCustomer } from "@/games/scenes/QueueCounterScene";
+import LinkedListScene, { type ListLink, type ListNode } from "@/games/scenes/LinkedListScene";
 
 const GameShell = dynamic(() => import("@/components/games/GameShell"), {
   ssr: false,
@@ -53,6 +54,11 @@ const gameInfo: Record<string, { title: string; instructions: string; objective:
     title: "Linked List Node Connection",
     instructions: "Explore the scene and get ready to follow the links between nodes.",
     objective: "Pointers, nodes, and connections",
+  },
+  "linked-list": {
+    title: "Linked List Node Connection",
+    instructions: "Connect nodes with pointers and follow the head.",
+    objective: "Pointers, nodes, and linked list traversal",
   },
   "tree-traversal-challenge": {
     title: "Tree Traversal Challenge",
@@ -265,6 +271,87 @@ function StackTowerGame({ game }: { game: { title: string; instructions: string;
       )}
     />
   );
+}
+
+const listModeInstructions = [
+  "Connect Dots: select a source node, then its next node to draw the pointer chain.",
+  "Traversal: start at HEAD and click each node in order until the tail.",
+  "Insert Node: click a pointer to break it, then select the floating node to insert it.",
+  "Reverse List: click each pointer to reverse its direction from tail back to head.",
+];
+const baseNodes: ListNode[] = [1, 2, 3, 4].map((id) => ({ id, value: id * 10 }));
+const baseLinks: ListLink[] = [{ from: 1, to: 2 }, { from: 2, to: 3 }, { from: 3, to: 4 }];
+
+function LinkedListGame({ game }: { game: { title: string; instructions: string; objective: string } }) {
+  const [mode, setMode] = useState(1);
+  const [nodes, setNodes] = useState(baseNodes);
+  const [links, setLinks] = useState<ListLink[]>([]);
+  const [selected, setSelected] = useState<number | null>(null);
+  const [step, setStep] = useState(1);
+  const [brokenLink, setBrokenLink] = useState<number | null>(null);
+  const [brokenEdge, setBrokenEdge] = useState<ListLink | null>(null);
+  const [complete, setComplete] = useState(false);
+  const [message, setMessage] = useState("Select Node 1, then Node 2 to connect them.");
+
+  const startMode = (nextMode: number) => {
+    setMode(nextMode); setSelected(null); setStep(1); setBrokenLink(null); setBrokenEdge(null); setComplete(false);
+    setNodes(nextMode === 3 ? [...baseNodes, { id: 5, value: 25 }] : baseNodes);
+    setLinks(nextMode === 1 ? [] : nextMode === 3 ? baseLinks : baseLinks);
+    setMessage(nextMode === 1 ? "Select Node 1 then Node 2, continuing to Node 4." : listModeInstructions[nextMode - 1]);
+  };
+
+  const clickNode = (id: number) => {
+    if (complete) return;
+    if (mode === 2) {
+      if (id !== step) { setMessage(`Not next in the list. Follow the pointer to Node ${step}.`); return; }
+      if (step === 1) { setMessage("Head found. Follow the arrow to the next node."); setStep(2); return; }
+      if (step === 4) { setComplete(true); setMessage("Traversal complete! You followed Head → Tail."); return; }
+      setStep((value) => value + 1); setMessage(`Node ${id} visited. Follow its pointer onward.`); return;
+    }
+    if (mode === 3) {
+      if (brokenLink === null) { setMessage("First click a pointer to choose where to insert the new node."); return; }
+      if (id !== 5) return;
+      const previous = brokenEdge;
+      if (!previous) return;
+      const updated = [...links]; updated.splice(brokenLink, 1, { from: previous.from, to: 5 }, { from: 5, to: previous.to });
+      setLinks(updated); setNodes([baseNodes[0], baseNodes[1], nodes[4], baseNodes[2], baseNodes[3]]);
+      setComplete(true); setMessage("Node 25 inserted! Both pointers now connect the list."); return;
+    }
+    if (mode === 1) {
+      if (selected === null) { setSelected(id); return; }
+      if (id !== selected + 1) { setMessage("Choose the next node in the chain."); return; }
+      const next = links.some((link) => link.from === selected && link.to === id) ? links : [...links, { from: selected, to: id }]; setLinks(next); setSelected(null);
+      if (next.length === 3) { setComplete(true); setMessage("Chain complete! All four nodes are connected."); }
+      else setMessage(`Pointer ${selected} → ${id} connected. Continue the chain.`);
+    }
+  };
+
+  const clickLink = (index: number) => {
+    if (complete) return;
+    if (mode === 3) {
+      setBrokenLink(index); setBrokenEdge(links[index]); setLinks((items) => items.filter((_, itemIndex) => itemIndex !== index)); setMessage("Pointer broken. Drag/select Node 25 into the open gap."); return;
+    }
+    if (mode === 4) {
+      setLinks((items) => items.map((link, itemIndex) => itemIndex === index ? { from: link.to, to: link.from } : link));
+      if (links.filter((link, itemIndex) => itemIndex !== index).every((link) => link.from > link.to) && links[index].from < links[index].to) {
+        setComplete(true); setMessage("List reversed! Pointers now run from tail to head.");
+      } else setMessage("Pointer reversed. Reverse each remaining link.");
+    }
+  };
+
+  return <GameShell title={game.title} instructions={listModeInstructions[mode - 1]} objective={game.objective} score={complete ? 100 : links.length * 10} levelLabel={`Mode ${mode}/4`} levelComplete={complete} completionTitle={`Mode ${mode} Complete!`} onNextLevel={mode < 4 ? () => startMode(mode + 1) : undefined} onReset={() => startMode(mode)} scene={<LinkedListScene nodes={nodes} links={links} selectedId={selected} headId={mode === 4 ? 4 : 1} reversed={mode === 4} onNodeClick={clickNode} onLinkClick={clickLink} />}
+    controls={<div className="space-y-3 rounded-[26px] border border-cyan-200/20 bg-slate-950/70 p-4 shadow-xl backdrop-blur-xl"><p className="text-xs font-black text-cyan-100">HEAD → {nodes.map((node) => node.value).join(" → ")} → NULL</p>
+      {mode === 2 && <p className="text-xs text-slate-200">Traversal progress: {Math.max(0, step - 1)}/{nodes.length} nodes</p>}
+      {mode === 3 && <p className="text-xs text-amber-100">Floating node: 25 · {brokenLink === null ? "Choose a pointer to break" : "Click Node 25 to insert"}</p>}
+      {mode === 4 && <p className="text-xs text-violet-100">Reverse every arrow. New head should be Node 4.</p>}
+      {mode === 1 && <div className="space-y-2"><p className="text-xs font-semibold text-slate-300">{selected === null ? "Step 1: Choose a source node." : `Source selected: Node ${selected}. Connect to Node ${selected + 1}.`}</p><div className="grid grid-cols-3 gap-1">{[1,2,3].map((id) => <button key={id} type="button" onClick={() => setSelected(id)} className={`rounded-lg px-2 py-2 text-[10px] font-bold ${selected === id ? "bg-cyan-300 text-slate-950" : "bg-cyan-400/10 text-cyan-100"}`}>Node {id}</button>)}</div>{selected !== null && <button type="button" onClick={() => clickNode(selected + 1)} className="w-full rounded-lg bg-gradient-to-r from-cyan-400 to-blue-500 px-3 py-2 text-xs font-black text-slate-950">Connect Node {selected} → Node {selected + 1}</button>}</div>}
+      {mode === 2 && <div className="grid grid-cols-4 gap-1">{[1,2,3,4].map((id) => <button key={id} type="button" onClick={() => clickNode(id)} className="rounded-lg bg-emerald-400/10 px-2 py-2 text-[10px] font-bold text-emerald-100">Visit {id}</button>)}</div>}
+      {mode === 3 && <div className="grid grid-cols-2 gap-1"><button type="button" onClick={() => clickLink(Math.max(0, Math.floor(links.length / 2)))} className="rounded-lg bg-rose-400/10 px-2 py-2 text-[10px] font-bold text-rose-100">Break middle link</button><button type="button" onClick={() => clickNode(5)} className="rounded-lg bg-amber-400/10 px-2 py-2 text-[10px] font-bold text-amber-100">Insert Node 25</button></div>}
+      {mode === 4 && <div className="grid grid-cols-3 gap-1">{links.map((link, index) => <button key={index} type="button" onClick={() => clickLink(index)} className="rounded-lg bg-violet-400/10 px-2 py-2 text-[10px] font-bold text-violet-100">Reverse {link.from}→{link.to}</button>)}</div>}
+      <p aria-live="polite" className="text-xs font-bold text-slate-200">{message}</p>
+      <div className="grid grid-cols-4 gap-1">{[1,2,3,4].map((item) => <button key={item} type="button" onClick={() => startMode(item)} className={`rounded-lg px-2 py-2 text-[10px] font-black ${mode === item ? "bg-violet-400/30 text-white" : "bg-white/5 text-slate-400"}`}>Mode {item}</button>)}</div>
+    </div>}
+  />;
 }
 
 const queueColors = ["#22d3ee", "#a78bfa", "#fb7185", "#34d399", "#fbbf24", "#60a5fa"];
@@ -511,5 +598,6 @@ export default function MiniGamePage() {
   if (params.slug === "logic-builder") return <LogicBuilderGame game={{ ...game, instructions: "Add commands to the queue and run your program. Guide the robot along the pathway to the glowing goal." }} />;
   if (params.slug === "number-sorting" || params.slug === "number-sorting-challenge") return <NumberSortingGame game={game} />;
   if (params.slug === "queue-counter" || params.slug === "queue-ticket-counter") return <QueueCounterGame game={game} />;
+  if (params.slug === "linked-list" || params.slug === "linked-list-node-connection") return <LinkedListGame game={game} />;
   return <GameShell title={game.title} instructions={game.instructions} objective={game.objective} />;
 }

@@ -148,7 +148,7 @@ export default function GameShell({ title, instructions, objective, scene, score
             <div className="absolute inset-0 z-30 grid place-items-center bg-slate-950/60 p-5 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={completionTitle}>
               <motion.div initial={{ opacity: 0, scale: 0.9, y: 12 }} animate={{ opacity: 1, scale: 1, y: 0 }} className="w-full max-w-sm rounded-[28px] border border-emerald-200/40 bg-slate-950/90 p-7 text-center shadow-[0_0_60px_rgba(16,185,129,0.24)]">
                 <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-emerald-400/15 text-3xl">✨</div>
-                <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-200">LIFO mastery</p>
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-200">Level cleared</p>
                 <h2 className="mt-2 text-2xl font-black text-white">{completionTitle}</h2>
                 {onNextLevel && <button type="button" onClick={onNextLevel} className="mt-6 w-full rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 font-black text-slate-950 shadow-[0_0_24px_rgba(52,211,153,0.32)] transition hover:brightness-110">{nextLevelLabel}</button>}
               </motion.div>

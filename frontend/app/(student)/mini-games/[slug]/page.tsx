@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { ArrowDownToLine, ArrowUpFromLine, Layers3 } from "lucide-react";
 import StackTowerScene, { type StackBlock } from "@/games/scenes/StackTowerScene";
 import LogicBuilderScene, { logicPath, type LogicCommand, type LogicState } from "@/games/scenes/LogicBuilderScene";
+import NumberSortingScene, { type NumberTile } from "@/games/scenes/NumberSortingScene";
 
 const GameShell = dynamic(() => import("@/components/games/GameShell"), {
   ssr: false,
@@ -26,6 +27,11 @@ const gameInfo: Record<string, { title: string; instructions: string; objective:
     title: "Number Sorting Challenge",
     instructions: "Explore the scene and get ready to organize number blocks into order.",
     objective: "Sorting arrays visually",
+  },
+  "number-sorting": {
+    title: "Number Sorting Challenge",
+    instructions: "Swap adjacent blocks to order the numbers.",
+    objective: "Arrays and sorting logic",
   },
   "stack-tower": {
     title: "Stack Tower",
@@ -255,6 +261,80 @@ function StackTowerGame({ game }: { game: { title: string; instructions: string;
   );
 }
 
+const sortInstructions = [
+  "Manual Swap: click two adjacent blocks to swap them. Sort all four numbers low to high.",
+  "Bubble Sort: click Next Step to compare the highlighted pair and swap when needed.",
+  "Reverse Sort: use adjacent swaps to order five numbers from highest to lowest.",
+  "Speed Sort: sort five random numbers from low to high before the 20-second timer ends.",
+];
+const makeTiles = (values: number[]): NumberTile[] => values.map((value, id) => ({ id: id + 1, value }));
+const ascending = (tiles: NumberTile[]) => tiles.every((tile, index) => index === 0 || tiles[index - 1].value <= tile.value);
+const descending = (tiles: NumberTile[]) => tiles.every((tile, index) => index === 0 || tiles[index - 1].value >= tile.value);
+
+function NumberSortingGame({ game }: { game: { title: string; instructions: string; objective: string } }) {
+  const [mode, setMode] = useState(1);
+  const [tiles, setTiles] = useState<NumberTile[]>(makeTiles([3, 1, 4, 2]));
+  const [selected, setSelected] = useState<number | null>(null);
+  const [score, setScore] = useState(0);
+  const [complete, setComplete] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [seconds, setSeconds] = useState(20);
+  const [bubbleI, setBubbleI] = useState(0);
+  const [bubbleJ, setBubbleJ] = useState(0);
+  const [message, setMessage] = useState("Choose adjacent blocks to begin sorting.");
+
+  useEffect(() => {
+    if (mode !== 4 || complete || failed) return;
+    const timer = window.setInterval(() => setSeconds((value) => {
+      if (value <= 1) { window.clearInterval(timer); setFailed(true); setMessage("Time's up! Reset this mode and try again."); return 0; }
+      return value - 1;
+    }), 1000);
+    return () => window.clearInterval(timer);
+  }, [mode, complete, failed]);
+
+  const startMode = (nextMode: number) => {
+    setMode(nextMode); setSelected(null); setComplete(false); setFailed(false); setScore(0); setSeconds(20); setBubbleI(0); setBubbleJ(0);
+    const values = nextMode === 1 ? [3, 1, 4, 2] : nextMode === 2 ? [5, 1, 4, 2, 3] : nextMode === 3 ? [2, 5, 1, 4, 3] : Array.from({ length: 5 }, () => Math.floor(Math.random() * 90) + 10);
+    setTiles(makeTiles(values)); setMessage(nextMode === 2 ? "Bubble Sort ready. Compare the first two blocks." : sortInstructions[nextMode - 1]);
+  };
+
+  const selectTile = (id: number) => {
+    if (complete || failed || mode === 2) return;
+    if (selected === null) { setSelected(id); return; }
+    const first = tiles.findIndex((tile) => tile.id === selected);
+    const second = tiles.findIndex((tile) => tile.id === id);
+    if (Math.abs(first - second) !== 1) { setSelected(id); setMessage("Only adjacent blocks can be swapped."); return; }
+    const next = [...tiles]; [next[first], next[second]] = [next[second], next[first]];
+    setTiles(next); setSelected(null); setScore((value) => value + 10);
+    const sorted = mode === 3 ? descending(next) : ascending(next);
+    if (sorted) { setComplete(true); setMessage(mode === 4 ? "Speed Sort complete! You beat the clock." : `Mode ${mode} complete! The numbers are in order.`); }
+  };
+
+  const nextBubbleStep = () => {
+    if (complete || failed) return;
+    const left = bubbleJ;
+    const right = left + 1;
+    const next = [...tiles];
+    if (next[left].value > next[right].value) [next[left], next[right]] = [next[right], next[left]];
+    setTiles(next); setScore((value) => value + 5);
+    if (ascending(next)) { setComplete(true); setMessage("Bubble Sort complete! The array is sorted."); return; }
+    const nextJ = bubbleJ + 1;
+    if (nextJ >= next.length - 1 - bubbleI) { setBubbleJ(0); setBubbleI((value) => value + 1); }
+    else setBubbleJ(nextJ);
+    setMessage(`Comparing ${next[left].value} and ${next[right].value}${next[left].value <= next[right].value ? " — already in order." : " — swapped."}`);
+  };
+
+  return <GameShell title={game.title} instructions={sortInstructions[mode - 1]} objective={game.objective} score={score} levelLabel={`Mode ${mode}/4`} timerLabel={mode === 4 ? `${seconds}s` : "Ready"} levelComplete={complete} completionTitle={mode === 4 ? "Speed Sort Complete!" : `Mode ${mode} Complete!`} onNextLevel={mode < 4 ? () => startMode(mode + 1) : undefined} onReset={() => startMode(mode)} scene={<NumberSortingScene tiles={tiles} selectedId={selected} compareIndices={mode === 2 ? [bubbleJ, bubbleJ + 1] : []} onSelect={selectTile} />}
+    controls={<div className="space-y-3 rounded-[26px] border border-cyan-200/20 bg-slate-950/70 p-4 shadow-xl backdrop-blur-xl">
+      <div className="flex items-center justify-between text-xs font-black uppercase tracking-wider text-cyan-100"><span>{mode === 2 ? `Pass ${bubbleI + 1} · Compare ${bubbleJ + 1}/${tiles.length - 1 - bubbleI}` : mode === 3 ? "Descending order" : "Array values"}</span><span>{tiles.map((tile) => tile.value).join(" · ")}</span></div>
+      {mode === 2 ? <button type="button" onClick={nextBubbleStep} disabled={complete || failed} className="w-full rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 py-3 text-sm font-black text-slate-950 disabled:opacity-40">Next Step →</button> : <p className="text-xs text-slate-300">Click two adjacent blocks in 3D to swap them.</p>}
+      {failed && <button type="button" onClick={() => startMode(mode)} className="w-full rounded-xl border border-rose-300/40 bg-rose-400/10 py-2 text-xs font-black text-rose-100">Retry Mode {mode}</button>}
+      <div className="grid grid-cols-4 gap-1">{[1, 2, 3, 4].map((item) => <button type="button" key={item} onClick={() => startMode(item)} className={`rounded-lg px-2 py-2 text-[10px] font-black ${mode === item ? "bg-violet-400/30 text-white" : "bg-white/5 text-slate-400"}`}>Mode {item}</button>)}</div>
+      <p aria-live="polite" className="text-xs font-bold text-cyan-100">{message}</p>
+    </div>}
+  />;
+}
+
 const initialLogicState: LogicState = { x: 0, z: 0, direction: 0 };
 const commandNames: Record<LogicCommand, string> = { forward: "Move Forward", left: "Turn Left", right: "Turn Right" };
 const logicGoals = [{ x: 1, z: 0 }, { x: 2, z: 0 }, { x: 2, z: 1 }, { x: 2, z: 2 }];
@@ -356,5 +436,6 @@ export default function MiniGamePage() {
 
   if (params.slug === "stack-tower") return <StackTowerGame game={game} />;
   if (params.slug === "logic-builder") return <LogicBuilderGame game={{ ...game, instructions: "Add commands to the queue and run your program. Guide the robot along the pathway to the glowing goal." }} />;
+  if (params.slug === "number-sorting" || params.slug === "number-sorting-challenge") return <NumberSortingGame game={game} />;
   return <GameShell title={game.title} instructions={game.instructions} objective={game.objective} />;
 }

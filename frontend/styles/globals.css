@@ -82,6 +82,23 @@
     background-attachment: fixed;
   }
 
+  .app-wallpaper {
+    pointer-events: none;
+    background-image: url("./ca1cb270-6694-4321-bd83-279e1bda3e32.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: blur(2px);
+    will-change: transform;
+  }
+
+  /* The student and auth layout wrappers used to paint a solid black layer
+     over the global wallpaper. Keep their shells transparent so the image
+     remains visible behind the existing cards and 3D canvases. */
+  .global-content > :first-child {
+    background-color: transparent !important;
+  }
+
   html {
     scroll-behavior: smooth;
     scrollbar-color: rgba(139, 92, 246, 0.45) rgba(7, 8, 20, 0.6);

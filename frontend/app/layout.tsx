@@ -28,11 +28,18 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans min-h-screen bg-[#070814] text-slate-100 antialiased selection:bg-purple-600/40 selection:text-white`}
+        className={`${geistSans.variable} ${geistMono.variable} relative min-h-[100dvh] bg-[#070814] font-sans text-slate-100 antialiased selection:bg-purple-600/40 selection:text-white`}
       >
-        <MotionConfig reducedMotion="user">
-          <AuthProvider>{children}</AuthProvider>
-        </MotionConfig>
+        <div
+          aria-hidden="true"
+          className="app-wallpaper fixed inset-0 z-0 scale-[1.015]"
+        />
+        <div aria-hidden="true" className="fixed inset-0 z-0 pointer-events-none bg-[#070814]/50 backdrop-blur-[1px]" />
+        <div className="global-content relative z-10 min-h-[100dvh]">
+          <MotionConfig reducedMotion="user">
+            <AuthProvider>{children}</AuthProvider>
+          </MotionConfig>
+        </div>
       </body>
     </html>
   );

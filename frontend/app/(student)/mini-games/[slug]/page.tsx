@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowDownToLine, ArrowUpFromLine, Layers3 } from "lucide-react";
 import StackTowerScene, { type StackBlock } from "@/games/scenes/StackTowerScene";
+import LogicBuilderScene, { logicPath, type LogicCommand, type LogicState } from "@/games/scenes/LogicBuilderScene";
 
 const GameShell = dynamic(() => import("@/components/games/GameShell"), {
   ssr: false,
@@ -53,15 +54,33 @@ const gameInfo: Record<string, { title: string; instructions: string; objective:
   },
 };
 
-const blockColors = ["#22d3ee", "#a78bfa", "#fb7185", "#34d399", "#fbbf24", "#60a5fa"];
+const blockColors = ["#ef4444", "#3b82f6", "#22c55e", "#fbbf24", "#a78bfa", "#22d3ee", "#fb7185"];
+const targetPattern = ["Red", "Blue", "Green"];
+const recallPattern = ["Green", "Blue", "Red"];
+const patternColors: Record<string, string> = { Red: "#ef4444", Blue: "#3b82f6", Green: "#22c55e" };
+const levelInstructions = [
+  "Drag blocks from the side pile onto the target platform. Stack 5 blocks.",
+  "Watch the colors, then rebuild them in reverse: Green → Blue → Red.",
+  "Move with ← / → or buttons. Catch falling blocks; pop quickly when a bomb appears.",
+  "Rescue the robot by popping from the top. Red blocks unlock when exposed.",
+];
 
 function StackTowerGame({ game }: { game: { title: string; instructions: string; objective: string } }) {
+  const [currentLevel, setCurrentLevel] = useState(1);
   const [blocks, setBlocks] = useState<StackBlock[]>([]);
   const [score, setScore] = useState(0);
   const [nextId, setNextId] = useState(1);
   const [feedback, setFeedback] = useState("Push a block to start building your stack.");
   const [feedbackType, setFeedbackType] = useState<"info" | "success" | "error">("info");
   const [exiting, setExiting] = useState<{ block: StackBlock; index: number } | null>(null);
+  const [levelComplete, setLevelComplete] = useState(false);
+  const [levelFailed, setLevelFailed] = useState(false);
+  const [remainingSeconds, setRemainingSeconds] = useState(15);
+  const [patternIndex, setPatternIndex] = useState(0);
+  const [platformX, setPlatformX] = useState(0);
+  const [fallingY, setFallingY] = useState(3.2);
+  const [fallingX, setFallingX] = useState(0);
+  const [bomb, setBomb] = useState(false);
 
   useEffect(() => {
     if (!exiting) return;
@@ -69,22 +88,110 @@ function StackTowerGame({ game }: { game: { title: string; instructions: string;
     return () => window.clearTimeout(timeout);
   }, [exiting]);
 
-  const push = () => {
-    if (blocks.length >= 6) {
-      setFeedback("Tower full! Pop a block before adding another.");
+  useEffect(() => {
+    if (currentLevel !== 3 || levelComplete || levelFailed) return;
+    const interval = window.setInterval(() => setRemainingSeconds((seconds) => {
+      if (seconds <= 1) {
+        window.clearInterval(interval);
+        setLevelFailed(true);
+        setFeedback("Time's Up! Retry the falling-block round.");
+        setFeedbackType("error");
+        return 0;
+      }
+      return seconds - 1;
+    }), 1000);
+    return () => window.clearInterval(interval);
+  }, [currentLevel, levelComplete, levelFailed]);
+
+  useEffect(() => {
+    if (currentLevel !== 3 || levelComplete || levelFailed) return;
+    const tick = window.setTimeout(() => {
+      if (fallingY > -0.05) { setFallingY((y) => y - 0.22); return; }
+      if (bomb) {
+        setLevelFailed(true); setFeedback("Bomb hit! Retry the falling-block round."); setFeedbackType("error"); return;
+      }
+      if (Math.abs(fallingX - platformX) < 0.95) {
+        const next = [...blocks, { id: nextId, value: nextId, color: blockColors[(nextId - 1) % blockColors.length] }];
+        setBlocks(next); setNextId((id) => id + 1); setScore((value) => value + 10);
+        if (next.length >= 5) completeLevel("Falling Blocks cleared! Great catch streak!");
+      } else { setLevelFailed(true); setFeedback("Missed the block! Retry and move the platform under it."); setFeedbackType("error"); return; }
+      setFallingY(3.2); setFallingX((Math.floor(Math.random() * 3) - 1) * 1.25); setBomb(Math.random() < 0.25);
+    }, 90);
+    return () => window.clearTimeout(tick);
+  }, [currentLevel, levelComplete, levelFailed, fallingY, bomb, fallingX, platformX, blocks, nextId]);
+
+  useEffect(() => {
+    if (currentLevel !== 3) return;
+    const move = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") setPlatformX((x) => Math.max(-1.5, x - 0.55));
+      if (event.key === "ArrowRight") setPlatformX((x) => Math.min(1.5, x + 0.55));
+    };
+    window.addEventListener("keydown", move);
+    return () => window.removeEventListener("keydown", move);
+  }, [currentLevel]);
+
+  const startLevel = (level: number) => {
+    setCurrentLevel(level);
+    setScore(0);
+    setNextId(1);
+    setExiting(null);
+    setLevelComplete(false);
+    setLevelFailed(false);
+    setPatternIndex(0);
+    setRemainingSeconds(15);
+    setPlatformX(0); setFallingY(3.2); setFallingX(0); setBomb(false);
+    const prefilled = level === 4 ? [0, 1, 2, 3, 4].map((index) => ({ id: index + 1, value: index + 1, color: index === 1 || index === 3 ? "#ef4444" : blockColors[index] })) : [];
+    setBlocks(prefilled);
+    setNextId(prefilled.length + 1);
+    setFeedback(level === 4 ? "Rescue the robot. Pop blocks from the top; locked red blocks unlock when exposed." : level === 2 ? "Watch the sequence, then recreate it in reverse: Green → Blue → Red." : levelInstructions[level - 1]);
+    setFeedbackType("info");
+  };
+
+  const completeLevel = (message: string) => {
+    setLevelComplete(true);
+    setFeedback(message);
+    setFeedbackType("success");
+  };
+
+  const push = (selectedPatternColor?: string) => {
+    if (levelComplete || levelFailed) return;
+    const limit = currentLevel === 1 ? 5 : currentLevel === 2 ? 3 : 0;
+    if (blocks.length >= limit) {
+      setFeedback(currentLevel === 1 ? "Exactly 5 blocks completes this level." : currentLevel === 4 ? "You have reached the 7-block goal." : "Tower full! Pop a block before adding another.");
       setFeedbackType("error");
       return;
     }
-    const block = { id: nextId, value: nextId, color: blockColors[(nextId - 1) % blockColors.length] };
+    if (currentLevel === 3 || currentLevel === 4) {
+      return;
+    }
+    const patternName = currentLevel === 2 ? selectedPatternColor : undefined;
+    const block = { id: nextId, value: nextId, color: patternName ? patternColors[patternName] : blockColors[(nextId - 1) % blockColors.length] };
+    if (currentLevel === 2 && patternName) {
+      const expected = recallPattern[patternIndex];
+      if (patternName !== expected) {
+        setBlocks([]);
+        setNextId(1);
+        setPatternIndex(0);
+        setLevelFailed(true);
+        setFeedback(`Try Again! Expected ${expected}. The Level 2 stack has been reset.`);
+        setFeedbackType("error");
+        return;
+      }
+      setPatternIndex((value) => value + 1);
+    }
     setBlocks((current) => [...current, block]);
     setNextId((current) => current + 1);
     setScore((current) => current + 10);
-    setFeedback(`Pushed block ${block.value}. It is now the top of the stack.`);
+    setFeedback(patternName ? `Pushed ${patternName}. ${patternIndex < 2 ? `Next: ${recallPattern[patternIndex + 1]}.` : "Pattern complete!"}` : `Pushed block ${block.value}. It is now the top of the stack.`);
     setFeedbackType("success");
     setExiting(null);
+    if (currentLevel === 1 && blocks.length + 1 === 5) completeLevel("Level 1 complete! You stacked 5 blocks.");
+    if (currentLevel === 2 && patternIndex === 2) completeLevel("Reverse Recall complete! You rebuilt the sequence backwards.");
   };
 
   const pop = () => {
+    if (levelComplete || levelFailed) return;
+    if (currentLevel === 3 && bomb) { setBomb(false); setFallingY(3.2); setFeedback("Bomb defused! Keep catching blocks."); setFeedbackType("success"); return; }
     if (blocks.length === 0) {
       setFeedback("Stack Underflow! There are no blocks to pop.");
       setFeedbackType("error");
@@ -96,41 +203,47 @@ function StackTowerGame({ game }: { game: { title: string; instructions: string;
     setScore((current) => current + 15);
     setFeedback(`Popped block ${top.value}. Last in, first out!`);
     setFeedbackType("success");
+    if (currentLevel === 4 && blocks.length === 1) completeLevel("Rescue complete! You freed the robot!");
   };
 
   const reset = () => {
-    setBlocks([]);
-    setScore(0);
-    setNextId(1);
-    setExiting(null);
-    setFeedback("Stack reset. Push a block to start building.");
-    setFeedbackType("info");
+    startLevel(currentLevel);
   };
+
+  const retry = () => startLevel(currentLevel);
 
   const buttonClass = "flex min-h-12 flex-1 items-center justify-center gap-2 rounded-2xl px-4 text-sm font-black transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80";
 
   return (
     <GameShell
       title={game.title}
-      instructions={game.instructions}
+      instructions={levelInstructions[currentLevel - 1]}
       objective={game.objective}
       score={score}
       onReset={reset}
-      scene={<StackTowerScene blocks={blocks} exiting={exiting} />}
+      levelLabel={`Level ${currentLevel}/4`}
+      timerLabel={currentLevel === 3 ? `${remainingSeconds}s` : "Ready"}
+      levelComplete={levelComplete}
+      completionTitle={`Level ${currentLevel} Complete!`}
+      onNextLevel={currentLevel < 4 ? () => startLevel(currentLevel + 1) : undefined}
+      nextLevelLabel="Next Level →"
+      scene={<StackTowerScene blocks={blocks} exiting={exiting} mode={currentLevel as 1 | 2 | 3 | 4} onDragPlace={() => push()} platformX={platformX} fallingX={fallingX} fallingY={fallingY} bomb={bomb} rescue={currentLevel === 4} />}
       controls={(
         <div className="rounded-[26px] border border-cyan-200/20 bg-slate-950/70 p-4 shadow-xl backdrop-blur-xl">
           <div className="mb-3 flex items-center justify-between text-xs font-bold text-slate-300">
             <span className="flex items-center gap-2"><Layers3 className="h-4 w-4 text-cyan-200" /> Stack size</span>
-            <span className="rounded-full bg-cyan-300/10 px-3 py-1 text-cyan-100">{blocks.length} / 6</span>
+            <span className="rounded-full bg-cyan-300/10 px-3 py-1 text-cyan-100">{currentLevel === 4 ? `${blocks.length} / 7` : currentLevel === 1 ? `${blocks.length} / 5` : currentLevel === 2 ? `${patternIndex} / 3 colors` : `${blocks.length} / 3`}</span>
           </div>
-          <div className="flex gap-2">
-            <button type="button" onClick={push} className={`${buttonClass} bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 shadow-[0_0_18px_rgba(34,211,238,0.25)] hover:brightness-110`}>
+          <div className="flex flex-wrap gap-2">
+            {currentLevel === 2 ? recallPattern.map((color) => <button key={color} type="button" onClick={() => push(color)} disabled={levelComplete || levelFailed} className={`${buttonClass} min-w-[72px] px-2 text-slate-950 disabled:opacity-40`} style={{ backgroundColor: patternColors[color] }}><ArrowDownToLine className="h-4 w-4" />{color}</button>) : currentLevel === 1 ? <span className="text-xs font-bold text-cyan-100">Drag the side block onto the tower · {blocks.length}/5</span> : currentLevel === 3 ? <div className="flex w-full justify-between gap-2"><button type="button" onClick={() => setPlatformX((x) => Math.max(-1.5, x - 0.55))} className={buttonClass}>← Move</button><button type="button" onClick={pop} className={`${buttonClass} border border-rose-300/30 bg-rose-500/10 text-rose-100`}>Pop Bomb</button><button type="button" onClick={() => setPlatformX((x) => Math.min(1.5, x + 0.55))} className={buttonClass}>Move →</button></div> : <button type="button" onClick={() => push()} disabled className={`${buttonClass} bg-slate-800 text-slate-500`}>
               <ArrowDownToLine className="h-4 w-4" /> Push
-            </button>
-            <button type="button" onClick={pop} className={`${buttonClass} border border-violet-200/25 bg-violet-400/10 text-violet-100 hover:bg-violet-400/20`}>
+            </button>}
+            <button type="button" onClick={pop} disabled={levelComplete || levelFailed || currentLevel === 1 || currentLevel === 2} className={`${buttonClass} border border-violet-200/25 bg-violet-400/10 text-violet-100 hover:bg-violet-400/20 disabled:opacity-40`}>
               <ArrowUpFromLine className="h-4 w-4" /> Pop
             </button>
           </div>
+          {currentLevel === 2 && <p className="mt-3 text-xs font-bold text-amber-100">Flash order: <span className="text-red-300">Red</span> → <span className="text-blue-300">Blue</span> → <span className="text-green-300">Green</span><br/>Recall in reverse.</p>}
+          {levelFailed && <button type="button" onClick={retry} className="mt-3 w-full rounded-xl border border-rose-300/40 bg-rose-400/10 py-2 text-xs font-black text-rose-100 transition hover:bg-rose-400/20">Retry Level {currentLevel}</button>}
         </div>
       )}
       feedback={(
@@ -140,6 +253,92 @@ function StackTowerGame({ game }: { game: { title: string; instructions: string;
       )}
     />
   );
+}
+
+const initialLogicState: LogicState = { x: 0, z: 0, direction: 0 };
+const commandNames: Record<LogicCommand, string> = { forward: "Move Forward", left: "Turn Left", right: "Turn Right" };
+const logicGoals = [{ x: 1, z: 0 }, { x: 2, z: 0 }, { x: 2, z: 1 }, { x: 2, z: 2 }];
+
+function LogicBuilderGame({ game }: { game: { title: string; instructions: string; objective: string } }) {
+  const [commands, setCommands] = useState<LogicCommand[]>([]);
+  const [robot, setRobot] = useState(initialLogicState);
+  const [score, setScore] = useState(0);
+  const [status, setStatus] = useState("Build a command sequence, then run it.");
+  const [running, setRunning] = useState(false);
+  const [result, setResult] = useState<"info" | "success" | "error">("info");
+  const [goalIndex, setGoalIndex] = useState(0);
+
+  const runCode = async () => {
+    if (running || commands.length === 0) return;
+    setRunning(true);
+    setRobot(initialLogicState);
+    setResult("info");
+    setStatus("Running your program…");
+    let current = { ...initialLogicState };
+    for (const command of commands) {
+      await new Promise((resolve) => window.setTimeout(resolve, 650));
+      if (command === "left") current = { ...current, direction: (current.direction + 3) % 4 };
+      if (command === "right") current = { ...current, direction: (current.direction + 1) % 4 };
+      if (command === "forward") {
+        const vectors = [[1, 0], [0, 1], [-1, 0], [0, -1]];
+        current = { ...current, x: current.x + vectors[current.direction][0], z: current.z + vectors[current.direction][1] };
+        if (!logicPath.has(`${current.x},${current.z}`)) {
+          setRobot(current);
+          setStatus("Try Again! The robot left the pathway.");
+          setResult("error");
+          setRunning(false);
+          return;
+        }
+      }
+      setRobot({ ...current });
+    }
+    const activeGoal = logicGoals[goalIndex];
+    const reachedGoal = current.x === activeGoal.x && current.z === activeGoal.z;
+    setStatus(reachedGoal ? `Goal ${goalIndex + 1} complete! Preparing the next target…` : "Try Again! Your sequence ended before the gem.");
+    setResult(reachedGoal ? "success" : "error");
+    if (reachedGoal) {
+      setScore((value) => value + 100);
+      if (goalIndex < logicGoals.length - 1) {
+        await new Promise((resolve) => window.setTimeout(resolve, 1200));
+        setGoalIndex((value) => value + 1);
+        setCommands([]);
+        setRobot(initialLogicState);
+        setStatus("New goal set! Build a fresh sequence.");
+        setResult("info");
+      } else {
+        setStatus("All goals complete! Reset to play the course again.");
+      }
+    }
+    setRunning(false);
+  };
+
+  const reset = () => {
+    setCommands([]);
+    setRobot(initialLogicState);
+    setScore(0);
+    setStatus("Build a command sequence, then run it.");
+    setResult("info");
+    setRunning(false);
+    setGoalIndex(0);
+  };
+  const add = (command: LogicCommand) => setCommands((items) => items.length < 8 ? [...items, command] : items);
+  const smallButton = "rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-[11px] font-extrabold text-slate-100 transition hover:border-cyan-200/40 hover:bg-cyan-400/10 disabled:opacity-40";
+
+  return <GameShell title={game.title} instructions={game.instructions} objective={`${game.objective} · Goal ${goalIndex + 1} of ${logicGoals.length}`} score={score} onReset={reset} scene={<LogicBuilderScene state={robot} goal={logicGoals[goalIndex]} />}
+    controls={<div className="rounded-[26px] border border-cyan-200/20 bg-slate-950/70 p-4 shadow-xl backdrop-blur-xl">
+      <div className="mb-3 flex items-center justify-between"><h2 className="text-xs font-black uppercase tracking-wider text-cyan-100">Program · {commands.length}/8</h2><button type="button" onClick={() => setCommands([])} disabled={!commands.length || running} className="text-[10px] font-bold text-slate-400 hover:text-white">Clear</button></div>
+      <div className="grid grid-cols-3 gap-2">
+        <button className={smallButton} type="button" onClick={() => add("forward")} disabled={running}>↑ Forward</button>
+        <button className={smallButton} type="button" onClick={() => add("left")} disabled={running}>↶ Left</button>
+        <button className={smallButton} type="button" onClick={() => add("right")} disabled={running}>↷ Right</button>
+      </div>
+      <ol aria-label="Command queue" className="mt-3 flex min-h-11 flex-wrap gap-1.5 rounded-xl border border-white/10 bg-black/20 p-2">
+        {commands.length ? commands.map((command, index) => <li key={`${index}-${command}`} className="rounded-lg bg-cyan-300/10 px-2 py-1 text-[10px] font-bold text-cyan-100">{index + 1}. {commandNames[command]}</li>) : <li className="self-center text-[10px] text-slate-500">Your commands will appear here</li>}
+      </ol>
+      <button type="button" onClick={runCode} disabled={running || commands.length === 0} className="mt-3 w-full rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 py-3 text-sm font-black text-slate-950 shadow-[0_0_18px_rgba(52,211,153,0.22)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40">{running ? "Running…" : "▶ Run Code"}</button>
+    </div>}
+    feedback={<p aria-live="polite" role="status" className={`rounded-2xl border px-4 py-3 text-sm font-bold ${result === "success" ? "border-emerald-300/40 bg-emerald-400/10 text-emerald-100" : result === "error" ? "border-rose-400/40 bg-rose-500/10 text-rose-200" : "border-white/10 bg-white/[0.04] text-slate-300"}`}>{status}</p>}
+  />;
 }
 
 export default function MiniGamePage() {
@@ -156,5 +355,6 @@ export default function MiniGamePage() {
   }
 
   if (params.slug === "stack-tower") return <StackTowerGame game={game} />;
+  if (params.slug === "logic-builder") return <LogicBuilderGame game={{ ...game, instructions: "Add commands to the queue and run your program. Guide the robot along the pathway to the glowing goal." }} />;
   return <GameShell title={game.title} instructions={game.instructions} objective={game.objective} />;
 }

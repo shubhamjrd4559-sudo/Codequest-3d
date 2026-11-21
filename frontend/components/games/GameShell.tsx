@@ -18,6 +18,12 @@ export interface GameShellProps {
   controls?: ReactNode;
   feedback?: ReactNode;
   onReset?: () => void;
+  levelLabel?: string;
+  timerLabel?: string;
+  levelComplete?: boolean;
+  completionTitle?: string;
+  onNextLevel?: () => void;
+  nextLevelLabel?: string;
 }
 
 function SceneLoader() {
@@ -30,7 +36,7 @@ function SceneLoader() {
   );
 }
 
-export default function GameShell({ title, instructions, objective, scene, score = 0, controls, feedback, onReset }: GameShellProps) {
+export default function GameShell({ title, instructions, objective, scene, score = 0, controls, feedback, onReset, levelLabel, timerLabel = "Ready", levelComplete = false, completionTitle = "Level Complete!", onNextLevel, nextLevelLabel = "Next Level →" }: GameShellProps) {
   const [webglSupported, setWebglSupported] = useState<boolean | null>(null);
   const [resetKey, setResetKey] = useState(0);
 
@@ -61,6 +67,7 @@ export default function GameShell({ title, instructions, objective, scene, score
           <div>
             <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">CodeQuest Arcade</p>
             <h1 className="mt-1 text-2xl font-black tracking-tight text-white sm:text-3xl">{title}</h1>
+            {levelLabel && <p className="mt-1 text-xs font-black uppercase tracking-[0.16em] text-amber-200">{levelLabel}</p>}
           </div>
         </div>
         <motion.button
@@ -89,7 +96,7 @@ export default function GameShell({ title, instructions, objective, scene, score
               <p className="flex items-center justify-end gap-1.5 text-[9px] font-black uppercase tracking-[0.18em] text-cyan-200">
                 <Timer className="h-3 w-3" /> Timer
               </p>
-              <motion.p animate={{ opacity: [1, 0.6, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="mt-0.5 text-xl font-black leading-none text-white">Ready</motion.p>
+              <motion.p animate={{ opacity: [1, 0.6, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="mt-0.5 text-xl font-black leading-none text-white">{timerLabel}</motion.p>
             </div>
           </div>
           {webglSupported === null ? (
@@ -135,6 +142,16 @@ export default function GameShell({ title, instructions, objective, scene, score
                   <p className="mt-1 text-sm text-slate-200">{objective}</p>
                 </div>
               </div>
+            </div>
+          )}
+          {levelComplete && (
+            <div className="absolute inset-0 z-30 grid place-items-center bg-slate-950/60 p-5 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={completionTitle}>
+              <motion.div initial={{ opacity: 0, scale: 0.9, y: 12 }} animate={{ opacity: 1, scale: 1, y: 0 }} className="w-full max-w-sm rounded-[28px] border border-emerald-200/40 bg-slate-950/90 p-7 text-center shadow-[0_0_60px_rgba(16,185,129,0.24)]">
+                <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-emerald-400/15 text-3xl">✨</div>
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-200">LIFO mastery</p>
+                <h2 className="mt-2 text-2xl font-black text-white">{completionTitle}</h2>
+                {onNextLevel && <button type="button" onClick={onNextLevel} className="mt-6 w-full rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 font-black text-slate-950 shadow-[0_0_24px_rgba(52,211,153,0.32)] transition hover:brightness-110">{nextLevelLabel}</button>}
+              </motion.div>
             </div>
           )}
           <div className="pointer-events-none absolute bottom-4 left-4 z-10 max-w-[calc(100%-2rem)] rounded-full border border-white/15 bg-slate-950/70 px-3 py-1.5 text-[10px] font-bold text-slate-200 backdrop-blur-md sm:text-xs">

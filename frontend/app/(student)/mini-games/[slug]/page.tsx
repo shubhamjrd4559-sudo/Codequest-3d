@@ -9,6 +9,7 @@ import LogicBuilderScene, { logicPath, type LogicCommand, type LogicState } from
 import NumberSortingScene, { type NumberTile } from "@/games/scenes/NumberSortingScene";
 import QueueCounterScene, { type QueueCustomer } from "@/games/scenes/QueueCounterScene";
 import LinkedListScene, { type ListLink, type ListNode } from "@/games/scenes/LinkedListScene";
+import TreeTraversalScene, { type TreeEdge, type TreeNode } from "@/games/scenes/TreeTraversalScene";
 
 const GameShell = dynamic(() => import("@/components/games/GameShell"), {
   ssr: false,
@@ -64,6 +65,11 @@ const gameInfo: Record<string, { title: string; instructions: string; objective:
     title: "Tree Traversal Challenge",
     instructions: "Explore the scene and get ready to visit nodes in different orders.",
     objective: "Inorder, preorder, and postorder traversal",
+  },
+  "tree-traversal": {
+    title: "Tree Traversal Challenge",
+    instructions: "Identify the root and explore tree traversal orders.",
+    objective: "Binary trees and traversal algorithms",
   },
   "treasure-search": {
     title: "Treasure Search",
@@ -278,6 +284,54 @@ const listModeInstructions = [
   "Insert Node: click a pointer to break it, then select the floating node to insert it.",
   "Reverse List: click each pointer to reverse its direction from tail back to head.",
 ];
+const treeNodes: TreeNode[] = [
+  { id: 1, value: 8, x: 0, y: 1.55 },
+  { id: 2, value: 4, x: -1.75, y: 0.45 }, { id: 3, value: 12, x: 1.75, y: 0.45 },
+  { id: 4, value: 2, x: -2.65, y: -0.65 }, { id: 5, value: 6, x: -0.9, y: -0.65 },
+  { id: 6, value: 10, x: 0.9, y: -0.65 }, { id: 7, value: 14, x: 2.65, y: -0.65 },
+];
+const treeEdges: TreeEdge[] = [{ from: 1, to: 2 }, { from: 1, to: 3 }, { from: 2, to: 4 }, { from: 2, to: 5 }, { from: 3, to: 6 }, { from: 3, to: 7 }];
+const treeInstructions = [
+  "Find the Root: select the top-most node in the binary tree.",
+  "Inorder: visit Left subtree → Root → Right subtree.",
+  "Preorder: visit Root → Left subtree → Right subtree.",
+  "Postorder: visit Left subtree → Right subtree → Root.",
+];
+const traversalOrders = [[4, 2, 5, 1, 6, 3, 7], [1, 2, 4, 5, 3, 6, 7], [4, 5, 2, 6, 7, 3, 1]];
+
+function TreeTraversalGame({ game }: { game: { title: string; instructions: string; objective: string } }) {
+  const [mode, setMode] = useState(1);
+  const [selected, setSelected] = useState<number | null>(null);
+  const [step, setStep] = useState(0);
+  const [visitedNodes, setVisitedNodes] = useState<number[]>([]);
+  const [complete, setComplete] = useState(false);
+  const [message, setMessage] = useState("Select the top node to identify the root.");
+  const order = mode === 1 ? [1] : traversalOrders[mode - 2];
+
+  const startMode = (nextMode: number) => {
+    setMode(nextMode); setSelected(null); setStep(0); setVisitedNodes([]); setComplete(false);
+    setMessage(nextMode === 1 ? "Select the top node to identify the root." : `Follow the ${nextMode === 2 ? "inorder" : nextMode === 3 ? "preorder" : "postorder"} sequence. Select the next node.`);
+  };
+  const selectNode = (id: number) => {
+    if (complete) return;
+    if (id !== order[step]) { setMessage(`Not quite. Select ${treeNodes.find((node) => node.id === order[step])?.value} next.`); return; }
+    setSelected(id);
+    setVisitedNodes((visited) => [...visited, id]);
+    if (step + 1 === order.length) { setComplete(true); setMessage(mode === 1 ? "Correct! Node 8 is the root." : "Traversal complete! You followed the correct order."); }
+    else { setStep((value) => value + 1); setMessage(`Correct. Next: value ${treeNodes.find((node) => node.id === order[step + 1])?.value}.`); }
+  };
+
+  return <GameShell title={game.title} instructions={treeInstructions[mode - 1]} objective={game.objective} score={step * 10 + (complete ? 50 : 0)} levelLabel={`Mode ${mode}/4`} levelComplete={complete} completionTitle={`Mode ${mode} Complete!`} onNextLevel={mode < 4 ? () => startMode(mode + 1) : undefined} onReset={() => startMode(mode)} scene={<TreeTraversalScene nodes={treeNodes} edges={treeEdges} selectedId={selected} rootId={1} mode={mode} onSelect={selectNode} />}
+    controls={<div className="space-y-3 rounded-[26px] border border-cyan-200/20 bg-slate-950/70 p-4 shadow-xl backdrop-blur-xl">
+      <div className="flex flex-wrap items-center justify-between gap-2"><p className="text-xs font-black uppercase tracking-wider text-cyan-100">{mode === 1 ? "Find the root" : `${mode === 2 ? "Inorder" : mode === 3 ? "Preorder" : "Postorder"} traversal`}</p><span className="text-xs font-bold text-slate-300">{mode === 1 ? "Choose the top node" : `${step}/${order.length} visited`}</span></div>
+      {mode > 1 && <div className="space-y-2 rounded-xl border border-violet-200/15 bg-violet-400/10 p-3"><p className="text-[10px] font-black uppercase tracking-wider text-violet-200">Required sequence</p><div className="flex flex-wrap gap-1.5">{order.map((nodeId, index) => { const node = treeNodes.find((item) => item.id === nodeId)!; const visited = visitedNodes.includes(nodeId); return <span key={nodeId} className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-black ${visited ? "bg-emerald-300/20 text-emerald-100" : index === step ? "bg-amber-300 text-slate-950 ring-2 ring-amber-100/40" : "bg-slate-900/80 text-slate-400"}`}>{visited && <span aria-label="Correct" title="Correct">✓</span>}{node.value}</span>; })}</div><p className="text-xs font-bold text-amber-100">{complete ? "All nodes visited ✓" : `Select next: ${treeNodes.find((node) => node.id === order[step])?.value}`}</p></div>}
+      <div className="grid grid-cols-4 gap-2 sm:grid-cols-7">{treeNodes.map((node) => { const visited = visitedNodes.includes(node.id); return <button type="button" key={node.id} onClick={() => selectNode(node.id)} disabled={complete} aria-label={`Select tree node value ${node.value}${visited ? ", correctly visited" : ""}`} className={`relative min-h-10 rounded-xl text-sm font-black transition ${visited ? "bg-emerald-300 text-slate-950" : selected === node.id ? "border border-amber-200 bg-amber-300/20 text-amber-100" : "border border-cyan-200/20 bg-cyan-400/10 text-cyan-100 hover:bg-cyan-400/20"} disabled:opacity-70`}>{node.value}{visited && <span className="ml-1" aria-hidden="true">✓</span>}</button>; })}</div>
+      <p aria-live="polite" className="text-xs font-bold text-slate-200">{message}</p>
+      <div className="grid grid-cols-4 gap-1">{[1,2,3,4].map((item) => <button key={item} type="button" onClick={() => startMode(item)} className={`rounded-lg px-2 py-2 text-[10px] font-black ${mode === item ? "bg-violet-400/30 text-white" : "bg-white/5 text-slate-400"}`}>Mode {item}</button>)}</div>
+    </div>}
+  />;
+}
+
 const baseNodes: ListNode[] = [1, 2, 3, 4].map((id) => ({ id, value: id * 10 }));
 const baseLinks: ListLink[] = [{ from: 1, to: 2 }, { from: 2, to: 3 }, { from: 3, to: 4 }];
 
@@ -598,5 +652,6 @@ export default function MiniGamePage() {
   if (params.slug === "number-sorting" || params.slug === "number-sorting-challenge") return <NumberSortingGame game={game} />;
   if (params.slug === "queue-counter" || params.slug === "queue-ticket-counter") return <QueueCounterGame game={game} />;
   if (params.slug === "linked-list" || params.slug === "linked-list-node-connection") return <LinkedListGame game={game} />;
+  if (params.slug === "tree-traversal" || params.slug === "tree-traversal-challenge") return <TreeTraversalGame game={game} />;
   return <GameShell title={game.title} instructions={game.instructions} objective={game.objective} />;
 }

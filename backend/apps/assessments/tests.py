@@ -1,7 +1,8 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from apps.accounts.models import User
+from apps.accounts.models import StudentProfile, User
+from apps.achievements.models import Achievement, UserAchievement
 from apps.assessments.models import Question, Quiz
 from apps.catalog.models import Topic
 
@@ -47,3 +48,30 @@ class AssessmentApiTests(APITestCase):
         attempt = user.quiz_attempts.get()
         self.assertEqual(attempt.correct_answers, 1)
         self.assertEqual(response.data["feedback"][0]["correct_answer"], "for")
+        self.assertEqual(StudentProfile.objects.get(user=user).total_xp, 10)
+
+    def test_perfect_quiz_awards_first_steps_and_perfect_score(self):
+        user = User.objects.create_user(email="perfect@example.com", password="StrongPassword!2026")
+        StudentProfile.objects.create(user=user, display_name="Perfect")
+        first_steps = Achievement.objects.create(
+            slug="first-steps", name="First Steps", description="Complete one quiz.", xp_reward=25,
+            criteria={"event": "quiz", "min_attempts": 1},
+        )
+        perfect = Achievement.objects.create(
+            slug="perfect-score", name="Perfect Score", description="Get 100%.", xp_reward=50,
+            criteria={"event": "quiz", "perfect_score": True},
+        )
+        self.client.force_authenticate(user)
+        response = self.client.post(
+            "/api/v1/quiz-attempts/",
+            {"quiz": self.quiz.id, "answers": {str(self.question.id): "for"}},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        user.student_profile.refresh_from_db()
+        self.assertEqual(user.student_profile.total_xp, 85)
+        self.assertSetEqual(
+            set(UserAchievement.objects.filter(user=user).values_list("achievement_id", flat=True)),
+            {first_steps.id, perfect.id},
+        )

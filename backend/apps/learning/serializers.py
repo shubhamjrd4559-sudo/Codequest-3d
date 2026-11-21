@@ -1,5 +1,8 @@
+from django.db import transaction
 from rest_framework import serializers
 
+from apps.accounts.gamification import add_xp, record_activity
+from apps.achievements.services import award_eligible_achievements
 from apps.achievements.models import UserAchievement
 from apps.assessments.models import QuizAttempt
 from apps.catalog.models import Game, GameLevel, Lesson
@@ -33,8 +36,15 @@ class GameAttemptInputSerializer(serializers.Serializer):
             raise serializers.ValidationError({"score": "Score cannot exceed max_score."})
         return attrs
 
+    @transaction.atomic
     def create(self, validated_data):
-        return GameAttempt.objects.create(user=self.context["request"].user, **validated_data)
+        attempt = GameAttempt.objects.create(user=self.context["request"].user, **validated_data)
+        record_activity(attempt.user)
+        if attempt.completed:
+            add_xp(attempt.user, 50)
+        award_eligible_achievements(attempt.user, "game", attempt=attempt)
+        award_eligible_achievements(attempt.user, "activity", attempt=attempt)
+        return attempt
 
 
 class GameAttemptResultSerializer(serializers.ModelSerializer):

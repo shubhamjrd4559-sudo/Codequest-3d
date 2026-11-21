@@ -7,6 +7,8 @@ from apps.accounts.models import StudentProfile, User
 
 
 class StudentProfileSerializer(serializers.ModelSerializer):
+    current_level = serializers.IntegerField(source="level", read_only=True)
+
     class Meta:
         model = StudentProfile
         fields = (
@@ -14,6 +16,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             "avatar_url",
             "total_xp",
             "level",
+            "current_level",
             "current_streak",
             "longest_streak",
             "last_activity_date",

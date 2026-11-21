@@ -64,8 +64,14 @@ class StudentProfile(models.Model):
 
     class Meta:
         ordering = ("user__email",)
+        indexes = [models.Index(fields=("-total_xp", "user"), name="accounts_profile_xp_idx")]
 
     def __str__(self):
         return self.display_name or self.user.email
+
+    @property
+    def current_level(self):
+        """Compatibility-friendly name for the stored level value."""
+        return self.level
 
 # Create your models here.

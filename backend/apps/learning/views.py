@@ -66,6 +66,11 @@ class DashboardSummaryView(APIView):
         user = request.user
         progress = UserProgress.objects.filter(user=user)
         profile = getattr(user, "student_profile", None)
+        recent_achievements = EarnedAchievementSerializer(
+            UserAchievement.objects.filter(user=user, achievement__is_active=True)
+            .select_related("achievement")[:10],
+            many=True,
+        ).data
         return Response(
             {
                 "student": {
@@ -74,8 +79,11 @@ class DashboardSummaryView(APIView):
                     "display_name": profile.display_name if profile else "",
                 },
                 "current_xp": profile.total_xp if profile else 0,
+                "total_xp": profile.total_xp if profile else 0,
                 "level": profile.level if profile else 1,
+                "current_level": profile.current_level if profile else 1,
                 "current_streak": profile.current_streak if profile else 0,
+                "streak": profile.current_streak if profile else 0,
                 "completed_lessons": progress.filter(status=UserProgress.Status.COMPLETED).count(),
                 "in_progress_lessons": progress.filter(status=UserProgress.Status.IN_PROGRESS).count(),
                 "total_published_lessons": Lesson.objects.filter(is_published=True).count(),
@@ -85,8 +93,7 @@ class DashboardSummaryView(APIView):
                 "recent_quiz_attempts": QuizAttemptSummarySerializer(
                     QuizAttempt.objects.filter(user=user).select_related("quiz")[:5], many=True
                 ).data,
-                "achievements": EarnedAchievementSerializer(
-                    UserAchievement.objects.filter(user=user, achievement__is_active=True).select_related("achievement")[:10], many=True
-                ).data,
+                "recent_achievements": recent_achievements,
+                "achievements": recent_achievements,
             }
         )

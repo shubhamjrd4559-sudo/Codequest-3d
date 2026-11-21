@@ -4,6 +4,8 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
 
+from apps.accounts.gamification import add_xp, record_activity
+from apps.achievements.services import award_eligible_achievements
 from apps.assessments.models import Question, Quiz, QuizAttempt
 
 
@@ -66,6 +68,10 @@ class QuizAttemptInputSerializer(serializers.Serializer):
             completed_at=timezone.now(),
             duration_seconds=validated_data["duration_seconds"],
         )
+        record_activity(attempt.user)
+        add_xp(attempt.user, correct_count * 10)
+        award_eligible_achievements(attempt.user, "quiz", attempt=attempt)
+        award_eligible_achievements(attempt.user, "activity", attempt=attempt)
         feedback = [
             {
                 "question_id": question.id,

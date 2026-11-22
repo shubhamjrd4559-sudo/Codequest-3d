@@ -1,0 +1,1802 @@
+[
+  {
+    "position": 1,
+    "question_text": "Which file extension is commonly used for C++ source files?",
+    "option_a": ".py",
+    "option_b": ".cpp",
+    "option_c": ".java",
+    "option_d": ".html",
+    "correct_answer": "B"
+  },
+  {
+    "position": 2,
+    "question_text": "Which function is the starting point of a standard hosted C++ program?",
+    "option_a": "start()",
+    "option_b": "run()",
+    "option_c": "main()",
+    "option_d": "begin()",
+    "correct_answer": "C"
+  },
+  {
+    "position": 3,
+    "question_text": "Which header file is used for cout and cin?",
+    "option_a": "<stdio.h>",
+    "option_b": "<string>",
+    "option_c": "<iostream>",
+    "option_d": "<math.h>",
+    "correct_answer": "C"
+  },
+  {
+    "position": 4,
+    "question_text": "Which operator is used with cout to display output?",
+    "option_a": ">>",
+    "option_b": "<<",
+    "option_c": "==",
+    "option_d": "&&",
+    "correct_answer": "B"
+  },
+  {
+    "position": 5,
+    "question_text": "Which operator is used with cin to take input?",
+    "option_a": "<<",
+    "option_b": "=",
+    "option_c": ">>",
+    "option_d": "!=",
+    "correct_answer": "C"
+  },
+  {
+    "position": 6,
+    "question_text": "Which data type is generally used to store whole numbers?",
+    "option_a": "int",
+    "option_b": "float",
+    "option_c": "char",
+    "option_d": "bool",
+    "correct_answer": "A"
+  },
+  {
+    "position": 7,
+    "question_text": "Which is a valid character literal in C++?",
+    "option_a": "\"A\"",
+    "option_b": "'A'",
+    "option_c": "(A)",
+    "option_d": "{A}",
+    "correct_answer": "B"
+  },
+  {
+    "position": 8,
+    "question_text": "Which two values can a bool variable represent?",
+    "option_a": "0 and 2",
+    "option_b": "Yes and No",
+    "option_c": "true and false",
+    "option_d": "On and Off",
+    "correct_answer": "C"
+  },
+  {
+    "position": 9,
+    "question_text": "What is the purpose of const in C++?",
+    "option_a": "To declare a constant",
+    "option_b": "To declare a function",
+    "option_c": "To create a loop",
+    "option_d": "To create a pointer",
+    "correct_answer": "A"
+  },
+  {
+    "position": 10,
+    "question_text": "Which operator finds the remainder of integer division?",
+    "option_a": "/",
+    "option_b": "*",
+    "option_c": "%",
+    "option_d": "+",
+    "correct_answer": "C"
+  },
+  {
+    "position": 11,
+    "question_text": "What is the output of 7 / 2 when both operands are integers?",
+    "option_a": "3.5",
+    "option_b": "3",
+    "option_c": "4",
+    "option_d": "2",
+    "correct_answer": "B"
+  },
+  {
+    "position": 12,
+    "question_text": "Which operator checks whether two values are equal?",
+    "option_a": "=",
+    "option_b": "!=",
+    "option_c": "==",
+    "option_d": ">=",
+    "correct_answer": "C"
+  },
+  {
+    "position": 13,
+    "question_text": "Which operator represents logical AND?",
+    "option_a": "||",
+    "option_b": "!",
+    "option_c": "&&",
+    "option_d": "==",
+    "correct_answer": "C"
+  },
+  {
+    "position": 14,
+    "question_text": "What is the index of the first element in a C++ array?",
+    "option_a": "1",
+    "option_b": "0",
+    "option_c": "-1",
+    "option_d": "2",
+    "correct_answer": "B"
+  },
+  {
+    "position": 15,
+    "question_text": "How many times will this loop execute?\n\nfor(int i = 0; i < 5; i++)",
+    "option_a": "4 times",
+    "option_b": "5 times",
+    "option_c": "6 times",
+    "option_d": "Infinite times",
+    "correct_answer": "B"
+  },
+  {
+    "position": 16,
+    "question_text": "When does a while loop execute its body?",
+    "option_a": "When the condition is false",
+    "option_b": "When the condition is true",
+    "option_c": "Only once",
+    "option_d": "After the program ends",
+    "correct_answer": "B"
+  },
+  {
+    "position": 17,
+    "question_text": "What information does a function prototype generally provide?",
+    "option_a": "Function name, return type and parameter types",
+    "option_b": "Only memory address",
+    "option_c": "Final program output",
+    "option_d": "Number of files",
+    "correct_answer": "A"
+  },
+  {
+    "position": 18,
+    "question_text": "Which option is a built-in fundamental C++ data type?",
+    "option_a": "int",
+    "option_b": "std::string",
+    "option_c": "std::vector",
+    "option_d": "namespace",
+    "correct_answer": "A"
+  },
+  {
+    "position": 19,
+    "question_text": "Can a function be called multiple times in a C++ program?",
+    "option_a": "Yes",
+    "option_b": "No",
+    "option_c": "Only once",
+    "option_d": "Only inside main()",
+    "correct_answer": "A"
+  },
+  {
+    "position": 20,
+    "question_text": "Which statement terminates the nearest enclosing loop or switch?",
+    "option_a": "continue",
+    "option_b": "break",
+    "option_c": "return",
+    "option_d": "goto",
+    "correct_answer": "B"
+  },
+  {
+    "position": 21,
+    "question_text": "Which keyword is used to declare an integer variable?",
+    "option_a": "integer",
+    "option_b": "int",
+    "option_c": "number",
+    "option_d": "digit",
+    "correct_answer": "B"
+  },
+  {
+    "position": 22,
+    "question_text": "Which data type is used to store decimal values with single precision?",
+    "option_a": "int",
+    "option_b": "char",
+    "option_c": "float",
+    "option_d": "bool",
+    "correct_answer": "C"
+  },
+  {
+    "position": 23,
+    "question_text": "Which data type is used to store a single character?",
+    "option_a": "string",
+    "option_b": "char",
+    "option_c": "int",
+    "option_d": "double",
+    "correct_answer": "B"
+  },
+  {
+    "position": 24,
+    "question_text": "Which of the following is a valid variable declaration?",
+    "option_a": "int 2num;",
+    "option_b": "int num;",
+    "option_c": "int num-value;",
+    "option_d": "int float;",
+    "correct_answer": "B"
+  },
+  {
+    "position": 25,
+    "question_text": "Which keyword is used to declare a read-only variable?",
+    "option_a": "static",
+    "option_b": "const",
+    "option_c": "volatile",
+    "option_d": "extern",
+    "correct_answer": "B"
+  },
+  {
+    "position": 26,
+    "question_text": "Which data type generally provides more precision than float?",
+    "option_a": "char",
+    "option_b": "bool",
+    "option_c": "double",
+    "option_d": "short",
+    "correct_answer": "C"
+  },
+  {
+    "position": 27,
+    "question_text": "Which of the following is a valid Boolean declaration?",
+    "option_a": "bool status = true;",
+    "option_b": "boolean status = yes;",
+    "option_c": "bool status = on;",
+    "option_d": "int status = true;",
+    "correct_answer": "A"
+  },
+  {
+    "position": 28,
+    "question_text": "Which keyword is used for an unsigned integer type?",
+    "option_a": "signed",
+    "option_b": "unsigned",
+    "option_c": "positive",
+    "option_d": "decimal",
+    "correct_answer": "B"
+  },
+  {
+    "position": 29,
+    "question_text": "Which of the following is a valid identifier?",
+    "option_a": "123abc",
+    "option_b": "first-name",
+    "option_c": "first_name",
+    "option_d": "float",
+    "correct_answer": "C"
+  },
+  {
+    "position": 30,
+    "question_text": "Which symbol is used to terminate most C++ statements?",
+    "option_a": ":",
+    "option_b": ";",
+    "option_c": ",",
+    "option_d": ".",
+    "correct_answer": "B"
+  },
+  {
+    "position": 31,
+    "question_text": "What is the default value of a local uninitialized int variable with automatic storage duration?",
+    "option_a": "0",
+    "option_b": "1",
+    "option_c": "Garbage or indeterminate value",
+    "option_d": "-1",
+    "correct_answer": "C"
+  },
+  {
+    "position": 32,
+    "question_text": "Which keyword is used to define a user-defined type based on existing types?",
+    "option_a": "typedef",
+    "option_b": "include",
+    "option_c": "using namespace",
+    "option_d": "return",
+    "correct_answer": "A"
+  },
+  {
+    "position": 33,
+    "question_text": "Which data type is used to store true or false values?",
+    "option_a": "int",
+    "option_b": "bool",
+    "option_c": "char",
+    "option_d": "float",
+    "correct_answer": "B"
+  },
+  {
+    "position": 34,
+    "question_text": "Which keyword can be used to declare a variable whose value cannot be changed through that variable after initialization?",
+    "option_a": "const",
+    "option_b": "break",
+    "option_c": "continue",
+    "option_d": "return",
+    "correct_answer": "A"
+  },
+  {
+    "position": 35,
+    "question_text": "Which operator returns the size of a data type or object in bytes?",
+    "option_a": "length",
+    "option_b": "sizeof",
+    "option_c": "size",
+    "option_d": "memory",
+    "correct_answer": "B"
+  },
+  {
+    "position": 36,
+    "question_text": "Which of the following is a valid variable name?",
+    "option_a": "my value",
+    "option_b": "my_value",
+    "option_c": "1value",
+    "option_d": "my-value",
+    "correct_answer": "B"
+  },
+  {
+    "position": 37,
+    "question_text": "Which data type is generally used for larger integer values than int?",
+    "option_a": "long long",
+    "option_b": "char",
+    "option_c": "bool",
+    "option_d": "float",
+    "correct_answer": "A"
+  },
+  {
+    "position": 38,
+    "question_text": "What does the auto keyword do?",
+    "option_a": "Automatically deletes variables",
+    "option_b": "Allows the compiler to deduce a variable's type",
+    "option_c": "Converts everything to int",
+    "option_d": "Declares a constant",
+    "correct_answer": "B"
+  },
+  {
+    "position": 39,
+    "question_text": "Which of the following is a valid initialization?",
+    "option_a": "int x = 10;",
+    "option_b": "int = x 10;",
+    "option_c": "x int = 10;",
+    "option_d": "int x == 10;",
+    "correct_answer": "A"
+  },
+  {
+    "position": 40,
+    "question_text": "What is the value of a global int variable if it is not explicitly initialized?",
+    "option_a": "1",
+    "option_b": "10",
+    "option_c": "0",
+    "option_d": "Indeterminate",
+    "correct_answer": "C"
+  },
+  {
+    "position": 41,
+    "question_text": "Which operator is used for addition?",
+    "option_a": "-",
+    "option_b": "+",
+    "option_c": "*",
+    "option_d": "/",
+    "correct_answer": "B"
+  },
+  {
+    "position": 42,
+    "question_text": "What is the output of 10 % 3?",
+    "option_a": "0",
+    "option_b": "1",
+    "option_c": "2",
+    "option_d": "3",
+    "correct_answer": "B"
+  },
+  {
+    "position": 43,
+    "question_text": "Which operator is used for multiplication?",
+    "option_a": "+",
+    "option_b": "-",
+    "option_c": "*",
+    "option_d": "%",
+    "correct_answer": "C"
+  },
+  {
+    "position": 44,
+    "question_text": "Which operator is used for logical NOT?",
+    "option_a": "&&",
+    "option_b": "||",
+    "option_c": "!",
+    "option_d": "!=",
+    "correct_answer": "C"
+  },
+  {
+    "position": 45,
+    "question_text": "What is the output of 5 + 3 * 2?",
+    "option_a": "16",
+    "option_b": "11",
+    "option_c": "13",
+    "option_d": "10",
+    "correct_answer": "B"
+  },
+  {
+    "position": 46,
+    "question_text": "Which operator is used for assignment?",
+    "option_a": "==",
+    "option_b": "=",
+    "option_c": "!=",
+    "option_d": "<=",
+    "correct_answer": "B"
+  },
+  {
+    "position": 47,
+    "question_text": "What is the output of 10 > 5?",
+    "option_a": "0",
+    "option_b": "1",
+    "option_c": "5",
+    "option_d": "10",
+    "correct_answer": "B"
+  },
+  {
+    "position": 48,
+    "question_text": "What does the ++ operator do?",
+    "option_a": "Decreases a variable by one",
+    "option_b": "Increases a variable by one",
+    "option_c": "Multiplies a variable by two",
+    "option_d": "Divides a variable by two",
+    "correct_answer": "B"
+  },
+  {
+    "position": 49,
+    "question_text": "What does the -- operator do?",
+    "option_a": "Increases by one",
+    "option_b": "Decreases by one",
+    "option_c": "Adds two",
+    "option_d": "Subtracts two",
+    "correct_answer": "B"
+  },
+  {
+    "position": 50,
+    "question_text": "Which operator is known as the conditional or ternary operator?",
+    "option_a": "::",
+    "option_b": "?:",
+    "option_c": "->",
+    "option_d": "&&",
+    "correct_answer": "B"
+  },
+  {
+    "position": 51,
+    "question_text": "What is the output of 8 == 8?",
+    "option_a": "0",
+    "option_b": "1",
+    "option_c": "8",
+    "option_d": "Error",
+    "correct_answer": "B"
+  },
+  {
+    "position": 52,
+    "question_text": "Which operator checks whether two values are not equal?",
+    "option_a": "==",
+    "option_b": "=",
+    "option_c": "!=",
+    "option_d": "<=",
+    "correct_answer": "C"
+  },
+  {
+    "position": 53,
+    "question_text": "What is the output of 15 / 4 when both operands are integers?",
+    "option_a": "3.75",
+    "option_b": "4",
+    "option_c": "3",
+    "option_d": "2",
+    "correct_answer": "C"
+  },
+  {
+    "position": 54,
+    "question_text": "Which operator performs bitwise AND?",
+    "option_a": "&&",
+    "option_b": "&",
+    "option_c": "||",
+    "option_d": "|",
+    "correct_answer": "B"
+  },
+  {
+    "position": 55,
+    "question_text": "Which operator performs bitwise OR?",
+    "option_a": "|",
+    "option_b": "||",
+    "option_c": "&",
+    "option_d": "!",
+    "correct_answer": "A"
+  },
+  {
+    "position": 56,
+    "question_text": "What is the output of 2 << 1?",
+    "option_a": "2",
+    "option_b": "3",
+    "option_c": "4",
+    "option_d": "8",
+    "correct_answer": "C"
+  },
+  {
+    "position": 57,
+    "question_text": "What is the output of 5 & 3?",
+    "option_a": "1",
+    "option_b": "2",
+    "option_c": "3",
+    "option_d": "5",
+    "correct_answer": "A"
+  },
+  {
+    "position": 58,
+    "question_text": "Which operator has higher precedence?",
+    "option_a": "+",
+    "option_b": "*",
+    "option_c": "=",
+    "option_d": "||",
+    "correct_answer": "B"
+  },
+  {
+    "position": 59,
+    "question_text": "What is the output of 10 > 5 && 4 > 2?",
+    "option_a": "true",
+    "option_b": "false",
+    "option_c": "0",
+    "option_d": "Error",
+    "correct_answer": "A"
+  },
+  {
+    "position": 60,
+    "question_text": "Which operator is used to access a member of an object through a pointer?",
+    "option_a": ".",
+    "option_b": "->",
+    "option_c": "::",
+    "option_d": "&",
+    "correct_answer": "B"
+  },
+  {
+    "position": 61,
+    "question_text": "Which statement is used to check a condition in C++?",
+    "option_a": "loop",
+    "option_b": "if",
+    "option_c": "return",
+    "option_d": "cout",
+    "correct_answer": "B"
+  },
+  {
+    "position": 62,
+    "question_text": "Which statement is used when an if condition is false?",
+    "option_a": "else",
+    "option_b": "break",
+    "option_c": "continue",
+    "option_d": "switch",
+    "correct_answer": "A"
+  },
+  {
+    "position": 63,
+    "question_text": "Which statement is used to check multiple conditions one by one?",
+    "option_a": "if-else-if",
+    "option_b": "do-while",
+    "option_c": "for",
+    "option_d": "goto",
+    "correct_answer": "A"
+  },
+  {
+    "position": 64,
+    "question_text": "Which statement is useful when comparing one expression against multiple constant cases?",
+    "option_a": "while",
+    "option_b": "switch",
+    "option_c": "break",
+    "option_d": "return",
+    "correct_answer": "B"
+  },
+  {
+    "position": 65,
+    "question_text": "What is the purpose of the default case in a switch statement?",
+    "option_a": "Executes every time",
+    "option_b": "Executes when no case matches",
+    "option_c": "Stops the program",
+    "option_d": "Starts a loop",
+    "correct_answer": "B"
+  },
+  {
+    "position": 66,
+    "question_text": "Which keyword terminates a switch case to prevent falling through to the next case?",
+    "option_a": "continue",
+    "option_b": "return",
+    "option_c": "break",
+    "option_d": "exit",
+    "correct_answer": "C"
+  },
+  {
+    "position": 67,
+    "question_text": "What is the output of the following code?\n\nint x = 10;\nif(x > 5)\n    cout << \"Yes\";\nelse\n    cout << \"No\";",
+    "option_a": "Yes",
+    "option_b": "No",
+    "option_c": "10",
+    "option_d": "Error",
+    "correct_answer": "A"
+  },
+  {
+    "position": 68,
+    "question_text": "Which operator is used to check whether a number is greater than another number?",
+    "option_a": "<",
+    "option_b": ">",
+    "option_c": "=",
+    "option_d": "!=",
+    "correct_answer": "B"
+  },
+  {
+    "position": 69,
+    "question_text": "What is the output of the following code?\n\nint x = 5;\nif(x == 5)\n    cout << \"Equal\";",
+    "option_a": "5",
+    "option_b": "Equal",
+    "option_c": "False",
+    "option_d": "Error",
+    "correct_answer": "B"
+  },
+  {
+    "position": 70,
+    "question_text": "Which operator checks whether a value is less than or equal to another value?",
+    "option_a": "<",
+    "option_b": "<=",
+    "option_c": ">=",
+    "option_d": "==",
+    "correct_answer": "B"
+  },
+  {
+    "position": 71,
+    "question_text": "Which of the following is the correct syntax of an if statement?",
+    "option_a": "if x > 5 { }",
+    "option_b": "if(x > 5) { }",
+    "option_c": "if x > 5 then",
+    "option_d": "if: x > 5",
+    "correct_answer": "B"
+  },
+  {
+    "position": 72,
+    "question_text": "What is the output of the following code?\n\nint x = 0;\nif(x)\n    cout << \"True\";\nelse\n    cout << \"False\";",
+    "option_a": "True",
+    "option_b": "False",
+    "option_c": "0",
+    "option_d": "Error",
+    "correct_answer": "B"
+  },
+  {
+    "position": 73,
+    "question_text": "In C++, which value represents false in a Boolean condition?",
+    "option_a": "1",
+    "option_b": "2",
+    "option_c": "0",
+    "option_d": "-1",
+    "correct_answer": "C"
+  },
+  {
+    "position": 74,
+    "question_text": "What will happen if all case labels are omitted from a switch statement and only default is present?",
+    "option_a": "Compilation error",
+    "option_b": "Default case executes",
+    "option_c": "Program terminates automatically",
+    "option_d": "Infinite loop",
+    "correct_answer": "B"
+  },
+  {
+    "position": 75,
+    "question_text": "Which data types are permitted as switch condition types in standard C++?",
+    "option_a": "Floating-point types only",
+    "option_b": "Integral and enumeration types",
+    "option_c": "String class only",
+    "option_d": "All class types",
+    "correct_answer": "B"
+  },
+  {
+    "position": 76,
+    "question_text": "Which operator is used for logical OR?",
+    "option_a": "&&",
+    "option_b": "!",
+    "option_c": "||",
+    "option_d": "==",
+    "correct_answer": "C"
+  },
+  {
+    "position": 77,
+    "question_text": "What is the output of the following code?\n\nint a = 10;\nint b = 20;\n\nif(a < b)\n    cout << \"A\";\nelse\n    cout << \"B\";",
+    "option_a": "A",
+    "option_b": "B",
+    "option_c": "10",
+    "option_d": "20",
+    "correct_answer": "A"
+  },
+  {
+    "position": 78,
+    "question_text": "What is the purpose of nested if statements?",
+    "option_a": "To declare variables",
+    "option_b": "To place an if statement inside another if statement",
+    "option_c": "To create an array",
+    "option_d": "To declare a function",
+    "correct_answer": "B"
+  },
+  {
+    "position": 79,
+    "question_text": "Which operator is commonly used to check whether a number is even?",
+    "option_a": "/",
+    "option_b": "%",
+    "option_c": "*",
+    "option_d": "+",
+    "correct_answer": "B"
+  },
+  {
+    "position": 80,
+    "question_text": "What is the output of the following code?\n\nint n = 7;\n\nif(n % 2 == 0)\n    cout << \"Even\";\nelse\n    cout << \"Odd\";",
+    "option_a": "Even",
+    "option_b": "Odd",
+    "option_c": "7",
+    "option_d": "Error",
+    "correct_answer": "B"
+  },
+  {
+    "position": 81,
+    "question_text": "Which loop is commonly used when the number of iterations is known?",
+    "option_a": "for",
+    "option_b": "switch",
+    "option_c": "if",
+    "option_d": "break",
+    "correct_answer": "A"
+  },
+  {
+    "position": 82,
+    "question_text": "Which loop checks its condition before executing the body?",
+    "option_a": "do-while only",
+    "option_b": "while",
+    "option_c": "Both for and while",
+    "option_d": "Neither",
+    "correct_answer": "C"
+  },
+  {
+    "position": 83,
+    "question_text": "Which loop executes its body at least once?",
+    "option_a": "for",
+    "option_b": "while",
+    "option_c": "do-while",
+    "option_d": "None",
+    "correct_answer": "C"
+  },
+  {
+    "position": 84,
+    "question_text": "Which keyword skips the remaining statements in the current loop iteration?",
+    "option_a": "break",
+    "option_b": "continue",
+    "option_c": "return",
+    "option_d": "switch",
+    "correct_answer": "B"
+  },
+  {
+    "position": 85,
+    "question_text": "Which keyword immediately terminates the nearest enclosing loop?",
+    "option_a": "continue",
+    "option_b": "break",
+    "option_c": "goto",
+    "option_d": "case",
+    "correct_answer": "B"
+  },
+  {
+    "position": 86,
+    "question_text": "How many times will this loop execute?\n\nfor(int i = 1; i <= 5; i++)",
+    "option_a": "4",
+    "option_b": "5",
+    "option_c": "6",
+    "option_d": "Infinite",
+    "correct_answer": "B"
+  },
+  {
+    "position": 87,
+    "question_text": "What is the output?\n\nfor(int i = 1; i <= 3; i++)\n    cout << i;",
+    "option_a": "123",
+    "option_b": "012",
+    "option_c": "321",
+    "option_d": "111",
+    "correct_answer": "A"
+  },
+  {
+    "position": 88,
+    "question_text": "What is the output?\n\nint i = 1;\nwhile(i <= 3) {\n    cout << i;\n    i++;\n}",
+    "option_a": "123",
+    "option_b": "012",
+    "option_c": "321",
+    "option_d": "1234",
+    "correct_answer": "A"
+  },
+  {
+    "position": 89,
+    "question_text": "What is the output?\n\nint i = 5;\ndo {\n    cout << i;\n} while(i < 3);",
+    "option_a": "No output",
+    "option_b": "5",
+    "option_c": "3",
+    "option_d": "Infinite loop",
+    "correct_answer": "B"
+  },
+  {
+    "position": 90,
+    "question_text": "Which part of a for loop is generally used to initialize the loop variable?",
+    "option_a": "First part",
+    "option_b": "Second part",
+    "option_c": "Third part",
+    "option_d": "Loop body",
+    "correct_answer": "A"
+  },
+  {
+    "position": 91,
+    "question_text": "What is an infinite loop?",
+    "option_a": "A loop that executes exactly once",
+    "option_b": "A loop that never terminates under its execution conditions",
+    "option_c": "A loop that never starts",
+    "option_d": "A loop that always uses break",
+    "correct_answer": "B"
+  },
+  {
+    "position": 92,
+    "question_text": "How many times will the following loop execute?\n\nfor(int i = 0; i < 10; i += 2)",
+    "option_a": "4",
+    "option_b": "5",
+    "option_c": "10",
+    "option_d": "6",
+    "correct_answer": "B"
+  },
+  {
+    "position": 93,
+    "question_text": "What is the output?\n\nfor(int i = 1; i <= 3; i++) {\n    if(i == 2)\n        continue;\n    cout << i;\n}",
+    "option_a": "123",
+    "option_b": "12",
+    "option_c": "13",
+    "option_d": "23",
+    "correct_answer": "C"
+  },
+  {
+    "position": 94,
+    "question_text": "What is the output?\n\nfor(int i = 1; i <= 5; i++) {\n    if(i == 3)\n        break;\n    cout << i;\n}",
+    "option_a": "12345",
+    "option_b": "12",
+    "option_c": "123",
+    "option_d": "45",
+    "correct_answer": "B"
+  },
+  {
+    "position": 95,
+    "question_text": "What is the main purpose of nested loops?",
+    "option_a": "To declare constants",
+    "option_b": "To execute one loop inside another loop",
+    "option_c": "To stop a function",
+    "option_d": "To create pointers",
+    "correct_answer": "B"
+  },
+  {
+    "position": 96,
+    "question_text": "How many times will the inner statement execute?\n\nfor(int i = 0; i < 2; i++) {\n    for(int j = 0; j < 3; j++) {\n        cout << \"*\";\n    }\n}",
+    "option_a": "2",
+    "option_b": "3",
+    "option_c": "5",
+    "option_d": "6",
+    "correct_answer": "D"
+  },
+  {
+    "position": 97,
+    "question_text": "Which statement is used to return control from a function to its caller?",
+    "option_a": "break",
+    "option_b": "continue",
+    "option_c": "return",
+    "option_d": "case",
+    "correct_answer": "C"
+  },
+  {
+    "position": 98,
+    "question_text": "What happens if the condition of a while loop is initially false?",
+    "option_a": "It executes once",
+    "option_b": "It executes twice",
+    "option_c": "Its body does not execute",
+    "option_d": "It becomes an infinite loop",
+    "correct_answer": "C"
+  },
+  {
+    "position": 99,
+    "question_text": "Which loop is suitable when the body must execute before checking the condition?",
+    "option_a": "for",
+    "option_b": "while",
+    "option_c": "do-while",
+    "option_d": "switch",
+    "correct_answer": "C"
+  },
+  {
+    "position": 100,
+    "question_text": "What is the output?\n\nint sum = 0;\n\nfor(int i = 1; i <= 3; i++) {\n    sum += i;\n}\n\ncout << sum;",
+    "option_a": "3",
+    "option_b": "5",
+    "option_c": "6",
+    "option_d": "9",
+    "correct_answer": "C"
+  },
+  {
+    "position": 101,
+    "question_text": "What is an array in C++?",
+    "option_a": "Collection of different functions",
+    "option_b": "Collection of elements of the same type",
+    "option_c": "Collection of classes only",
+    "option_d": "Collection of pointers only",
+    "correct_answer": "B"
+  },
+  {
+    "position": 102,
+    "question_text": "Which is the correct declaration of an integer array of size 5?",
+    "option_a": "int arr;",
+    "option_b": "array int[5];",
+    "option_c": "int arr[5];",
+    "option_d": "arr int(5);",
+    "correct_answer": "C"
+  },
+  {
+    "position": 103,
+    "question_text": "What is the index of the last element in an array of size 10?",
+    "option_a": "10",
+    "option_b": "9",
+    "option_c": "11",
+    "option_d": "0",
+    "correct_answer": "B"
+  },
+  {
+    "position": 104,
+    "question_text": "What is the output?\n\nint arr[3] = {10, 20, 30};\ncout << arr[1];",
+    "option_a": "10",
+    "option_b": "20",
+    "option_c": "30",
+    "option_d": "1",
+    "correct_answer": "B"
+  },
+  {
+    "position": 105,
+    "question_text": "What is the first index of a two-dimensional array?",
+    "option_a": "1",
+    "option_b": "0",
+    "option_c": "-1",
+    "option_d": "2",
+    "correct_answer": "B"
+  },
+  {
+    "position": 106,
+    "question_text": "Which is the correct declaration of a 2D integer array with 2 rows and 3 columns?",
+    "option_a": "int arr[2][3];",
+    "option_b": "int arr[3][2];",
+    "option_c": "int arr(2,3);",
+    "option_d": "array[2][3] int;",
+    "correct_answer": "A"
+  },
+  {
+    "position": 107,
+    "question_text": "Which header file provides the standard C++ string class?",
+    "option_a": "<iostream>",
+    "option_b": "<string>",
+    "option_c": "<array>",
+    "option_d": "<cmath>",
+    "correct_answer": "B"
+  },
+  {
+    "position": 108,
+    "question_text": "Which function returns the number of characters in a string?",
+    "option_a": "sizeOf()",
+    "option_b": "length()",
+    "option_c": "countAll()",
+    "option_d": "getChar()",
+    "correct_answer": "B"
+  },
+  {
+    "position": 109,
+    "question_text": "What is the output?\n\nstring s = \"Hello\";\ncout << s.length();",
+    "option_a": "4",
+    "option_b": "5",
+    "option_c": "6",
+    "option_d": "0",
+    "correct_answer": "B"
+  },
+  {
+    "position": 110,
+    "question_text": "Which function is used to read a complete line of text, including spaces, from cin?",
+    "option_a": "cin >>",
+    "option_b": "getline()",
+    "option_c": "cout()",
+    "option_d": "print()",
+    "correct_answer": "B"
+  },
+  {
+    "position": 111,
+    "question_text": "What is the output?\n\nstring s = \"Coding\";\ncout << s[0];",
+    "option_a": "C",
+    "option_b": "o",
+    "option_c": "d",
+    "option_d": "g",
+    "correct_answer": "A"
+  },
+  {
+    "position": 112,
+    "question_text": "Which function is used to append a string to another string?",
+    "option_a": "push()",
+    "option_b": "append()",
+    "option_c": "addChar()",
+    "option_d": "insertEndOnly()",
+    "correct_answer": "B"
+  },
+  {
+    "position": 113,
+    "question_text": "Which method removes the final character from a non-empty std::string?",
+    "option_a": "eraseLast()",
+    "option_b": "pop_back()",
+    "option_c": "remove()",
+    "option_d": "delete()",
+    "correct_answer": "B"
+  },
+  {
+    "position": 114,
+    "question_text": "Which method adds a character to the end of a string?",
+    "option_a": "push_back()",
+    "option_b": "add_front()",
+    "option_c": "append_back_only()",
+    "option_d": "insert_first()",
+    "correct_answer": "A"
+  },
+  {
+    "position": 115,
+    "question_text": "Which function is used to compare two strings in C++?",
+    "option_a": "compare()",
+    "option_b": "equalToOnly()",
+    "option_c": "matchAll()",
+    "option_d": "check()",
+    "correct_answer": "A"
+  },
+  {
+    "position": 116,
+    "question_text": "What is the output?\n\nint arr[4] = {1, 2, 3, 4};\ncout << arr[0] + arr[3];",
+    "option_a": "4",
+    "option_b": "5",
+    "option_c": "6",
+    "option_d": "7",
+    "correct_answer": "B"
+  },
+  {
+    "position": 117,
+    "question_text": "Which header file provides the std::array container?",
+    "option_a": "<array>",
+    "option_b": "<string>",
+    "option_c": "<vector>",
+    "option_d": "<stack>",
+    "correct_answer": "A"
+  },
+  {
+    "position": 118,
+    "question_text": "What is the output?\n\nstring s = \"Hello\";\ns += \" World\";\ncout << s;",
+    "option_a": "Hello",
+    "option_b": "World",
+    "option_c": "Hello World",
+    "option_d": "HelloWorldHello",
+    "correct_answer": "C"
+  },
+  {
+    "position": 119,
+    "question_text": "What is the size of a C-style character array needed to store \"Hello\" including its null terminator?",
+    "option_a": "4",
+    "option_b": "5",
+    "option_c": "6",
+    "option_d": "7",
+    "correct_answer": "C"
+  },
+  {
+    "position": 120,
+    "question_text": "Which standard container can dynamically grow or shrink in size?",
+    "option_a": "int",
+    "option_b": "vector",
+    "option_c": "char",
+    "option_d": "bool",
+    "correct_answer": "B"
+  },
+  {
+    "position": 121,
+    "question_text": "What is a function in C++?",
+    "option_a": "A reusable block of code",
+    "option_b": "A data type",
+    "option_c": "An operator",
+    "option_d": "A loop",
+    "correct_answer": "A"
+  },
+  {
+    "position": 122,
+    "question_text": "Which keyword is used to return a value from a function?",
+    "option_a": "break",
+    "option_b": "return",
+    "option_c": "continue",
+    "option_d": "print",
+    "correct_answer": "B"
+  },
+  {
+    "position": 123,
+    "question_text": "Which keyword represents a function that returns no value?",
+    "option_a": "int",
+    "option_b": "null",
+    "option_c": "void",
+    "option_d": "empty",
+    "correct_answer": "C"
+  },
+  {
+    "position": 124,
+    "question_text": "What is a function declaration also commonly called?",
+    "option_a": "Function prototype",
+    "option_b": "Function loop",
+    "option_c": "Function array",
+    "option_d": "Function pointer only",
+    "correct_answer": "A"
+  },
+  {
+    "position": 125,
+    "question_text": "What are the values passed to a function during a function call called?",
+    "option_a": "Parameters",
+    "option_b": "Arguments",
+    "option_c": "Variables only",
+    "option_d": "Operators",
+    "correct_answer": "B"
+  },
+  {
+    "position": 126,
+    "question_text": "What are the variables listed in a function's parameter list called?",
+    "option_a": "Arguments",
+    "option_b": "Parameters",
+    "option_c": "Constants",
+    "option_d": "Classes",
+    "correct_answer": "B"
+  },
+  {
+    "position": 127,
+    "question_text": "What is function overloading?",
+    "option_a": "Defining multiple functions with the same name but different parameter lists",
+    "option_b": "Defining multiple main functions",
+    "option_c": "Calling a function only once",
+    "option_d": "Deleting a function",
+    "correct_answer": "A"
+  },
+  {
+    "position": 128,
+    "question_text": "What is recursion?",
+    "option_a": "A function calling itself",
+    "option_b": "A loop inside an array",
+    "option_c": "A variable calling a function",
+    "option_d": "A function without a name",
+    "correct_answer": "A"
+  },
+  {
+    "position": 129,
+    "question_text": "What is the base case in recursion used for?",
+    "option_a": "To increase recursion",
+    "option_b": "To stop further recursive calls",
+    "option_c": "To declare a class",
+    "option_d": "To create an array",
+    "correct_answer": "B"
+  },
+  {
+    "position": 130,
+    "question_text": "What is the output?\n\nint add(int a, int b) {\n    return a + b;\n}\n\nint main() {\n    cout << add(2, 3);\n}",
+    "option_a": "2",
+    "option_b": "3",
+    "option_c": "5",
+    "option_d": "6",
+    "correct_answer": "C"
+  },
+  {
+    "position": 131,
+    "question_text": "What is the purpose of a default argument in C++?",
+    "option_a": "To make a function private",
+    "option_b": "To provide a value used when the corresponding argument is omitted",
+    "option_c": "To stop recursion",
+    "option_d": "To create a global variable",
+    "correct_answer": "B"
+  },
+  {
+    "position": 132,
+    "question_text": "What is the output?\n\nvoid show() {\n    cout << \"Hello\";\n}\n\nint main() {\n    show();\n}",
+    "option_a": "Hello",
+    "option_b": "show",
+    "option_c": "0",
+    "option_d": "Error",
+    "correct_answer": "A"
+  },
+  {
+    "position": 133,
+    "question_text": "Which method passes a copy of a variable to a function?",
+    "option_a": "Call by reference",
+    "option_b": "Call by value",
+    "option_c": "Call by pointer only",
+    "option_d": "Recursion",
+    "correct_answer": "B"
+  },
+  {
+    "position": 134,
+    "question_text": "Which symbol is used in a parameter declaration to indicate a reference?",
+    "option_a": "*",
+    "option_b": "&",
+    "option_c": "%",
+    "option_d": "#",
+    "correct_answer": "B"
+  },
+  {
+    "position": 135,
+    "question_text": "Can a function return an array directly using ordinary array return syntax in C++?",
+    "option_a": "Yes, always",
+    "option_b": "No, not as a built-in array type",
+    "option_c": "Only with void",
+    "option_d": "Only with int",
+    "correct_answer": "B"
+  },
+  {
+    "position": 136,
+    "question_text": "Which of the following can be used to return multiple values from a function?",
+    "option_a": "std::pair",
+    "option_b": "std::tuple",
+    "option_c": "A structure",
+    "option_d": "All of the above",
+    "correct_answer": "D"
+  },
+  {
+    "position": 137,
+    "question_text": "What is the output?\n\nint square(int x) {\n    return x * x;\n}\n\nint main() {\n    cout << square(4);\n}",
+    "option_a": "4",
+    "option_b": "8",
+    "option_c": "16",
+    "option_d": "20",
+    "correct_answer": "C"
+  },
+  {
+    "position": 138,
+    "question_text": "Which function is automatically called when a C++ program starts in a standard hosted environment?",
+    "option_a": "display()",
+    "option_b": "main()",
+    "option_c": "input()",
+    "option_d": "start()",
+    "correct_answer": "B"
+  },
+  {
+    "position": 139,
+    "question_text": "What is an inline function?",
+    "option_a": "A function requested to be expanded inline where appropriate",
+    "option_b": "A function that always runs infinitely",
+    "option_c": "A function that cannot return values",
+    "option_d": "A function that only contains loops",
+    "correct_answer": "A"
+  },
+  {
+    "position": 140,
+    "question_text": "Can functions in C++ be overloaded based only on their return type?",
+    "option_a": "Yes",
+    "option_b": "No",
+    "option_c": "Only for void functions",
+    "option_d": "Only for main()",
+    "correct_answer": "B"
+  },
+  {
+    "position": 141,
+    "question_text": "What is a pointer in C++?",
+    "option_a": "A variable that stores a memory address",
+    "option_b": "A variable that stores only characters",
+    "option_c": "A loop",
+    "option_d": "A class",
+    "correct_answer": "A"
+  },
+  {
+    "position": 142,
+    "question_text": "Which symbol is used to declare a pointer?",
+    "option_a": "&",
+    "option_b": "*",
+    "option_c": "%",
+    "option_d": "#",
+    "correct_answer": "B"
+  },
+  {
+    "position": 143,
+    "question_text": "Which operator is used to get the address of a variable?",
+    "option_a": "*",
+    "option_b": "&",
+    "option_c": "->",
+    "option_d": ".",
+    "correct_answer": "B"
+  },
+  {
+    "position": 144,
+    "question_text": "Which operator is used to access the value stored at the address held by a pointer?",
+    "option_a": "&",
+    "option_b": "*",
+    "option_c": "::",
+    "option_d": "->",
+    "correct_answer": "B"
+  },
+  {
+    "position": 145,
+    "question_text": "What is a null pointer?",
+    "option_a": "A pointer that points to no valid object or function",
+    "option_b": "A pointer storing 10",
+    "option_c": "A pointer storing a character",
+    "option_d": "A pointer that always points to an array",
+    "correct_answer": "A"
+  },
+  {
+    "position": 146,
+    "question_text": "Which keyword can be used to create a dynamic integer object?",
+    "option_a": "malloc only",
+    "option_b": "new",
+    "option_c": "create",
+    "option_d": "alloc",
+    "correct_answer": "B"
+  },
+  {
+    "position": 147,
+    "question_text": "Which keyword is used to release memory allocated with new?",
+    "option_a": "remove",
+    "option_b": "free",
+    "option_c": "delete",
+    "option_d": "clear",
+    "correct_answer": "C"
+  },
+  {
+    "position": 148,
+    "question_text": "Which operator is used to access a class member through an object pointer?",
+    "option_a": ".",
+    "option_b": "->",
+    "option_c": "::",
+    "option_d": "&",
+    "correct_answer": "B"
+  },
+  {
+    "position": 149,
+    "question_text": "What is a dangling pointer?",
+    "option_a": "A pointer referring to an object whose lifetime has ended",
+    "option_b": "A pointer to an array only",
+    "option_c": "A pointer initialized to nullptr",
+    "option_d": "A pointer to a constant integer only",
+    "correct_answer": "A"
+  },
+  {
+    "position": 150,
+    "question_text": "What does nullptr represent in modern C++?",
+    "option_a": "A null pointer value",
+    "option_b": "An integer array",
+    "option_c": "A character",
+    "option_d": "A loop",
+    "correct_answer": "A"
+  },
+  {
+    "position": 151,
+    "question_text": "What is a reference in C++?",
+    "option_a": "An alias for an existing object",
+    "option_b": "A separate loop",
+    "option_c": "A new data type only",
+    "option_d": "A pointer that can be null",
+    "correct_answer": "A"
+  },
+  {
+    "position": 152,
+    "question_text": "Which symbol is used to declare a reference?",
+    "option_a": "*",
+    "option_b": "&",
+    "option_c": "#",
+    "option_d": "%",
+    "correct_answer": "B"
+  },
+  {
+    "position": 153,
+    "question_text": "Can a normal reference be left uninitialized?",
+    "option_a": "Yes",
+    "option_b": "No",
+    "option_c": "Only for int",
+    "option_d": "Only for char",
+    "correct_answer": "B"
+  },
+  {
+    "position": 154,
+    "question_text": "What is the output?\n\nint x = 10;\nint *p = &x;\ncout << *p;",
+    "option_a": "Memory address",
+    "option_b": "0",
+    "option_c": "10",
+    "option_d": "Error",
+    "correct_answer": "C"
+  },
+  {
+    "position": 155,
+    "question_text": "What is the output?\n\nint x = 5;\nint *p = &x;\n*p = 20;\ncout << x;",
+    "option_a": "5",
+    "option_b": "10",
+    "option_c": "20",
+    "option_d": "Error",
+    "correct_answer": "C"
+  },
+  {
+    "position": 156,
+    "question_text": "Which of the following is a valid null pointer declaration?",
+    "option_a": "int *p = nullptr;",
+    "option_b": "int p = nullptr;",
+    "option_c": "int &p = nullptr;",
+    "option_d": "int *p = 10;",
+    "correct_answer": "A"
+  },
+  {
+    "position": 157,
+    "question_text": "What is pointer arithmetic?",
+    "option_a": "Performing operations such as incrementing or decrementing a pointer",
+    "option_b": "Adding two unrelated memory addresses",
+    "option_c": "Comparing two strings only",
+    "option_d": "Declaring a function",
+    "correct_answer": "A"
+  },
+  {
+    "position": 158,
+    "question_text": "What does a pointer to pointer store?",
+    "option_a": "A character",
+    "option_b": "The address of another pointer",
+    "option_c": "A function's output only",
+    "option_d": "A constant only",
+    "correct_answer": "B"
+  },
+  {
+    "position": 159,
+    "question_text": "Which operator is used to allocate memory for an array dynamically?",
+    "option_a": "new",
+    "option_b": "delete",
+    "option_c": "return",
+    "option_d": "sizeof",
+    "correct_answer": "A"
+  },
+  {
+    "position": 160,
+    "question_text": "Which statement correctly releases a dynamically allocated array?",
+    "option_a": "delete p;",
+    "option_b": "delete[] p;",
+    "option_c": "free[] p;",
+    "option_d": "remove p;",
+    "correct_answer": "B"
+  },
+  {
+    "position": 161,
+    "question_text": "What is OOP?",
+    "option_a": "Object-Oriented Programming",
+    "option_b": "Object Operating Program",
+    "option_c": "Ordinary Output Programming",
+    "option_d": "Open Operation Process",
+    "correct_answer": "A"
+  },
+  {
+    "position": 162,
+    "question_text": "What is a class in C++?",
+    "option_a": "A blueprint for creating objects",
+    "option_b": "A loop",
+    "option_c": "An operator",
+    "option_d": "A variable only",
+    "correct_answer": "A"
+  },
+  {
+    "position": 163,
+    "question_text": "What is an object?",
+    "option_a": "An instance of a class",
+    "option_b": "A function prototype",
+    "option_c": "A data type keyword",
+    "option_d": "A header file",
+    "correct_answer": "A"
+  },
+  {
+    "position": 164,
+    "question_text": "Which keyword is used to define a class?",
+    "option_a": "object",
+    "option_b": "class",
+    "option_c": "structonly",
+    "option_d": "define",
+    "correct_answer": "B"
+  },
+  {
+    "position": 165,
+    "question_text": "Which access specifier allows members to be accessed from anywhere they are accessible through an object or other permitted context?",
+    "option_a": "private",
+    "option_b": "protected",
+    "option_c": "public",
+    "option_d": "hidden",
+    "correct_answer": "C"
+  },
+  {
+    "position": 166,
+    "question_text": "Which access specifier restricts direct access to members from outside the class?",
+    "option_a": "public",
+    "option_b": "private",
+    "option_c": "open",
+    "option_d": "global",
+    "correct_answer": "B"
+  },
+  {
+    "position": 167,
+    "question_text": "Which access specifier allows access from the class and its derived classes?",
+    "option_a": "public",
+    "option_b": "private",
+    "option_c": "protected",
+    "option_d": "global",
+    "correct_answer": "C"
+  },
+  {
+    "position": 168,
+    "question_text": "What is a constructor?",
+    "option_a": "A special member function called during object initialization",
+    "option_b": "A function used only to delete objects",
+    "option_c": "A loop inside a class",
+    "option_d": "A header file",
+    "correct_answer": "A"
+  },
+  {
+    "position": 169,
+    "question_text": "What is the name of a constructor?",
+    "option_a": "Same as the class name",
+    "option_b": "main",
+    "option_c": "start",
+    "option_d": "create",
+    "correct_answer": "A"
+  },
+  {
+    "position": 170,
+    "question_text": "What is a destructor?",
+    "option_a": "A special member function used during object destruction",
+    "option_b": "A constructor with arguments",
+    "option_c": "A normal variable",
+    "option_d": "An inheritance operator",
+    "correct_answer": "A"
+  },
+  {
+    "position": 171,
+    "question_text": "Which symbol is used before a destructor's class name?",
+    "option_a": "!",
+    "option_b": "~",
+    "option_c": "#",
+    "option_d": "&",
+    "correct_answer": "B"
+  },
+  {
+    "position": 172,
+    "question_text": "What is inheritance?",
+    "option_a": "One class acquiring properties and behavior from another class",
+    "option_b": "One loop inside another loop",
+    "option_c": "Creating a constant variable",
+    "option_d": "Deleting an object",
+    "correct_answer": "A"
+  },
+  {
+    "position": 173,
+    "question_text": "Which symbol is used to specify inheritance in a class declaration?",
+    "option_a": ",",
+    "option_b": ":",
+    "option_c": ";",
+    "option_d": ".",
+    "correct_answer": "B"
+  },
+  {
+    "position": 174,
+    "question_text": "What is polymorphism?",
+    "option_a": "One interface or operation having different forms of behavior",
+    "option_b": "One variable storing only integers",
+    "option_c": "A type of loop",
+    "option_d": "A memory allocation method",
+    "correct_answer": "A"
+  },
+  {
+    "position": 175,
+    "question_text": "What is function overriding?",
+    "option_a": "A derived class providing its own implementation of an inherited virtual function",
+    "option_b": "Two functions with different names",
+    "option_c": "Declaring two variables",
+    "option_d": "Deleting a function",
+    "correct_answer": "A"
+  },
+  {
+    "position": 176,
+    "question_text": "Which keyword is used to support runtime polymorphism through virtual functions?",
+    "option_a": "static",
+    "option_b": "virtual",
+    "option_c": "const",
+    "option_d": "friend",
+    "correct_answer": "B"
+  },
+  {
+    "position": 177,
+    "question_text": "What is encapsulation?",
+    "option_a": "Combining data and functions into a single unit and controlling access to them",
+    "option_b": "Writing only loops",
+    "option_c": "Converting int to float",
+    "option_d": "Creating multiple files",
+    "correct_answer": "A"
+  },
+  {
+    "position": 178,
+    "question_text": "What is abstraction?",
+    "option_a": "Hiding implementation details and exposing essential features",
+    "option_b": "Displaying every internal detail",
+    "option_c": "Deleting class members",
+    "option_d": "Creating a pointer",
+    "correct_answer": "A"
+  },
+  {
+    "position": 179,
+    "question_text": "Which keyword is used to declare a friend function inside a class?",
+    "option_a": "friend",
+    "option_b": "virtual",
+    "option_c": "static",
+    "option_d": "public",
+    "correct_answer": "A"
+  },
+  {
+    "position": 180,
+    "question_text": "Can a class have multiple constructors with different parameter lists?",
+    "option_a": "Yes",
+    "option_b": "No",
+    "option_c": "Only one constructor is allowed",
+    "option_d": "Only if the class is inherited",
+    "correct_answer": "A"
+  },
+  {
+    "position": 181,
+    "question_text": "What does STL stand for in C++?",
+    "option_a": "Standard Template Library",
+    "option_b": "Simple Type Language",
+    "option_c": "System Transfer Library",
+    "option_d": "Standard Task List",
+    "correct_answer": "A"
+  },
+  {
+    "position": 182,
+    "question_text": "Which header file is used for the vector container?",
+    "option_a": "<stack>",
+    "option_b": "<vector>",
+    "option_c": "<queue>",
+    "option_d": "<map>",
+    "correct_answer": "B"
+  },
+  {
+    "position": 183,
+    "question_text": "Which function adds an element to the end of a vector?",
+    "option_a": "add()",
+    "option_b": "insert_end()",
+    "option_c": "push_back()",
+    "option_d": "append_end()",
+    "correct_answer": "C"
+  },
+  {
+    "position": 184,
+    "question_text": "Which function removes the last element of a vector?",
+    "option_a": "pop_back()",
+    "option_b": "remove_last()",
+    "option_c": "delete()",
+    "option_d": "erase_all()",
+    "correct_answer": "A"
+  },
+  {
+    "position": 185,
+    "question_text": "Which function returns the number of elements in a vector?",
+    "option_a": "length()",
+    "option_b": "size()",
+    "option_c": "count_all()",
+    "option_d": "capacity_only()",
+    "correct_answer": "B"
+  },
+  {
+    "position": 186,
+    "question_text": "Which STL container stores unique elements in sorted order by default?",
+    "option_a": "vector",
+    "option_b": "list",
+    "option_c": "set",
+    "option_d": "queue",
+    "correct_answer": "C"
+  },
+  {
+    "position": 187,
+    "question_text": "Which STL container stores elements as key-value pairs in sorted key order by default?",
+    "option_a": "stack",
+    "option_b": "map",
+    "option_c": "vector",
+    "option_d": "queue",
+    "correct_answer": "B"
+  },
+  {
+    "position": 188,
+    "question_text": "Which container follows the LIFO principle?",
+    "option_a": "queue",
+    "option_b": "stack",
+    "option_c": "vector",
+    "option_d": "map",
+    "correct_answer": "B"
+  },
+  {
+    "position": 189,
+    "question_text": "What does LIFO stand for?",
+    "option_a": "Last In First Out",
+    "option_b": "Last In Final Out",
+    "option_c": "Least Input First Output",
+    "option_d": "Last Input First Order",
+    "correct_answer": "A"
+  },
+  {
+    "position": 190,
+    "question_text": "Which container follows the FIFO principle?",
+    "option_a": "stack",
+    "option_b": "set",
+    "option_c": "queue",
+    "option_d": "map",
+    "correct_answer": "C"
+  },
+  {
+    "position": 191,
+    "question_text": "What does FIFO stand for?",
+    "option_a": "First In First Out",
+    "option_b": "First Input Final Output",
+    "option_c": "Fast In Fast Out",
+    "option_d": "Final In First Out",
+    "correct_answer": "A"
+  },
+  {
+    "position": 192,
+    "question_text": "Which header file is used for the stack container?",
+    "option_a": "<vector>",
+    "option_b": "<stack>",
+    "option_c": "<map>",
+    "option_d": "<string>",
+    "correct_answer": "B"
+  },
+  {
+    "position": 193,
+    "question_text": "Which function returns the top element of a stack without removing it?",
+    "option_a": "push()",
+    "option_b": "pop()",
+    "option_c": "top()",
+    "option_d": "front()",
+    "correct_answer": "C"
+  },
+  {
+    "position": 194,
+    "question_text": "Which function removes the front element of a queue?",
+    "option_a": "pop()",
+    "option_b": "push()",
+    "option_c": "top()",
+    "option_d": "back()",
+    "correct_answer": "A"
+  },
+  {
+    "position": 195,
+    "question_text": "Which function is used to sort elements in ascending order by default?",
+    "option_a": "search()",
+    "option_b": "reverse()",
+    "option_c": "sort()",
+    "option_d": "arrange()",
+    "correct_answer": "C"
+  },
+  {
+    "position": 196,
+    "question_text": "Which header file provides the standard sort() algorithm?",
+    "option_a": "<iostream>",
+    "option_b": "<algorithm>",
+    "option_c": "<vector>",
+    "option_d": "<string>",
+    "correct_answer": "B"
+  },
+  {
+    "position": 197,
+    "question_text": "Which keyword is used to handle exceptions in C++?",
+    "option_a": "try",
+    "option_b": "catch",
+    "option_c": "throw",
+    "option_d": "All of the above",
+    "correct_answer": "D"
+  },
+  {
+    "position": 198,
+    "question_text": "Which block is used to handle an exception?",
+    "option_a": "try",
+    "option_b": "catch",
+    "option_c": "switch",
+    "option_d": "while",
+    "correct_answer": "B"
+  },
+  {
+    "position": 199,
+    "question_text": "Which header file is commonly used for file input and output operations?",
+    "option_a": "<fstream>",
+    "option_b": "<vector>",
+    "option_c": "<stack>",
+    "option_d": "<cmath>",
+    "correct_answer": "A"
+  },
+  {
+    "position": 200,
+    "question_text": "Which class is used to write data into a file?",
+    "option_a": "ifstream",
+    "option_b": "ofstream",
+    "option_c": "istream",
+    "option_d": "cin",
+    "correct_answer": "B"
+  }
+]

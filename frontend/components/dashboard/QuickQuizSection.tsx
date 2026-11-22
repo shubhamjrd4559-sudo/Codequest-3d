@@ -1,275 +1,284 @@
 "use client";
 
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { HelpCircle, CheckCircle2, XCircle, Sparkles, ArrowRight, RotateCcw } from "lucide-react";
+import { CheckCircle2, HelpCircle, LoaderCircle, Sparkles, XCircle } from "lucide-react";
+import Link from "next/link";
+
 import { Badge } from "@/components/ui/Badge";
 import { RobotMascot } from "@/components/characters/RobotMascot";
+import apiClient from "@/lib/api/client";
 
-interface Question {
+type AnswerKey = "A" | "B" | "C" | "D";
+
+interface DailyQuestion {
   id: number;
-  category: string;
-  difficulty: "Easy" | "Medium";
-  question: string;
-  options: { key: string; text: string; correct: boolean }[];
-  explanation: string;
-  xpReward: number;
+  position: number;
+  date: string;
+  question_text: string;
+  options: Record<AnswerKey, string>;
+  is_daily_quiz_completed: boolean;
+  selected_answer?: AnswerKey | null;
+  correct_answer?: AnswerKey;
+  is_correct?: boolean | null;
+  xp_awarded?: number;
+  total_xp?: number;
+  level?: number;
 }
 
-const DEFAULT_QUIZ_QUESTIONS: Question[] = [
-  {
-    id: 1,
-    category: "Arrays & Memory",
-    difficulty: "Easy",
-    question: "What is the time complexity to access an element at a given index in a standard contiguous array?",
-    options: [
-      { key: "A", text: "O(1) Constant Time", correct: true },
-      { key: "B", text: "O(n) Linear Time", correct: false },
-      { key: "C", text: "O(log n) Logarithmic Time", correct: false },
-      { key: "D", text: "O(n²) Quadratic Time", correct: false },
-    ],
-    explanation: "Memory addresses in an array are computed directly as Base + (Index × Size), allowing instant O(1) direct random access.",
-    xpReward: 50,
-  },
-  {
-    id: 2,
-    category: "Searching Algorithms",
-    difficulty: "Easy",
-    question: "What is the time complexity of Binary Search on a sorted array of size n?",
-    options: [
-      { key: "A", text: "O(n) Linear", correct: false },
-      { key: "B", text: "O(log n) Logarithmic", correct: true },
-      { key: "C", text: "O(n log n)", correct: false },
-      { key: "D", text: "O(1) Constant", correct: false },
-    ],
-    explanation: "Binary search eliminates half the remaining elements with each comparison, running in O(log n) time.",
-    xpReward: 75,
-  },
-  {
-    id: 3,
-    category: "Data Structures",
-    difficulty: "Easy",
-    question: "Which data structure operates on the Last-In, First-Out (LIFO) principle?",
-    options: [
-      { key: "A", text: "Queue", correct: false },
-      { key: "B", text: "Stack", correct: true },
-      { key: "C", text: "Linked List", correct: false },
-      { key: "D", text: "Binary Tree", correct: false },
-    ],
-    explanation: "A Stack pushes elements on top and pops the most recently added element first (LIFO).",
-    xpReward: 50,
-  },
-];
+interface DailyQuizResult {
+  is_correct: boolean;
+  correct_answer: AnswerKey;
+  xp_awarded: number;
+  total_xp: number;
+  level: number;
+  is_completed: boolean;
+}
+
+const answerKeys: AnswerKey[] = ["A", "B", "C", "D"];
+const celebrationStorageKey = (date: string) => `codequest:daily-quiz-celebrated:${date}`;
+const optionTone: Record<AnswerKey, string> = {
+  A: "border-cyan-300/25 hover:border-cyan-200/60 hover:bg-cyan-400/10",
+  B: "border-violet-300/25 hover:border-violet-200/60 hover:bg-violet-400/10",
+  C: "border-pink-300/25 hover:border-pink-200/60 hover:bg-pink-400/10",
+  D: "border-amber-300/25 hover:border-amber-200/60 hover:bg-amber-400/10",
+};
 
 export function QuickQuizSection() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [score, setScore] = useState(0);
-  const [isCompleted, setIsCompleted] = useState(false);
+  const [question, setQuestion] = useState<DailyQuestion | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<AnswerKey | null>(null);
+  const [result, setResult] = useState<DailyQuizResult | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [signInRequired, setSignInRequired] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const currentQ = DEFAULT_QUIZ_QUESTIONS[currentIndex];
-  const isAnswered = selectedAnswer !== null;
-  const isCorrect = isAnswered && currentQ.options.find((o) => o.key === selectedAnswer)?.correct;
+  useEffect(() => {
+    let active = true;
+    apiClient
+      .get<DailyQuestion>("/quizzes/daily/")
+      .then(({ data }) => {
+        if (active) {
+          setQuestion(data);
+          if (data.is_daily_quiz_completed && data.selected_answer && data.correct_answer) {
+            setSelectedAnswer(data.selected_answer);
+            setResult({
+              is_correct: Boolean(data.is_correct),
+              correct_answer: data.correct_answer,
+              xp_awarded: data.xp_awarded ?? 0,
+              total_xp: data.total_xp ?? 0,
+              level: data.level ?? 1,
+              is_completed: true,
+            });
+            const celebrationKey = celebrationStorageKey(data.date);
+            if (data.is_correct && window.sessionStorage.getItem(celebrationKey) !== "shown") {
+              window.sessionStorage.setItem(celebrationKey, "shown");
+              setShowCelebration(true);
+            }
+          }
+        }
+      })
+      .catch((loadError: unknown) => {
+        if (!active) return;
+        const statusCode = (loadError as { response?: { status?: number } })?.response?.status;
+        if (statusCode === 401 || statusCode === 403) {
+          setSignInRequired(true);
+          setError("Sign in to save your answer and earn XP.");
+        } else {
+          setError("Today's C++ challenge could not load. Please check your connection and try again.");
+        }
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
-  const handleSelectOption = (key: string) => {
-    if (isAnswered) return;
-    setSelectedAnswer(key);
-    const chosen = currentQ.options.find((o) => o.key === key);
-    if (chosen?.correct) {
-      setScore((prev) => prev + currentQ.xpReward);
+  const completed = Boolean(question?.is_daily_quiz_completed || result?.is_completed);
+
+  useEffect(() => {
+    if (!showCelebration) return;
+    const timeout = window.setTimeout(() => setShowCelebration(false), 3000);
+    return () => window.clearTimeout(timeout);
+  }, [showCelebration]);
+
+  const handleSubmit = async (answer: AnswerKey) => {
+    if (!question || selectedAnswer || submitting) return;
+    setSelectedAnswer(answer);
+    setSubmitting(true);
+    setError(null);
+    try {
+      const { data } = await apiClient.post<DailyQuizResult>("/quizzes/daily/submit/", {
+        question_id: question.id,
+        answer,
+      });
+      setResult(data);
+      if (data.is_correct) {
+        window.sessionStorage.setItem(celebrationStorageKey(question.date), "shown");
+        setShowCelebration(true);
+      }
+      window.dispatchEvent(new Event("codequest:dashboard-updated"));
+    } catch (submitError: unknown) {
+      const statusCode = (submitError as { response?: { status?: number } })?.response?.status;
+      if (statusCode === 409) {
+        try {
+          const { data } = await apiClient.get<DailyQuestion>("/quizzes/daily/");
+          setQuestion(data);
+          if (data.selected_answer && data.correct_answer) {
+            setSelectedAnswer(data.selected_answer);
+            setResult({
+              is_correct: Boolean(data.is_correct),
+              correct_answer: data.correct_answer,
+              xp_awarded: data.xp_awarded ?? 0,
+              total_xp: data.total_xp ?? 0,
+              level: data.level ?? 1,
+              is_completed: true,
+            });
+          }
+        } catch {
+          setError("Today's result could not be refreshed. Reload the dashboard to see your review.");
+        }
+      } else {
+        setSelectedAnswer(null);
+        if (statusCode === 401 || statusCode === 403) {
+          setSignInRequired(true);
+          setError("Sign in to save your answer and earn XP.");
+        } else {
+          setError("Your answer could not be submitted. Please try again.");
+        }
+      }
+    } finally {
+      setSubmitting(false);
     }
-  };
-
-  const handleNext = () => {
-    if (currentIndex < DEFAULT_QUIZ_QUESTIONS.length - 1) {
-      setCurrentIndex((prev) => prev + 1);
-      setSelectedAnswer(null);
-    } else {
-      setIsCompleted(true);
-    }
-  };
-
-  const handleReset = () => {
-    setCurrentIndex(0);
-    setSelectedAnswer(null);
-    setScore(0);
-    setIsCompleted(false);
   };
 
   return (
-    <div className="relative rounded-[32px] bg-gradient-to-br from-[#15113d]/95 via-[#1a154e]/90 to-[#0e102d]/95 backdrop-blur-2xl border-2 border-purple-500/35 p-6 sm:p-7 shadow-[0_0_35px_rgba(139,92,246,0.25)] overflow-hidden">
-      {/* Background Ambient Glows */}
-      <div className="absolute top-0 right-1/4 w-72 h-72 rounded-full bg-purple-600/15 blur-[90px] pointer-events-none" />
-      <div className="absolute bottom-0 left-10 w-64 h-64 rounded-full bg-cyan-600/15 blur-[90px] pointer-events-none" />
+    <div className="relative overflow-hidden rounded-[28px] border border-violet-400/30 bg-gradient-to-br from-[#15113d]/95 via-[#1a154e]/90 to-[#0e102d]/95 p-5 shadow-[0_0_32px_rgba(139,92,246,0.18)] backdrop-blur-2xl sm:p-6">
+      {showCelebration && (
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-20 overflow-hidden">
+          {Array.from({ length: 22 }, (_, index) => {
+            const colors = ["#34d399", "#22d3ee", "#a78bfa", "#fbbf24", "#fb7185"];
+            const left = `${5 + ((index * 37) % 90)}%`;
+            const delay = (index % 7) * 0.045;
+            return (
+              <motion.span
+                key={index}
+                className="absolute top-0 h-2 w-1.5 rounded-sm shadow-[0_0_10px_currentColor]"
+                style={{ left, color: colors[index % colors.length], backgroundColor: colors[index % colors.length] }}
+                initial={{ y: -12, opacity: 0, rotate: 0, scale: 0.5 }}
+                animate={{ y: 150 + ((index * 19) % 100), opacity: [0, 1, 1, 0], rotate: 220 + index * 31, scale: [0.5, 1, 0.8] }}
+                transition={{ duration: 1.1 + (index % 4) * 0.12, delay, ease: "easeOut" }}
+              />
+            );
+          })}
+          <motion.span
+            className="absolute right-[12%] top-24 text-2xl text-amber-200 drop-shadow-[0_0_12px_rgba(251,191,36,0.95)]"
+            initial={{ scale: 0, rotate: -35, opacity: 0 }}
+            animate={{ scale: [0, 1.25, 1], rotate: [ -35, 12, 0 ], opacity: [0, 1, 0] }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+          >✦</motion.span>
+          <motion.span
+            className="absolute left-[14%] top-28 text-xl text-cyan-200 drop-shadow-[0_0_12px_rgba(34,211,238,0.95)]"
+            initial={{ scale: 0, rotate: 30, opacity: 0 }}
+            animate={{ scale: [0, 1.2, 1], rotate: [30, -10, 0], opacity: [0, 1, 0] }}
+            transition={{ duration: 1.15, delay: 0.12, ease: "easeOut" }}
+          >✧</motion.span>
+        </div>
+      )}
+      <div className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-purple-500/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-20 left-1/4 h-48 w-48 rounded-full bg-cyan-500/10 blur-3xl" />
 
-      {/* Top Header Row */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 border-b border-white/10 pb-4 relative z-10">
+      <div className="relative z-10 mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 via-orange-500 to-purple-600 p-0.5 shadow-neon-amber">
-            <div className="w-full h-full rounded-[14px] bg-[#0c0e26] flex items-center justify-center">
-              <HelpCircle className="w-5 h-5 text-amber-300" />
-            </div>
-          </div>
+          <span className="grid h-10 w-10 place-items-center rounded-2xl bg-amber-400/15 text-amber-200 ring-1 ring-amber-300/30">
+            <HelpCircle className="h-5 w-5" />
+          </span>
           <div>
-            <h3 className="text-lg sm:text-xl font-black text-white tracking-tight flex items-center gap-2">
-              Daily Quiz Arena
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#FACC15]/20 text-[#FACC15] border border-[#FACC15]/30 font-bold uppercase tracking-wider">
-                Live Challenge
-              </span>
-            </h3>
-            <p className="text-xs text-slate-300 font-medium">
-              Test your DSA knowledge and earn instant XP rewards!
-            </p>
+            <h2 className="flex flex-wrap items-center gap-2 text-lg font-black tracking-tight text-white sm:text-xl">
+              Daily C++ Challenge
+              <span className="rounded-full border border-amber-300/25 bg-amber-300/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-amber-200">+50 XP</span>
+            </h2>
+            <p className="text-xs font-medium text-slate-300">One question each day · 200-question learning queue</p>
           </div>
         </div>
-
-        {/* Badges / Tracker */}
-        <div className="flex items-center gap-2">
-          <Badge variant="cyan" size="sm" className="font-bold">
-            {currentQ.category}
-          </Badge>
-          <Badge variant="purple" size="sm" className="font-black">
-            Q. {currentIndex + 1} of {DEFAULT_QUIZ_QUESTIONS.length}
-          </Badge>
-          <Badge variant="xp" size="sm" className="font-black">
-            +{currentQ.xpReward} XP
-          </Badge>
-        </div>
+        {question && <Badge variant="cyan" size="sm" className="font-bold">Question {question.position} / 200</Badge>}
       </div>
 
-      {isCompleted ? (
-        /* Quiz Completion View */
-        <div className="py-8 text-center space-y-4 relative z-10">
-          <div className="text-5xl">🏆</div>
-          <h4 className="text-2xl font-black text-white">
-            Daily Quiz Completed!
-          </h4>
-          <p className="text-sm text-slate-300 max-w-md mx-auto">
-            Awesome job! You earned{" "}
-            <span className="text-[#FACC15] font-black text-base">+{score} XP</span> from today&apos;s DSA questions.
-          </p>
-          <div className="pt-2">
-            <button
-              onClick={handleReset}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-sm shadow-neon-purple transition-transform hover:scale-105"
-            >
-              <RotateCcw className="w-4 h-4" /> Practice Again
-            </button>
-          </div>
+      {loading ? (
+        <div className="relative z-10 flex min-h-36 items-center justify-center gap-3 text-sm font-semibold text-slate-300">
+          <LoaderCircle className="h-5 w-5 animate-spin text-cyan-200" /> Loading today&apos;s challenge…
         </div>
-      ) : (
-        /* Active Question View */
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
-          {/* Question & Options (9 cols) */}
-          <div className="lg:col-span-9 space-y-4">
-            {/* Quiz Progress Bar */}
-            <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden mb-4">
-              <motion.div
-                className="h-full bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${((currentIndex + 1) / DEFAULT_QUIZ_QUESTIONS.length) * 100}%` }}
-                transition={{ duration: 0.4 }}
-              />
+      ) : error && !question ? (
+        <div role="alert" className="relative z-10 rounded-2xl border border-rose-300/20 bg-rose-400/10 p-4 text-sm text-rose-100">{error}</div>
+      ) : question ? (
+        <div className="relative z-10 grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_170px]">
+          <div className="space-y-4">
+            {completed && (
+              <div role="status" className="flex items-start gap-3 rounded-2xl border border-emerald-400/30 bg-emerald-500/10 p-4">
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300" />
+                <div>
+                  <p className="text-sm font-black text-emerald-100">
+                    {result?.is_correct ? "Today’s challenge done! +50 XP earned." : "Today’s challenge done! Review your answer below."}
+                  </p>
+                  <p className="mt-1 text-xs text-emerald-100/75">Come back tomorrow for the next question.</p>
+                </div>
+                {result?.is_correct && (
+                  <motion.span
+                    aria-hidden="true"
+                    className="ml-auto shrink-0 text-amber-200 drop-shadow-[0_0_10px_rgba(251,191,36,0.85)]"
+                    animate={{ scale: [1, 1.2, 1], rotate: [0, 12, -8, 0], opacity: [0.7, 1, 0.8] }}
+                    transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <Sparkles className="h-6 w-6" />
+                  </motion.span>
+                )}
+              </div>
+            )}
+            <div className="h-2 overflow-hidden rounded-full bg-white/10" role="progressbar" aria-label="Daily question queue progress" aria-valuemin={0} aria-valuemax={200} aria-valuenow={question.position}>
+              <motion.div className="h-full rounded-full bg-gradient-to-r from-cyan-300 to-violet-400" initial={{ width: 0 }} animate={{ width: `${(question.position / 200) * 100}%` }} transition={{ duration: 0.5 }} />
             </div>
-            <p className="text-base sm:text-lg font-bold text-white leading-relaxed">
-              {currentQ.question}
-            </p>
-
-            {/* 4 Interactive Options */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {currentQ.options.map((opt) => {
-                const isSelected = selectedAnswer === opt.key;
-                let optionStyle =
-                  "bg-white/[0.04] hover:bg-white/[0.09] border-white/15 text-slate-200 hover:border-purple-400/40";
-
-                if (isAnswered) {
-                  if (opt.correct) {
-                    optionStyle =
-                      "bg-emerald-500/20 border-emerald-400 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.4)]";
-                  } else if (isSelected && !opt.correct) {
-                    optionStyle =
-                      "bg-rose-500/20 border-rose-400 text-rose-300 shadow-neon-pink";
-                  } else {
-                    optionStyle = "bg-white/[0.02] border-white/10 text-slate-500 opacity-60";
-                  }
-                }
-
+            <p className="text-base font-extrabold leading-relaxed text-white sm:text-lg">{question.question_text}</p>
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+              {answerKeys.map((key) => {
+                const isChosen = selectedAnswer === key;
+                const isRight = (result?.correct_answer ?? question.correct_answer) === key;
+                const isWrongChoice = Boolean(completed && isChosen && result?.is_correct === false);
+                const tone = isRight
+                  ? "border-emerald-500 bg-emerald-500/20 text-emerald-100"
+                  : isWrongChoice
+                    ? "border-rose-500 bg-rose-500/20 text-rose-100"
+                    : `bg-white/[0.035] text-slate-100 ${optionTone[key]}`;
                 return (
-                  <motion.div
-                    key={opt.key}
-                    whileHover={!isAnswered ? { scale: 1.015 } : {}}
+                  <motion.button
+                    key={key}
+                    type="button"
+                    whileHover={!selectedAnswer ? { scale: 1.015 } : undefined}
+                    whileTap={!selectedAnswer ? { scale: 0.985 } : undefined}
+                    disabled={completed || Boolean(selectedAnswer) || submitting}
+                    onClick={() => void handleSubmit(key)}
+                    className={`flex min-h-14 items-center gap-3 rounded-2xl border px-4 py-3 text-left text-sm font-bold transition disabled:cursor-default ${tone}`}
                   >
-                  <button
-                    onClick={() => handleSelectOption(opt.key)}
-                    disabled={isAnswered}
-                    className={`p-3.5 sm:p-4 rounded-2xl border-2 text-left text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-between group w-full ${optionStyle}`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center font-mono text-xs text-purple-300 group-hover:bg-purple-500/30">
-                        {opt.key}
-                      </span>
-                      <span>{opt.text}</span>
-                    </div>
-
-                    {isAnswered && opt.correct && (
-                      <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-                    )}
-                    {isAnswered && isSelected && !opt.correct && (
-                      <XCircle className="w-5 h-5 text-rose-400 shrink-0" />
-                    )}
-                  </button>
-                  </motion.div>
+                    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-white/10 font-mono text-xs font-black">{key}</span>
+                    <span className="min-w-0 flex-1">{question.options[key]}</span>
+                    {isRight && <CheckCircle2 className="h-5 w-5 shrink-0" />}
+                    {result && isChosen && !isRight && <XCircle className="h-5 w-5 shrink-0" />}
+                  </motion.button>
                 );
               })}
             </div>
-
-            {/* Feedback & Next Button */}
-            {isAnswered && (
-              <div className="p-4 rounded-2xl bg-white/[0.05] border border-white/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in duration-300">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    {isCorrect ? (
-                      <span className="inline-flex items-center gap-1.5 text-xs font-black text-emerald-400">
-                        <Sparkles className="w-3.5 h-3.5" /> Correct! +{currentQ.xpReward} XP Earned
-                      </span>
-                    ) : (
-                      <span className="text-xs font-black text-rose-400">
-                        Incorrect Answer
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    {currentQ.explanation}
-                  </p>
-                </div>
-
-                <button
-                  onClick={handleNext}
-                  className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#FACC15] to-[#F59E0B] hover:from-[#FDE047] hover:to-[#FACC15] text-[#1E1B4B] font-black text-xs sm:text-sm shadow-[0_0_15px_rgba(250,204,21,0.4)] shrink-0 transition-transform hover:scale-105 active:scale-95"
-                >
-                  {currentIndex < DEFAULT_QUIZ_QUESTIONS.length - 1 ? (
-                    <>
-                      Next Question <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-                    </>
-                  ) : (
-                    <>
-                      View Results <Sparkles className="w-4 h-4 stroke-[2.5]" />
-                    </>
-                  )}
-                </button>
-              </div>
-            )}
+            {error && <div role="alert" className="flex flex-wrap items-center gap-2 text-sm font-semibold text-rose-200"><span>{error}</span>{signInRequired && <Link href="/login" className="rounded-lg border border-amber-200/30 px-3 py-1.5 font-extrabold text-amber-100 hover:bg-amber-200/10">Sign in</Link>}</div>}
+            {result && !completed && <p role="status" className={`text-sm font-extrabold ${result.is_correct ? "text-emerald-200" : "text-rose-200"}`}>{result.is_correct ? `Correct! You earned ${result.xp_awarded} XP.` : `Not quite. The correct answer is ${result.correct_answer}.`}</p>}
+            {submitting && <p className="flex items-center gap-2 text-xs font-semibold text-cyan-100"><LoaderCircle className="h-4 w-4 animate-spin" /> Recording your answer…</p>}
           </div>
-
-          {/* Right Mascot Helper (3 cols) */}
-          <div className="hidden lg:flex lg:col-span-3 flex-col items-center justify-center text-center p-3 rounded-2xl bg-white/[0.03] border border-white/10">
-            <RobotMascot size="sm" className="w-20 h-24 mb-2 drop-shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
-            <div className="p-2.5 rounded-xl bg-purple-500/20 border border-purple-400/30 text-[11px] text-purple-200 font-semibold leading-snug">
-              💡 <span className="font-bold text-[#FACC15]">Pro Tip:</span> Answer daily quizzes to maintain your learning streak!
-            </div>
-          </div>
+          <aside className="hidden flex-col items-center justify-center rounded-2xl border border-white/10 bg-white/[0.035] p-3 text-center lg:flex">
+            <RobotMascot size="sm" className="mb-2 h-20 w-20 drop-shadow-[0_0_15px_rgba(6,182,212,0.4)]" />
+            <p className="text-[11px] font-semibold leading-snug text-slate-300"><Sparkles className="mr-1 inline h-3 w-3 text-amber-200" />One small step every day builds strong C++ foundations.</p>
+          </aside>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

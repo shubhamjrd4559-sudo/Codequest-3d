@@ -1,10 +1,16 @@
+from django.db import transaction
 from django.db.models import Count
+from django.utils import timezone
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from apps.assessments.models import Question, Quiz
+from apps.accounts.gamification import add_xp, record_activity
+from apps.accounts.models import StudentProfile
+from apps.accounts.permissions import IsStudentRole
+from apps.assessments.models import DailyQuestion, Question, Quiz
 from apps.assessments.serializers import (
     PublicQuestionSerializer,
     QuizAttemptInputSerializer,
@@ -18,6 +24,92 @@ QUIZ_LEVEL_TITLES = {
     "3": "Pattern Builder",
     "4": "Grandmaster",
 }
+
+
+def get_daily_question(today=None):
+    today = today or timezone.localdate()
+    position = ((today.timetuple().tm_yday - 1) % 200) + 1
+    return DailyQuestion.objects.get(position=position)
+
+
+class DailyQuestionView(APIView):
+    # The prompt and choices are public learning content; answers remain private
+    # until an authenticated student submits a response.
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        today = timezone.localdate()
+        question = get_daily_question(today)
+        profile = None
+        if request.user.is_authenticated and request.user.role == "student":
+            profile = StudentProfile.objects.filter(user=request.user).only(
+                "daily_quiz_completed_on", "daily_quiz_answer", "daily_quiz_is_correct", "total_xp", "level"
+            ).first()
+        return Response({
+            "id": question.pk,
+            "position": question.position,
+            "date": today.isoformat(),
+            "question_text": question.question_text,
+            "options": {
+                "A": question.option_a,
+                "B": question.option_b,
+                "C": question.option_c,
+                "D": question.option_d,
+            },
+            "is_daily_quiz_completed": bool(profile and profile.daily_quiz_completed_on == today),
+            **({
+                "selected_answer": profile.daily_quiz_answer,
+                "correct_answer": question.correct_answer,
+                "is_correct": profile.daily_quiz_is_correct,
+                "xp_awarded": 50 if profile.daily_quiz_is_correct else 0,
+                "total_xp": profile.total_xp,
+                "level": profile.level,
+            } if profile and profile.daily_quiz_completed_on == today else {}),
+        })
+
+
+class DailyQuizSubmitView(APIView):
+    permission_classes = (IsAuthenticated, IsStudentRole)
+
+    @transaction.atomic
+    def post(self, request):
+        today = timezone.localdate()
+        profile, _ = StudentProfile.objects.get_or_create(user=request.user)
+        profile = profile.__class__.objects.select_for_update().get(pk=profile.pk)
+        if profile.daily_quiz_completed_on == today:
+            return Response({"detail": "Today's daily quiz has already been completed."}, status=status.HTTP_409_CONFLICT)
+
+        try:
+            question_id = int(request.data.get("question_id"))
+        except (TypeError, ValueError):
+            return Response({"question_id": "A valid question ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+        answer = str(request.data.get("answer", "")).strip().upper()
+        if answer not in DailyQuestion.Answer.values:
+            return Response({"answer": "Choose A, B, C, or D."}, status=status.HTTP_400_BAD_REQUEST)
+
+        question = get_daily_question(today)
+        if question.pk != question_id:
+            return Response({"question_id": "This is not today's question."}, status=status.HTTP_400_BAD_REQUEST)
+
+        is_correct = answer == question.correct_answer
+        xp_awarded = 50 if is_correct else 0
+        if is_correct:
+            add_xp(request.user, xp_awarded)
+        record_activity(request.user, today)
+        profile.daily_quiz_completed_on = today
+        profile.daily_quiz_answer = answer
+        profile.daily_quiz_is_correct = is_correct
+        profile.save(update_fields=("daily_quiz_completed_on", "daily_quiz_answer", "daily_quiz_is_correct", "updated_at"))
+        profile.refresh_from_db(fields=("total_xp", "level"))
+        return Response({
+            "is_correct": is_correct,
+            "correct_answer": question.correct_answer,
+            "xp_awarded": xp_awarded,
+            "total_xp": profile.total_xp,
+            "level": profile.level,
+            "is_completed": True,
+            "date": today.isoformat(),
+        }, status=status.HTTP_200_OK)
 
 
 class QuizViewSet(ReadOnlyModelViewSet):

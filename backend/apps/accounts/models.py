@@ -59,6 +59,14 @@ class StudentProfile(models.Model):
     current_streak = models.PositiveIntegerField(default=0)
     longest_streak = models.PositiveIntegerField(default=0)
     last_activity_date = models.DateField(null=True, blank=True)
+    daily_quiz_completed_on = models.DateField(null=True, blank=True, db_index=True)
+    daily_quiz_answer = models.CharField(
+        max_length=1,
+        choices=(("A", "A"), ("B", "B"), ("C", "C"), ("D", "D")),
+        blank=True,
+        default="",
+    )
+    daily_quiz_is_correct = models.BooleanField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

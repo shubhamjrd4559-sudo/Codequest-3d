@@ -84,6 +84,7 @@ class DashboardSummaryView(APIView):
                 "current_level": profile.current_level if profile else 1,
                 "current_streak": profile.current_streak if profile else 0,
                 "streak": profile.current_streak if profile else 0,
+                "is_daily_quiz_completed": bool(profile and profile.daily_quiz_completed_on == timezone.localdate()),
                 "completed_lessons": progress.filter(status=UserProgress.Status.COMPLETED).count(),
                 "in_progress_lessons": progress.filter(status=UserProgress.Status.IN_PROGRESS).count(),
                 "total_published_lessons": Lesson.objects.filter(is_published=True).count(),

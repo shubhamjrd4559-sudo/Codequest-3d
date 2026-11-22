@@ -44,8 +44,10 @@ export interface DashboardSummary {
     display_name: string;
   };
   current_xp: number;
+  total_xp?: number;
   level: number;
   current_streak: number;
+  is_daily_quiz_completed?: boolean;
   completed_lessons: number;
   in_progress_lessons: number;
   total_published_lessons: number;

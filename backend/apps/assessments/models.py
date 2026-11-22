@@ -57,6 +57,31 @@ class Question(TimestampedModel):
         return f"{self.quiz.title}: Question {self.order + 1}"
 
 
+class DailyQuestion(models.Model):
+    """One item in the stable, date-rotated C++ daily quiz queue."""
+
+    class Answer(models.TextChoices):
+        A = "A", "A"
+        B = "B", "B"
+        C = "C", "C"
+        D = "D", "D"
+
+    position = models.PositiveSmallIntegerField(unique=True, db_index=True)
+    question_text = models.TextField()
+    option_a = models.TextField()
+    option_b = models.TextField()
+    option_c = models.TextField()
+    option_d = models.TextField()
+    correct_answer = models.CharField(max_length=1, choices=Answer.choices)
+
+    class Meta:
+        ordering = ("position",)
+        constraints = [models.CheckConstraint(condition=models.Q(position__gte=1, position__lte=200), name="daily_question_position_1_200")]
+
+    def __str__(self):
+        return f"Daily question {self.position}"
+
+
 class QuizAttempt(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="quiz_attempts")
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="attempts")

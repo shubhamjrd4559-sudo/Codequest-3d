@@ -75,9 +75,13 @@ export default function StudentDashboardPage() {
       }
     }
 
+    const refreshAfterDailyQuiz = () => void fetchDashboard();
+    window.addEventListener("codequest:dashboard-updated", refreshAfterDailyQuiz);
+
     if (!authLoading) void fetchDashboard();
     return () => {
       isMounted = false;
+      window.removeEventListener("codequest:dashboard-updated", refreshAfterDailyQuiz);
     };
   }, [isAuthenticated, authLoading]);
 

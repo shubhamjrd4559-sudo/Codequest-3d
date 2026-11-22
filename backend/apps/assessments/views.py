@@ -12,11 +12,20 @@ from apps.assessments.serializers import (
     QuizSerializer,
 )
 
+QUIZ_LEVEL_TITLES = {
+    "1": "Foundation",
+    "2": "Core Logic",
+    "3": "Pattern Builder",
+    "4": "Grandmaster",
+}
+
 
 class QuizViewSet(ReadOnlyModelViewSet):
     permission_classes = (AllowAny,)
     serializer_class = QuizSerializer
-    queryset = Quiz.objects.filter(is_published=True, topic__is_published=True).annotate(question_count=Count("questions"))
+    queryset = Quiz.objects.filter(is_published=True, topic__is_published=True).annotate(
+        question_count=Count("questions")
+    ).order_by("topic__order", "title")
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -24,6 +33,12 @@ class QuizViewSet(ReadOnlyModelViewSet):
         if topic:
             field = "topic_id" if topic.isdigit() else "topic__slug"
             queryset = queryset.filter(**{field: topic})
+        level = self.request.query_params.get("level")
+        if level:
+            level_title = QUIZ_LEVEL_TITLES.get(level.strip().lower(), level.strip())
+            if level_title not in QUIZ_LEVEL_TITLES.values():
+                return queryset.none()
+            queryset = queryset.filter(title__iendswith=level_title)
         return queryset
 
 

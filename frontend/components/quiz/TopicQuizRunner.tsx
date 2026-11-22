@@ -8,6 +8,7 @@ import { apiClient } from '@/lib/api/client';
 import { Check, LockKeyhole, RotateCcw, Star, Timer, Trophy } from 'lucide-react';
 
 const LEVELS = ['Foundation', 'Core Logic', 'Pattern Builder', 'Grandmaster'] as const;
+const XP_PER_CORRECT_ANSWER = 10;
 const OPTION_STYLES = [
   'border-sky-400/35 bg-sky-500/10 hover:bg-sky-500/20',
   'border-violet-400/35 bg-violet-500/10 hover:bg-violet-500/20',
@@ -123,7 +124,7 @@ export default function TopicQuizRunner({ topicTitle, topicSlug }: { topicTitle:
       if (!result) throw new Error('The server did not return feedback for this question.');
       setFeedback(result);
       if (result.is_correct) {
-        setXp((value) => value + 25);
+        setXp((value) => value + XP_PER_CORRECT_ANSWER);
         setShowConfetti(true);
         window.setTimeout(() => setShowConfetti(false), 1200);
       } else {
@@ -194,7 +195,7 @@ export default function TopicQuizRunner({ topicTitle, topicSlug }: { topicTitle:
           <AnimatePresence mode="wait">
             {levelWon ? <motion.div key="win" initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }} className="flex min-h-[190px] flex-col items-center justify-center text-center"><div className="mb-3 rounded-2xl bg-amber-300/15 p-3 text-amber-200"><Trophy className="h-8 w-8" /></div><p className="text-xs font-black uppercase tracking-[.2em] text-emerald-300">{level === LEVELS.length - 1 ? 'Quiz path complete!' : 'Stage complete!'}</p><h3 className="mt-2 text-2xl font-black text-white">{level === LEVELS.length - 1 ? 'DSA Mastery unlocked!' : `${LEVELS[level]} cleared!`}</h3><p className="mt-2 text-sm text-slate-300">Your answer and explanation are saved to your learning record.</p>{level < LEVELS.length - 1 ? <button onClick={() => chooseLevel(level + 1)} className="mt-5 rounded-xl bg-gradient-to-r from-cyan-400 to-violet-500 px-6 py-3 font-black text-slate-950">Next level →</button> : <button onClick={restartPath} className="mt-5 inline-flex items-center gap-2 rounded-xl border border-cyan-300/30 bg-cyan-400/15 px-5 py-3 font-black text-cyan-100"><RotateCcw className="h-4 w-4" /> Play again</button>}</motion.div>
               : outOfLives && !feedback ? <motion.div key="lives" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex min-h-[190px] flex-col items-center justify-center text-center"><div className="text-4xl">💫</div><h3 className="mt-3 text-2xl font-black text-white">Ready for another try?</h3><p className="mt-2 text-sm text-slate-300">Take a breath and try {LEVELS[level]} again.</p><button onClick={() => { setLives(3); resetAttempt(); }} className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl border border-cyan-300/30 bg-cyan-400/15 px-5 py-3 font-black text-cyan-100"><RotateCcw className="h-4 w-4" /> Try again</button></motion.div>
-              : question && <motion.div key={`question-${level}`} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}><div className="flex flex-wrap items-center gap-2"><p className="text-xs font-black uppercase tracking-[.18em] text-violet-200">{LEVELS[level]} · C++ DSA</p>{question.points > 1 && <span className="rounded-full border border-amber-300/20 bg-amber-400/10 px-2.5 py-1 text-[10px] font-black text-amber-200">{question.points} XP question</span>}</div><h3 className="mt-3 max-w-4xl text-xl font-black leading-snug text-white sm:text-2xl">{question.prompt}</h3></motion.div>}
+              : question && <motion.div key={`question-${level}`} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}><div className="flex flex-wrap items-center gap-2"><p className="text-xs font-black uppercase tracking-[.18em] text-violet-200">{LEVELS[level]} · C++ DSA</p>{question.points > 1 && <span className="rounded-full border border-amber-300/20 bg-amber-400/10 px-2.5 py-1 text-[10px] font-black text-amber-200">{question.points} XP question</span>}</div><h3 className="mt-3 max-w-4xl text-lg font-extrabold leading-relaxed tracking-[-0.01em] text-white sm:text-xl lg:text-[1.375rem]">{question.prompt}</h3></motion.div>}
           </AnimatePresence>
           {showConfetti && <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">{Array.from({ length: 18 }, (_, i) => <motion.i key={i} initial={{ opacity: 1, x: '50%', y: '45%', rotate: 0, scale: .5 }} animate={{ opacity: 0, x: `${(i % 6) * 18}%`, y: `${20 + Math.floor(i / 6) * 32}%`, rotate: i * 67, scale: 1 }} transition={{ duration: .85 }} className="absolute h-2 w-2 rounded-sm" style={{ background: ['#34d399', '#22d3ee', '#f472b6', '#fbbf24'][i % 4] }} />)}</div>}
         </div>

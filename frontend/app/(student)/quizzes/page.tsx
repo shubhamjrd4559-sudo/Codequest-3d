@@ -5,13 +5,14 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, Brain, Search, Sparkles } from 'lucide-react';
 import { QUIZ_LEVELS, QUIZ_TOPICS } from '@/components/quiz/quizTopics';
+import { QuizCardArtwork } from '@/components/quiz/QuizCardArtwork';
 
 const GROUPS = ['All topics', ...Array.from(new Set(QUIZ_TOPICS.map((topic) => topic.group)))];
-const PALETTES = [
-  'from-cyan-400/15 to-blue-500/5 border-cyan-300/15',
-  'from-violet-400/15 to-fuchsia-500/5 border-violet-300/15',
-  'from-pink-400/15 to-rose-500/5 border-pink-300/15',
-  'from-amber-300/15 to-orange-500/5 border-amber-300/15',
+const CARD_THEMES = [
+  { tint: '#9bc8ff', glow: 'rgba(37, 99, 235, .2)', base: '#111a31' },
+  { tint: '#d6b8ff', glow: 'rgba(126, 34, 206, .2)', base: '#1a1430' },
+  { tint: '#ffb1d5', glow: 'rgba(219, 39, 119, .17)', base: '#241528' },
+  { tint: '#9be9f1', glow: 'rgba(8, 145, 178, .19)', base: '#10202d' },
 ];
 
 export default function QuizzesPage() {
@@ -50,16 +51,22 @@ export default function QuizzesPage() {
         </div>
 
         {topics.length ? <div className="grid items-stretch gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {topics.map((topic, index) => <motion.article key={topic.slug} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(index * .025, .25) }} whileHover={{ y: -3 }} className={`flex h-full flex-col rounded-[22px] border bg-gradient-to-br ${PALETTES[index % PALETTES.length]} p-4 shadow-[0_14px_38px_rgba(0,0,0,.18)] sm:p-5`}>
-            <div className="flex items-start justify-between gap-3">
-              <div><p className="text-[10px] font-black uppercase tracking-[.18em] text-slate-400">{topic.group}</p><h3 className="mt-2 min-h-12 text-lg font-black leading-snug text-white">{topic.title}</h3></div>
-              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-slate-950/35 text-cyan-100"><Brain className="h-5 w-5" /></div>
-            </div>
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              {QUIZ_LEVELS.map((level, levelIndex) => <span key={level.name} className={`rounded-lg border border-white/[.08] bg-slate-950/30 px-2.5 py-1.5 text-[10px] font-extrabold ${level.color}`}><span className="mr-1 opacity-60">0{levelIndex + 1}</span>{level.name}</span>)}
-            </div>
-            <Link href={`/quizzes/${topic.slug}`} className="mt-auto flex min-h-10 items-center justify-between rounded-xl bg-white px-4 py-2.5 text-sm font-black text-slate-950 transition hover:bg-cyan-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-200">Start quiz path <ArrowRight className="h-4 w-4" /></Link>
-          </motion.article>)}
+          {topics.map((topic, index) => {
+            const theme = CARD_THEMES[index % CARD_THEMES.length];
+            return <motion.article key={topic.slug} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(index * .025, .25) }} whileHover={{ y: -3 }} className="relative isolate flex min-h-[188px] h-full flex-col overflow-hidden rounded-[20px] border border-white/[.12] p-4 shadow-[0_14px_38px_rgba(0,0,0,.22)] transition-colors hover:border-white/25 sm:p-[18px]" style={{ backgroundImage: `radial-gradient(ellipse at 88% 18%, ${theme.glow}, transparent 54%), linear-gradient(135deg, ${theme.base}, rgba(13, 16, 35, .98))` }}>
+              <QuizCardArtwork slug={topic.slug} tint={theme.tint} />
+              <div className="relative z-10 flex flex-1 flex-col">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0"><p className="text-[9px] font-black uppercase tracking-[.2em] text-slate-400">{topic.group}</p><h3 className="mt-1.5 min-h-[42px] max-w-[82%] text-[15px] font-black leading-snug text-white">{topic.title}</h3></div>
+                  <div className="grid h-8 w-8 shrink-0 place-items-center rounded-xl border border-white/[.12] bg-slate-950/45 text-slate-100"><Brain className="h-4 w-4" /></div>
+                </div>
+                <div className="mt-2.5 grid grid-cols-2 gap-1.5">
+                  {QUIZ_LEVELS.map((level, levelIndex) => <span key={level.name} className={`truncate rounded-lg border border-white/[.08] bg-slate-950/45 px-2 py-[5px] text-[9px] font-extrabold ${level.color}`}><span className="mr-1 opacity-60">0{levelIndex + 1}</span>{level.name}</span>)}
+                </div>
+                <Link href={`/quizzes/${topic.slug}`} className="mt-auto flex min-h-9 items-center justify-between rounded-xl bg-white px-3.5 py-2 text-xs font-black text-slate-950 transition hover:bg-cyan-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-200">Start quiz path <ArrowRight className="h-4 w-4" /></Link>
+              </div>
+            </motion.article>;
+          })}
         </div> : <div className="rounded-2xl border border-white/10 bg-white/[.04] p-10 text-center text-sm text-slate-300">No quiz topics match that search. Try another term.</div>}
       </section>
     </main>

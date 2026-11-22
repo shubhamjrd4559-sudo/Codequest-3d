@@ -36,6 +36,28 @@ class AssessmentApiTests(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
+    def test_quizzes_can_be_filtered_by_each_progressive_level(self):
+        stages = ("Foundation", "Core Logic", "Pattern Builder", "Grandmaster")
+        quizzes = [
+            Quiz.objects.create(
+                topic=self.topic,
+                title=f"Loops — {stage}",
+                is_published=True,
+            )
+            for stage in stages
+        ]
+
+        for level_number, (stage, quiz) in enumerate(zip(stages, quizzes), start=1):
+            with self.subTest(level=level_number):
+                response = self.client.get(
+                    "/api/v1/quizzes/",
+                    {"topic": self.topic.slug, "level": level_number},
+                )
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
+                self.assertEqual(response.data["count"], 1)
+                self.assertEqual(response.data["results"][0]["id"], quiz.id)
+                self.assertTrue(response.data["results"][0]["title"].endswith(stage))
+
     def test_authenticated_quiz_attempt_uses_request_user_and_returns_feedback(self):
         user = User.objects.create_user(email="quizzer@example.com", password="StrongPassword!2026")
         self.client.force_authenticate(user)

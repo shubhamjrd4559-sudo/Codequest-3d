@@ -88,13 +88,13 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "flex h-full min-h-0 w-64 flex-col justify-between overflow-y-auto overscroll-contain rounded-[28px]",
-        "bg-[#0e112b]/90 backdrop-blur-2xl border border-purple-500/30 p-4 shadow-[0_0_35px_rgba(139,92,246,0.2)]",
+        "flex w-full min-w-0 flex-row items-center justify-between gap-3 rounded-[24px]",
+        "bg-[#0e112b]/90 backdrop-blur-2xl border border-purple-500/30 px-3 py-2.5 md:px-4 shadow-[0_0_35px_rgba(139,92,246,0.2)]",
         className
       )}
     >
       {/* Top Section: Logo & Nav Links */}
-      <div className="space-y-6">
+      <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
         {/* Brand Logo with Neon Gamepad */}
         <Link href="/" className="flex items-center gap-3 px-2 py-1 group">
           <div className="relative flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-purple-600 shadow-[0_0_20px_rgba(6,182,212,0.6)] group-hover:scale-105 transition-transform p-0.5">
@@ -113,7 +113,7 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
         </Link>
 
         {/* Navigation Menu */}
-        <nav className="space-y-2 pt-1">
+        <nav aria-label="Main navigation" className="flex min-w-0 items-center gap-1 overflow-x-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = getIsActive(item);
@@ -123,7 +123,7 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
                 key={item.name}
                 href={item.href}
                 className={cn(
-                  "relative flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-black transition-all duration-200 select-none group",
+                  "relative flex shrink-0 items-center gap-2 rounded-xl px-2.5 py-2.5 text-sm font-black transition-all duration-200 select-none group xl:gap-2.5 xl:px-3",
                   isActive
                     ? "bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white shadow-[0_0_25px_rgba(147,51,234,0.6)] border border-purple-300/40"
                     : "text-slate-300 hover:text-white hover:bg-white/[0.08]"
@@ -135,7 +135,7 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
                     isActive ? "text-white" : "text-slate-400 group-hover:text-purple-300"
                   )}
                 />
-                <span>{item.name}</span>
+                <span className="hidden 2xl:inline">{item.name}</span>
                 {isActive && (
                   <div className="ml-auto w-2 h-2 rounded-full bg-white shadow-[0_0_10px_white]" />
                 )}
@@ -146,17 +146,17 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
       </div>
 
       {/* Bottom Section: Level & XP Status Widget + Sign Out */}
-      <div className="pt-4 border-t border-white/10 space-y-3">
+      <div className="flex shrink-0 items-center gap-2 border-l border-white/10 pl-3">
         {/* Player Level Badge */}
-        <div className="p-3.5 rounded-2xl bg-gradient-to-br from-purple-950/50 via-white/[0.04] to-indigo-950/40 border border-purple-400/30 shadow-glass-sm">
-          <div className="flex items-center gap-3">
+        <div className="rounded-2xl bg-gradient-to-br from-purple-950/50 via-white/[0.04] to-indigo-950/40 border border-purple-400/30 p-2 shadow-glass-sm">
+          <div className="flex items-center gap-2">
             {/* Glowing Avatar */}
-            <div className="relative w-10 h-10 rounded-full p-0.5 bg-gradient-to-tr from-amber-300/80 via-violet-400/80 to-cyan-300/80">
+            <div className="relative h-9 w-9 rounded-full p-0.5 bg-gradient-to-tr from-amber-300/80 via-violet-400/80 to-cyan-300/80">
               <div className="w-full h-full rounded-full bg-[#0c0e24] flex items-center justify-center overflow-hidden border border-white/20">
                 <UserRound className="h-5 w-5 text-slate-100" aria-hidden="true" />
               </div>
             </div>
-            <div>
+            <div className="hidden 2xl:block">
               <p className="text-xs font-black text-white leading-none">
                 Level {level}
               </p>
@@ -171,10 +171,11 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
         {isAuthenticated && (
           <button
             onClick={logout}
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-black text-rose-300 hover:text-white hover:bg-rose-500/20 border border-rose-500/30 transition-colors"
+            aria-label="Sign out"
+            title="Sign out"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-rose-500/30 text-rose-300 transition-colors hover:bg-rose-500/20 hover:text-white"
           >
-            <LogOut className="w-3.5 h-3.5" />
-            <span>Sign Out</span>
+            <LogOut className="h-4 w-4" />
           </button>
         )}
       </div>

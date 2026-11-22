@@ -254,10 +254,10 @@ export default function TopicPage() {
         <h2 className="text-2xl font-black text-white">{error}</h2>
         <p className="text-slate-400 text-sm">Go back and pick a different topic.</p>
         <a
-          href="/topics"
+          href="/quizzes"
           className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-xl bg-white/[0.08] border border-white/15 text-sm font-bold text-slate-200 hover:bg-white/[0.14] transition-colors"
         >
-          ← Back to Topics
+          ← Back to DSA Quiz
         </a>
       </section>
     );

@@ -34,7 +34,7 @@ export default function RootLayout({
           aria-hidden="true"
           className="app-wallpaper fixed inset-0 z-0 scale-[1.015]"
         />
-        <div aria-hidden="true" className="fixed inset-0 z-0 pointer-events-none bg-[#070814]/50 backdrop-blur-[1px]" />
+        <div aria-hidden="true" className="fixed inset-0 z-0 pointer-events-none bg-[#070814]/75 backdrop-blur-[3px]" />
         <div className="global-content relative z-10 min-h-[100dvh]">
           <MotionConfig reducedMotion="user">
             <AuthProvider>{children}</AuthProvider>

@@ -108,3 +108,23 @@ export interface HeatmapDay {
   count: number;
 }
 
+export interface LeaderboardUser {
+  display_name: string;
+  total_xp: number;
+  level: number;
+  avatar_url: string | null;
+}
+
+export interface AchievementItemData {
+  id: number;
+  slug: string;
+  name: string;
+  description: string;
+  icon: string;
+  xp_reward: number;
+  criteria?: Record<string, unknown>;
+  is_unlocked?: boolean;
+  unlocked_at?: string | null;
+}
+
+

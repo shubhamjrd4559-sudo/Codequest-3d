@@ -9,6 +9,7 @@ import {
   Gamepad2,
   Code2,
   Trophy,
+  Award,
   Video,
   Settings,
   LogOut,
@@ -46,6 +47,18 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
       id: "games",
     },
     {
+      name: "Leaderboard",
+      href: "/leaderboard",
+      icon: Trophy,
+      id: "leaderboard",
+    },
+    {
+      name: "Achievements",
+      href: "/achievements",
+      icon: Award,
+      id: "achievements",
+    },
+    {
       name: "Video Help",
       href: "/videos",
       icon: Video,
@@ -64,12 +77,6 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
       id: "profile",
     },
     {
-      name: "Achievements",
-      href: "/dashboard",
-      icon: Trophy,
-      id: "achievements",
-    },
-    {
       name: "Settings",
       href: "/dashboard",
       icon: Settings,
@@ -81,6 +88,8 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
     if (activeItem) return activeItem === item.id;
     if (item.href === "/dashboard" && pathname === "/dashboard") return true;
     if (item.id === "profile" && pathname.startsWith("/profile")) return true;
+    if (item.id === "leaderboard" && pathname.startsWith("/leaderboard")) return true;
+    if (item.id === "achievements" && pathname.startsWith("/achievements")) return true;
     if (item.id === "learning" && pathname.startsWith("/topics")) return true;
     if (item.id === "games" && pathname.startsWith("/mini-games")) return true;
     if (item.id === "videos" && pathname.startsWith("/videos")) return true;

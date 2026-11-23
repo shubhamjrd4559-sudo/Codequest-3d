@@ -10,7 +10,7 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 from apps.accounts.gamification import add_xp, record_activity
 from apps.accounts.models import StudentProfile
 from apps.accounts.permissions import IsStudentRole
-from apps.assessments.models import DailyQuestion, Question, Quiz
+from apps.assessments.models import DailyQuestion, DailyQuizAttempt, Question, Quiz
 from apps.assessments.serializers import (
     PublicQuestionSerializer,
     QuizAttemptInputSerializer,
@@ -96,6 +96,16 @@ class DailyQuizSubmitView(APIView):
         if is_correct:
             add_xp(request.user, xp_awarded)
         record_activity(request.user, today)
+        DailyQuizAttempt.objects.update_or_create(
+            user=request.user,
+            date=today,
+            defaults={
+                "question": question,
+                "answer": answer,
+                "is_correct": is_correct,
+                "xp_awarded": xp_awarded,
+            },
+        )
         profile.daily_quiz_completed_on = today
         profile.daily_quiz_answer = answer
         profile.daily_quiz_is_correct = is_correct

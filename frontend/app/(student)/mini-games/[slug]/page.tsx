@@ -633,7 +633,6 @@ function TreasureSearchGame({ game }: { game: { title: string; instructions: str
     setMessage(hint === "hot" ? "Hot! You are close to the treasure. Search nearby chests." : "Cold. The treasure is farther away—try another area.");
   };
 
-  const totalChests = mode === 1 ? 9 : mode === 2 ? 10 : 25;
   const progressLabel = mode === 1 ? `${openedCount}/9 opened` : mode === 2 ? `${clicksUsed} guesses` : mode === 3 ? `${Math.max(0, 5 - clicksUsed)}/5 guesses left` : `${openedCount} opened`;
   const controlTone = ["border-amber-300/20 bg-amber-950/20", "border-violet-300/20 bg-violet-950/25", "border-orange-300/20 bg-orange-950/20", "border-cyan-300/20 bg-slate-950/75"][mode - 1];
 

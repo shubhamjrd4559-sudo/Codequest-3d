@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Lock, Check, Star, Sparkles, Play, Crown, Trophy } from "lucide-react";
+import { Lock, Check, Star, Sparkles, Play, Crown } from "lucide-react";
 
 export type LevelState = "locked" | "unlocked" | "completed";
 

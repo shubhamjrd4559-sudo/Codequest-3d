@@ -58,6 +58,12 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
       id: "quizzes",
     },
     {
+      name: "Profile",
+      href: "/profile",
+      icon: UserRound,
+      id: "profile",
+    },
+    {
       name: "Achievements",
       href: "/dashboard",
       icon: Trophy,
@@ -74,6 +80,7 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
   const getIsActive = (item: (typeof navItems)[0]) => {
     if (activeItem) return activeItem === item.id;
     if (item.href === "/dashboard" && pathname === "/dashboard") return true;
+    if (item.id === "profile" && pathname.startsWith("/profile")) return true;
     if (item.id === "learning" && pathname.startsWith("/topics")) return true;
     if (item.id === "games" && pathname.startsWith("/mini-games")) return true;
     if (item.id === "videos" && pathname.startsWith("/videos")) return true;
@@ -148,7 +155,11 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
       {/* Bottom Section: Level & XP Status Widget + Sign Out */}
       <div className="flex shrink-0 items-center gap-2 border-l border-white/10 pl-3">
         {/* Player Level Badge */}
-        <div className="rounded-2xl bg-gradient-to-br from-purple-950/50 via-white/[0.04] to-indigo-950/40 border border-purple-400/30 p-2 shadow-glass-sm">
+        <Link
+          href="/profile"
+          className="rounded-2xl bg-gradient-to-br from-purple-950/50 via-white/[0.04] to-indigo-950/40 border border-purple-400/30 p-2 shadow-glass-sm hover:border-purple-400/60 transition-colors"
+          title="View Profile & Activity Heatmap"
+        >
           <div className="flex items-center gap-2">
             {/* Glowing Avatar */}
             <div className="relative h-9 w-9 rounded-full p-0.5 bg-gradient-to-tr from-amber-300/80 via-violet-400/80 to-cyan-300/80">
@@ -165,7 +176,7 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
               </p>
             </div>
           </div>
-        </div>
+        </Link>
 
         {/* Sign out button */}
         {isAuthenticated && (

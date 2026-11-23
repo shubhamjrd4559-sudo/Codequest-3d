@@ -9,8 +9,6 @@ import {
   ArrowRight,
   RotateCcw,
   Trophy,
-  Award,
-  Zap,
   Star,
 } from "lucide-react";
 import { RobotMascot } from "@/components/characters/RobotMascot";
@@ -598,7 +596,7 @@ export function GamifiedQuiz({
                       </span>
                     ) : (
                       <span className="text-sm font-black text-rose-400">
-                        Oops! Let's check the solution together:
+                        Oops! Let&apos;s check the solution together:
                       </span>
                     )}
                   </div>

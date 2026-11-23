@@ -102,3 +102,9 @@ export interface Topic {
   lessons_count?: number;
   total_xp?: number;
 }
+
+export interface HeatmapDay {
+  date: string;
+  count: number;
+}
+

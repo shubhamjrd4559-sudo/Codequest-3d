@@ -100,4 +100,22 @@ class QuizAttempt(models.Model):
     def __str__(self):
         return f"{self.user.email} — {self.quiz.title} ({self.score_percent}%)"
 
-# Create your models here.
+
+class DailyQuizAttempt(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="daily_quiz_attempts")
+    date = models.DateField(db_index=True)
+    question = models.ForeignKey(DailyQuestion, on_delete=models.SET_NULL, null=True, blank=True, related_name="attempts")
+    answer = models.CharField(max_length=1)
+    is_correct = models.BooleanField()
+    xp_awarded = models.PositiveSmallIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ("-date",)
+        constraints = [
+            models.UniqueConstraint(fields=("user", "date"), name="unique_user_daily_quiz_date")
+        ]
+
+    def __str__(self):
+        return f"{self.user.email} — Daily Quiz ({self.date}): {'Correct' if self.is_correct else 'Wrong'}"
+

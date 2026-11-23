@@ -36,7 +36,7 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
     },
     {
       name: "My Learning",
-      href: "/topics/arrays",
+      href: "/learning",
       icon: BookOpen,
       id: "learning",
     },
@@ -90,7 +90,7 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
     if (item.id === "profile" && pathname.startsWith("/profile")) return true;
     if (item.id === "leaderboard" && pathname.startsWith("/leaderboard")) return true;
     if (item.id === "achievements" && pathname.startsWith("/achievements")) return true;
-    if (item.id === "learning" && pathname.startsWith("/topics")) return true;
+    if (item.id === "learning" && (pathname === "/learning" || pathname.startsWith("/topics"))) return true;
     if (item.id === "games" && pathname.startsWith("/mini-games")) return true;
     if (item.id === "videos" && pathname.startsWith("/videos")) return true;
     if (item.id === "quizzes" && pathname.startsWith("/quizzes")) return true;

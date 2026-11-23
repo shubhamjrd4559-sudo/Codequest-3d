@@ -77,11 +77,16 @@ export default function StudentDashboardPage() {
 
     const refreshAfterDailyQuiz = () => void fetchDashboard();
     window.addEventListener("codequest:dashboard-updated", refreshAfterDailyQuiz);
+    const refreshWhenRestored = (event: PageTransitionEvent) => {
+      if (event.persisted) refreshAfterDailyQuiz();
+    };
+    window.addEventListener("pageshow", refreshWhenRestored);
 
     if (!authLoading) void fetchDashboard();
     return () => {
       isMounted = false;
       window.removeEventListener("codequest:dashboard-updated", refreshAfterDailyQuiz);
+      window.removeEventListener("pageshow", refreshWhenRestored);
     };
   }, [isAuthenticated, authLoading]);
 
@@ -95,7 +100,7 @@ export default function StudentDashboardPage() {
   const currentStreak = summary?.current_streak ?? user?.student_profile?.current_streak ?? 0;
   const completedLessons = summary?.completed_lessons ?? 0;
   const totalLessons = summary?.total_published_lessons ?? 0;
-  const progress = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+  const progress = summary?.course_progress ?? (totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0);
   const recentGames = summary?.recent_game_scores ?? [];
   const recentGame = recentGames[0];
   const recentGameDefinition = findMiniGameByTitle(recentGame?.game_name);
@@ -162,7 +167,7 @@ export default function StudentDashboardPage() {
               </div>
             </div>
             <Link
-              href="/topics/arrays"
+              href="/learning"
               className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-amber-200 px-5 py-3 text-sm font-extrabold text-slate-950 transition hover:bg-amber-100 focus-visible:outline-cyan-100"
             >
               Continue lesson <ArrowRight className="h-4 w-4" aria-hidden="true" />

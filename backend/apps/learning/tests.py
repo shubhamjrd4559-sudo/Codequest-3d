@@ -4,7 +4,7 @@ from rest_framework.test import APITestCase
 from apps.accounts.models import StudentProfile, User
 from apps.catalog.models import Game, GameLevel, Lesson, Topic
 from apps.accounts.gamification import add_xp, level_for_xp, record_activity
-from apps.learning.models import GameAttempt, UserProgress
+from apps.learning.models import GameAttempt, LearningChapter, LearningModule, LearningModuleLesson, LessonBookmark, UserProgress
 
 
 class StudentProgressApiTests(APITestCase):
@@ -13,6 +13,8 @@ class StudentProgressApiTests(APITestCase):
         StudentProfile.objects.create(user=self.user, display_name="Student")
         self.topic = Topic.objects.create(title="Stacks", slug="stacks", summary="Stack basics", is_published=True)
         self.lesson = Lesson.objects.create(topic=self.topic, title="Push and pop", slug="push-pop", explanation="Stack operations", is_published=True)
+        self.module = LearningModule.objects.create(title="Stack Basics", slug="stack-basics", order=1)
+        LearningModuleLesson.objects.create(module=self.module, lesson=self.lesson, order=1)
         self.game = Game.objects.create(slug="stack-tower", title="Stack Tower", description="Stack blocks", learning_objective="LIFO")
         self.level = GameLevel.objects.create(game=self.game, level_number=1, title="First stack")
 
@@ -87,3 +89,88 @@ class StudentProgressApiTests(APITestCase):
         profile = record_activity(self.user, first_day + timedelta(days=1))
         self.assertEqual(profile.current_streak, 2)
         self.assertEqual(profile.longest_streak, 2)
+
+    def test_learning_path_lists_modules_and_lesson_checklist(self):
+        self.client.force_authenticate(self.user)
+
+        response = self.client.get("/api/v1/learning/path/")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["total_lessons"], 1)
+        self.assertEqual(response.data["course_progress"], 0)
+        self.assertEqual(response.data["modules"][0]["lessons"][0]["title"], "Push and pop")
+        self.assertFalse(response.data["modules"][0]["lessons"][0]["is_completed"])
+
+    def test_lesson_page_returns_full_content_chapter_and_navigation(self):
+        chapter = LearningChapter.objects.create(module=self.module, title="Stack operations", slug="stack-operations", order=1)
+        membership = LearningModuleLesson.objects.get(module=self.module, lesson=self.lesson)
+        membership.chapter = chapter
+        membership.save(update_fields=("chapter",))
+        self.lesson.lesson_content = {
+            "introduction": "Learn push and pop.",
+            "definition": "A stack is last in, first out.",
+            "mcq_quiz": [{"question": "What leaves first?", "options": ["Top", "Bottom"], "correct_answer": "A", "explanation": "Pop removes the top."}],
+        }
+        self.lesson.save(update_fields=("lesson_content",))
+        self.client.force_authenticate(self.user)
+
+        response = self.client.get(f"/api/v1/learning/lessons/{self.lesson.id}/")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["chapter"]["title"], "Stack operations")
+        self.assertEqual(response.data["lesson_content"]["mcq_quiz"][0]["correct_answer"], "A")
+        self.assertFalse(response.data["is_completed"])
+        self.assertIsNone(response.data["previous"])
+        self.assertIsNone(response.data["next"])
+
+        path = self.client.get("/api/v1/learning/path/")
+        self.assertEqual(path.data["modules"][0]["chapters"][0]["lessons"][0]["id"], self.lesson.id)
+
+    def test_bookmark_toggle_and_lesson_search(self):
+        self.lesson.lesson_content = {"detailed_theory": "Pointers connect nodes in a linked list."}
+        self.lesson.save(update_fields=("lesson_content",))
+        self.client.force_authenticate(self.user)
+        bookmark_url = f"/api/v1/learning/lessons/{self.lesson.id}/bookmark/"
+
+        added = self.client.post(bookmark_url, {}, format="json")
+        removed = self.client.post(bookmark_url, {}, format="json")
+        results = self.client.get("/api/v1/learning/search/?q=Push")
+        content_results = self.client.get("/api/v1/learning/search/?q=Pointers")
+
+        self.assertEqual(added.status_code, status.HTTP_200_OK)
+        self.assertTrue(added.data["is_bookmarked"])
+        self.assertFalse(removed.data["is_bookmarked"])
+        self.assertFalse(LessonBookmark.objects.filter(user=self.user, lesson=self.lesson).exists())
+        self.assertEqual([item["id"] for item in results.data["results"]], [self.lesson.id])
+        self.assertEqual([item["id"] for item in content_results.data["results"]], [self.lesson.id])
+
+    def test_checklist_toggle_updates_progress_and_awards_xp_once(self):
+        self.client.force_authenticate(self.user)
+        url = f"/api/v1/progress/lesson/{self.lesson.id}/toggle/"
+
+        completed = self.client.post(url, {}, format="json")
+        self.assertEqual(completed.status_code, status.HTTP_200_OK)
+        self.assertTrue(completed.data["is_completed"])
+        self.assertEqual(completed.data["course_progress"], 100)
+        self.assertEqual(completed.data["xp_awarded"], 10)
+        dashboard = self.client.get("/api/v1/dashboard/summary/")
+        self.assertEqual(dashboard.data["course_progress"], 100)
+        self.assertEqual(dashboard.data["completed_lessons"], 1)
+
+        unchecked = self.client.post(url, {}, format="json")
+        self.assertFalse(unchecked.data["is_completed"])
+        self.assertEqual(unchecked.data["course_progress"], 0)
+        self.assertEqual(unchecked.data["xp_awarded"], 0)
+
+        completed_again = self.client.post(url, {}, format="json")
+        self.assertTrue(completed_again.data["is_completed"])
+        self.assertEqual(completed_again.data["xp_awarded"], 0)
+        self.user.student_profile.refresh_from_db()
+        self.assertEqual(self.user.student_profile.total_xp, 10)
+
+    def test_learning_path_and_toggle_are_protected(self):
+        self.assertEqual(self.client.get("/api/v1/learning/path/").status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(
+            self.client.post(f"/api/v1/progress/lesson/{self.lesson.id}/toggle/", {}, format="json").status_code,
+            status.HTTP_401_UNAUTHORIZED,
+        )

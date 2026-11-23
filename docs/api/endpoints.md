@@ -158,6 +158,26 @@ These endpoints require an authenticated student-role account. Client-supplied u
 
 Marks a published lesson complete. No request body is required. Creates or updates that student's progress row. Success returns `id`, `lesson`, `lesson_title`, `status`, `progress_percent`, `started_at`, `last_accessed_at`, and `completed_at`; new rows return `201`, existing rows return `200`.
 
+### `GET /learning/path/`
+
+Returns published learning modules with ordered chapters and lessons. Each chapter and module includes completed lesson counts and a `progress_percent`; lessons include a completion checkbox state and a linkable ID. Requires an authenticated student.
+
+### `GET /learning/lessons/{id}/`
+
+Returns the structured lesson reader content for a published lesson assigned to a published module, including its module/chapter, progress state, bookmark state, and previous/next lesson IDs. The response's `lesson_content` uses the required educational sections (theory, terminology, C++ code, dry run, complexity, MCQs, and practice). Requires an authenticated student.
+
+### `POST /learning/lessons/{id}/bookmark/`
+
+Toggles the current student's bookmark and returns `{ "lesson_id": 12, "is_bookmarked": true }`. Requires an authenticated student.
+
+### `GET /learning/search/?q={query}`
+
+Searches published learning lessons by title and selected theory text. Queries shorter than two characters return an empty result list. Requires an authenticated student.
+
+### `POST /progress/lesson/{id}/toggle/`
+
+Toggles completion for a published lesson and returns the updated overall course progress and XP award. The Learning Path UI shows the checkbox state beside each lesson; students open the lesson page and use its completion control after studying the content.
+
 ### `POST /game-attempts/`
 
 Creates a game attempt for an active game. Request:

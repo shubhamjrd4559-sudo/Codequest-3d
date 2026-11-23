@@ -36,6 +36,8 @@ class Lesson(TimestampedModel):
     explanation = models.TextField()
     real_life_example = models.TextField(blank=True)
     cpp_code = models.TextField(blank=True)
+    # Structured, independently renderable theory sections for the lesson reader.
+    lesson_content = models.JSONField(default=dict, blank=True)
     visualization_config = models.JSONField(default=dict, blank=True)
     order = models.PositiveIntegerField(default=0)
     estimated_minutes = models.PositiveSmallIntegerField(default=5, validators=[MinValueValidator(1), MaxValueValidator(240)])

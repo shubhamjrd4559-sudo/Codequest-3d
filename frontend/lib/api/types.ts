@@ -51,6 +51,7 @@ export interface DashboardSummary {
   completed_lessons: number;
   in_progress_lessons: number;
   total_published_lessons: number;
+  course_progress?: number;
   recent_game_scores: Array<{
     id?: number;
     game_name?: string;

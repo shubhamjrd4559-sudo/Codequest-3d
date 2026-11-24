@@ -144,13 +144,13 @@ Data Structures and Algorithms (DSA) form the foundation of computer science, ye
 |---|---|
 | ![Landing Page Hero](./docs/images/landing_hero.png) | ![Student Dashboard](./docs/images/dashboard.png) |
 
-| GitHub-Style Activity Heatmap | Global Leaderboard |
+| Gamified Quiz Arena (Level Map & MCQs) | 3D Mini-Games Arcade (Interactive Stack Tower) |
 |---|---|
-| ![Activity Heatmap](./docs/images/activity_heatmap.png) | ![Global Leaderboard](./docs/images/leaderboard.png) |
+| ![Gamified Quiz Arena](./docs/images/gamified_quiz.png) | ![3D Mini-Games Arcade](./docs/images/game_stack_tower.png) |
 
-| Gamified Topic Learning | Unlocked Achievements |
+| Global Leaderboard | Unlocked Achievements |
 |---|---|
-| ![Learning Topic View](./docs/images/learning_topic.png) | ![Achievements Grid](./docs/images/achievements.png) |
+| ![Global Leaderboard](./docs/images/leaderboard.png) | ![Achievements Grid](./docs/images/achievements.png) |
 
 ---
 

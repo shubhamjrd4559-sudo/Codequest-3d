@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { Bell, Search, Gamepad2, Sparkles, LogIn, LogOut } from "lucide-react";
 import { Button } from "./Button";
 import { cn } from "@/lib/utils";
@@ -33,11 +34,22 @@ export function NavigationBar({ isPublic = false, className }: NavigationBarProp
           <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 shadow-neon-purple group-hover:scale-105 transition-transform">
             <Gamepad2 className="w-5 h-5 text-white" />
           </div>
-          <div className={cn(isPublic ? "block" : "hidden md:block")}>
-            <span className="font-extrabold text-lg text-white">CodeQuest</span>{" "}
-            <span className="font-extrabold text-lg bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-              3D
-            </span>
+          <div className={cn("flex flex-col text-left", isPublic ? "flex" : "hidden md:flex")}>
+            <span className="font-extrabold text-lg text-white leading-none">CodeQuest</span>
+            <motion.span
+              animate={{
+                opacity: [0.85, 1, 0.85],
+                filter: [
+                  "drop-shadow(0 0 6px rgba(250,204,21,0.7))",
+                  "drop-shadow(0 0 12px rgba(250,204,21,0.95))",
+                  "drop-shadow(0 0 6px rgba(250,204,21,0.7))",
+                ],
+              }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+              className="text-[11px] font-black tracking-wider text-yellow-400 block mt-0.5 drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]"
+            >
+              by shubh5585
+            </motion.span>
           </div>
         </Link>
 

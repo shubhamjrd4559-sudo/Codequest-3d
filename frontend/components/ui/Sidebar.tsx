@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import {
   Home,
   BookOpen,
@@ -118,13 +119,24 @@ export function Sidebar({ className, activeItem }: SidebarProps) {
               <Gamepad2 className="w-6 h-6 text-cyan-300" />
             </div>
           </div>
-          <div>
+          <div className="flex flex-col text-left">
             <span className="font-black text-xl tracking-tight text-white block leading-none">
               CodeQuest
             </span>
-            <span className="text-xs font-black tracking-widest text-[#FACC15] block mt-0.5">
-              3D
-            </span>
+            <motion.span
+              animate={{
+                opacity: [0.85, 1, 0.85],
+                filter: [
+                  "drop-shadow(0 0 6px rgba(250,204,21,0.7))",
+                  "drop-shadow(0 0 12px rgba(250,204,21,0.95))",
+                  "drop-shadow(0 0 6px rgba(250,204,21,0.7))",
+                ],
+              }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+              className="text-[11px] font-black tracking-wider text-yellow-400 block mt-0.5 drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]"
+            >
+              by shubh5585
+            </motion.span>
           </div>
         </Link>
 

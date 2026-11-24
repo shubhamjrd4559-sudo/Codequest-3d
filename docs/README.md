@@ -25,12 +25,14 @@ Welcome to the central technical documentation library for **CodeQuest 3D**. Thi
 Screenshots and diagrams referenced across the documentation are located in **[`docs/images/`](./images/)**:
 - `landing_hero.png` — Marketing landing page and 3D hero layout.
 - `dashboard.png` — Authenticated student command center.
+- `game_stack_tower.jpg` — 3D WebGL Mini-Game (Stack Tower interactive physics challenge).
+- `arcade_catalog.jpg` — 3D Arcade World Catalog with 7 game worlds.
 - `gamified_quiz.png` — Gamified Quiz Arena with 4-stage Level Map and MCQ challenge.
-- `game_stack_tower.png` — 3D WebGL Mini-Game (Stack Tower physics challenge).
-- `activity_heatmap.png` — GitHub-style 365-day daily quiz completion graph.
+- `learning_path.jpg` — Study Roadmap and Learning Path with module completion tracking.
+- `activity_heatmap.jpg` — GitHub-style 365-day daily quiz contribution graph & streak counter.
+- `achievements.jpg` — Badges and medals gallery with unlock criteria and XP rewards.
 - `leaderboard.png` — Global Top 20 ranking podium with Gold, Silver, and Bronze tiers.
-- `achievements.png` — Badges showcase with unlock criteria and XP rewards.
-- `learning_topic.png` — Interactive lesson reader and visual theory card.
+- `video_library.jpg` — DSA video concept help library with curated playlists.
 
 ---
 

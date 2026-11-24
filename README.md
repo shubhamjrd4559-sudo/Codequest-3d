@@ -140,17 +140,25 @@ Data Structures and Algorithms (DSA) form the foundation of computer science, ye
 
 ## 📸 Visual Showcase
 
-| Landing Page Hero | Student Dashboard |
+| Landing Page Hero | Student Command Dashboard |
 |---|---|
 | ![Landing Page Hero](./docs/images/landing_hero.png) | ![Student Dashboard](./docs/images/dashboard.png) |
 
-| Gamified Quiz Arena (Level Map & MCQs) | 3D Mini-Games Arcade (Interactive Stack Tower) |
+| 3D Mini-Game Gameplay (Stack Tower) | 3D Arcade Worlds Catalog |
 |---|---|
-| ![Gamified Quiz Arena](./docs/images/gamified_quiz.png) | ![3D Mini-Games Arcade](./docs/images/game_stack_tower.png) |
+| ![3D Mini-Game Gameplay](./docs/images/game_stack_tower.jpg) | ![3D Arcade Worlds Catalog](./docs/images/arcade_catalog.jpg) |
 
-| Global Leaderboard | Unlocked Achievements |
+| Gamified Quiz Arena (Level Map & MCQs) | Study Roadmap & Learning Path |
 |---|---|
-| ![Global Leaderboard](./docs/images/leaderboard.png) | ![Achievements Grid](./docs/images/achievements.png) |
+| ![Gamified Quiz Arena](./docs/images/gamified_quiz.png) | ![Learning Path](./docs/images/learning_path.jpg) |
+
+| Activity Heatmap (Last 365 Days) | Badges & Achievements Gallery |
+|---|---|
+| ![Activity Heatmap](./docs/images/activity_heatmap.jpg) | ![Achievements Gallery](./docs/images/achievements.jpg) |
+
+| Global Leaderboard Podium | Video Help & Concept Library |
+|---|---|
+| ![Global Leaderboard](./docs/images/leaderboard.png) | ![Video Concept Library](./docs/images/video_library.jpg) |
 
 ---
 
